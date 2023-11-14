@@ -1,5 +1,4 @@
-﻿
-using DataAccess.Entity;
+﻿using DataAccess.Entity;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Model
@@ -25,22 +24,17 @@ namespace API.Model
         public virtual DbSet<Quiz> Quizzes { get; set; } = null!;
         public virtual DbSet<Result> Results { get; set; } = null!;
         public virtual DbSet<User> Users { get; set; } = null!;
-
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
-                if (!optionsBuilder.IsConfigured)
-                {
-                    ConfigurationBuilder builder = new ConfigurationBuilder();
-                    IConfigurationRoot config = builder.SetBasePath(Directory.GetCurrentDirectory())
-                        .AddJsonFile("appsettings.json", true, true).Build();
-                    string connection = config.GetConnectionString("DefaultConnection");
-                    optionsBuilder.UseSqlServer(connection);
-                }
+                ConfigurationBuilder builder = new ConfigurationBuilder();
+                IConfigurationRoot config = builder.SetBasePath(Directory.GetCurrentDirectory())
+                    .AddJsonFile("appsettings.json", true, true).Build();
+                string connection = config.GetConnectionString("DefaultConnection");
+                optionsBuilder.UseSqlServer(connection);
             }
         }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<EnrollCourse>().HasKey(e => new {e.CourseId, e.StudentId});

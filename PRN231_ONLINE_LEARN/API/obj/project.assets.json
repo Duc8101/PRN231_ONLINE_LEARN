@@ -1019,9 +1019,6 @@
       "DataAccess/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v6.0",
-        "dependencies": {
-          "Microsoft.EntityFrameworkCore.SqlServer": "6.0.24"
-        },
         "compile": {
           "bin/placeholder/DataAccess.dll": {}
         },

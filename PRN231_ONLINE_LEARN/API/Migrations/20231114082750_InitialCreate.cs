@@ -74,7 +74,8 @@ namespace API.Migrations
                         name: "FK_Course_User_TeacherID",
                         column: x => x.TeacherID,
                         principalTable: "User",
-                        principalColumn: "ID");
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -100,8 +101,7 @@ namespace API.Migrations
                         name: "FK_EnrollCourse_User_StudentID",
                         column: x => x.StudentID,
                         principalTable: "User",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "ID");
                 });
 
             migrationBuilder.CreateTable(

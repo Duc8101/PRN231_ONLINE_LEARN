@@ -10,5 +10,3 @@ D:\GitHub\PRN231\PRN231\PRN231_ONLINE_LEARN\DataAccess\obj\Debug\net6.0\DataAcce
 D:\GitHub\PRN231\PRN231\PRN231_ONLINE_LEARN\DataAccess\obj\Debug\net6.0\refint\DataAccess.dll
 D:\GitHub\PRN231\PRN231\PRN231_ONLINE_LEARN\DataAccess\obj\Debug\net6.0\DataAccess.pdb
 D:\GitHub\PRN231\PRN231\PRN231_ONLINE_LEARN\DataAccess\obj\Debug\net6.0\ref\DataAccess.dll
-D:\GitHub\PRN231\PRN231\PRN231_ONLINE_LEARN\DataAccess\bin\Debug\net6.0\DataAccess.runtimeconfig.json
-D:\GitHub\PRN231\PRN231\PRN231_ONLINE_LEARN\DataAccess\obj\Debug\net6.0\DataAccess.genruntimeconfig.cache
