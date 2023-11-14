@@ -36,7 +36,7 @@ namespace API.Migrations
                     email = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     gender = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
                     username = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    password = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    password = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     RoleName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdateAt = table.Column<DateTime>(type: "datetime2", nullable: false),

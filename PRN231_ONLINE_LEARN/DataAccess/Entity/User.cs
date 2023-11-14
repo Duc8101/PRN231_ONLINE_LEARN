@@ -37,7 +37,6 @@ namespace DataAccess.Entity
         [MaxLength(50)]
         public string Username { get; set; } = null!;
         [Column("password")]
-        [MaxLength(50)]
         public string Password { get; set; } = null!;
         [MaxLength(50)]
         public string RoleName { get; set; } = null!;
