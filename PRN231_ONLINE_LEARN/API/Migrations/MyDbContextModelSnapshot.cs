@@ -358,6 +358,11 @@ namespace API.Migrations
                         .HasColumnType("nvarchar(30)")
                         .HasColumnName("gender");
 
+                    b.Property<string>("Image")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("image");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 

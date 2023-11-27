@@ -32,6 +32,7 @@ namespace API.Migrations
                     ID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     FullName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     phone = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: true),
+                    image = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     address = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     email = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     gender = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
