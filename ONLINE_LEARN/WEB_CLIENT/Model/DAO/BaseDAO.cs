@@ -1,4 +1,6 @@
-﻿namespace WEB_CLIENT.Model.DAO
+﻿
+
+namespace WEB_CLIENT.Model.DAO
 {
     public class BaseDAO
     {

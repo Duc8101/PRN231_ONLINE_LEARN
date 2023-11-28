@@ -1,9 +1,8 @@
 ﻿using DataAccess.Entity;
 using Microsoft.EntityFrameworkCore;
-
 namespace WEB_CLIENT.Model.DAO
 {
-    public class DAOUser : BaseDAO 
+    public class DAOUser : BaseDAO
     {
         public async Task<User?> getUser(Guid UserID)
         {
