@@ -1,4 +1,6 @@
 using WEB_CLIENT.Model;
+using WEB_CLIENT.Services.IService;
+using WEB_CLIENT.Services.Service;
 
 namespace WEB_CLIENT
 {
@@ -16,7 +18,7 @@ namespace WEB_CLIENT
                 // set time for session
                 options.IdleTimeout = TimeSpan.FromMinutes(30);
             });
-
+            builder.Services.AddScoped<IHomeService, HomeService>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
