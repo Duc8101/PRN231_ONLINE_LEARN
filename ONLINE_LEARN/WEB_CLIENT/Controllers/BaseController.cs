@@ -21,5 +21,10 @@ namespace WEB_CLIENT.Controllers
             return HttpContext.Session.GetString("role");
         }
 
+        protected string? getImage()
+        {
+            return HttpContext.Session.GetString("image");
+        }
+
     }
 }

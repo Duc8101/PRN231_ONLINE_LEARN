@@ -19,6 +19,7 @@ namespace WEB_CLIENT
                 options.IdleTimeout = TimeSpan.FromMinutes(30);
             });
             builder.Services.AddScoped<IHomeService, HomeService>();
+            builder.Services.AddScoped<ICoursesService, CoursesService>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
