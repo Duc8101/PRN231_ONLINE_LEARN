@@ -39,7 +39,7 @@ namespace WEB_CLIENT
             app.UseSession();
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{key?}");
+                pattern: "{controller=Home}/{action=Index}/{id?}");
 
             app.Run();
 
