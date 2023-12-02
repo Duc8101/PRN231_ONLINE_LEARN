@@ -8,7 +8,7 @@ namespace WEB_CLIENT.Model.DAO
     {
         private IQueryable<Course> getQuery(int? CategoryID, string? properties, string? flow,  Guid? TeacherID)
         {
-            IQueryable<Course> query = context.Courses.Where(c => c.IsDeleted == false);
+            IQueryable<Course> query = context.Courses.Include(c => c.Teacher).Where(c => c.IsDeleted == false);
             if(CategoryID != null)
             {
                 query = query.Where(c => c.CategoryId == CategoryID);
@@ -34,11 +34,10 @@ namespace WEB_CLIENT.Model.DAO
             }
             return query;
         }
-
         public async Task<List<Course>> getList(int? CategoryID, string? properties, string? flow, int page)
         {
             IQueryable<Course> query = getQuery(CategoryID, properties, flow, null);
-            return await query.Take(PageSizeConst.MAX_COURSE_IN_PAGE).Take(PageSizeConst.MAX_COURSE_IN_PAGE * (page - 1)).ToListAsync();
+            return await query.Skip(PageSizeConst.MAX_COURSE_IN_PAGE * (page - 1)).Take(PageSizeConst.MAX_COURSE_IN_PAGE).ToListAsync();
         }
         public async Task<int> getNumberPage(int? CategoryID, string? properties, string? flow)
         {

@@ -5,6 +5,6 @@ namespace WEB_CLIENT.Services.IService
 {
     public interface ICoursesService
     {
-        Task<ResponseDTO<PagedResultDTO<Course>?>> Index(int? CategoryID, string? properties, string? flow, int? page);
+        Task<ResponseDTO<Dictionary<string, object>?>> Index(int? CategoryID, string? properties, string? flow, int? page);
     }
 }

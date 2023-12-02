@@ -1,4 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DataAccess.Const;
+using DataAccess.DTO;
+using DataAccess.Entity;
+using Microsoft.AspNetCore.Mvc;
+using System.Net;
 using WEB_CLIENT.Services.IService;
 
 namespace WEB_CLIENT.Controllers
@@ -10,9 +14,20 @@ namespace WEB_CLIENT.Controllers
         {
             this.service = service;
         }
-        public ActionResult Index(int? CategoryID, string? properties, string? flow, int? page)
+        public async Task<ActionResult> Index(int? CategoryID, string? properties, string? flow, int? page)
         {
-            return View();
+            string? role = getRole();
+            if(role == null || role == UserConst.ROLE_STUDENT)
+            {
+                ResponseDTO<Dictionary<string, object>?> result = await service.Index(CategoryID, properties, flow, page);
+                // if get result failed
+                if(result.Data == null)
+                {
+                    return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, result.Message, (int) HttpStatusCode.InternalServerError));
+                }
+                return View(result.Data);
+            }
+            return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null,"You are not allowed to access this page", (int) HttpStatusCode.Forbidden));
         }
     }
 }
