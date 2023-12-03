@@ -45,5 +45,9 @@ namespace WEB_CLIENT.Model.DAO
             int count = await query.CountAsync();
             return (int )Math.Ceiling((double) count / PageSizeConst.MAX_COURSE_IN_PAGE);
         }
+        public async Task<Course?> getCourse(Guid CourseID)
+        {
+            return await context.Courses.Include(c => c.Teacher).SingleOrDefaultAsync(c => c.CourseId == CourseID && c.IsDeleted == false);
+        } 
     }
 }

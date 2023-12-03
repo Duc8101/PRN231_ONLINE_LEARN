@@ -10,6 +10,7 @@ namespace WEB_CLIENT.Services.Service
     {
         private readonly DAOCourse daoCourse = new DAOCourse();
         private readonly DAOCategory daoCategory = new DAOCategory();
+        private readonly DAOLesson daoLesson = new DAOLesson();
         public async Task<ResponseDTO<Dictionary<string, object>?>> Index(int? CategoryID, string? properties, string? flow, int? page)
         { 
             int pageSelected = page == null ? 1 : page.Value;
@@ -71,6 +72,26 @@ namespace WEB_CLIENT.Services.Service
             {
                 return new ResponseDTO<Dictionary<string, object>?>(null, ex.Message + " " + ex, (int) HttpStatusCode.InternalServerError);
             }
+        }
+        public async Task<ResponseDTO<Dictionary<string, object>?>> Detail(Guid CourseID)
+        {
+            try
+            {
+                Course? course = await daoCourse.getCourse(CourseID);
+                if (course == null)
+                {
+                    return new ResponseDTO<Dictionary<string, object>?>(null, "Not found course", (int) HttpStatusCode.NotFound);
+                }
+                List<Lesson> list = await daoLesson.getList(CourseID);
+                Dictionary<string, object> dic = new Dictionary<string, object>();
+                dic["course"] = course;
+                dic["list"] = list;
+                return new ResponseDTO<Dictionary<string, object>?>(dic, string.Empty);
+            }
+            catch (Exception ex)
+            {
+                return new ResponseDTO<Dictionary<string, object>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+            }            
         }
     }
 }
