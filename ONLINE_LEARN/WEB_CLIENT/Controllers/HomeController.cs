@@ -33,7 +33,7 @@ namespace WEB_CLIENT.Controllers
             // if get list failed
             if(response.Data == null)
             {
-                return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, response.Message, (int) HttpStatusCode.InternalServerError));
+                return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, response.Message, response.Code));
             }
             return View(response.Data);
         }
