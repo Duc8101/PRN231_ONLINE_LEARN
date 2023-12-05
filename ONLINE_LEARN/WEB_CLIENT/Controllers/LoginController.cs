@@ -55,6 +55,12 @@ namespace WEB_CLIENT.Controllers
             HttpContext.Session.SetString("username", response.Data.Username);
             HttpContext.Session.SetString("role", response.Data.RoleName);
             HttpContext.Session.SetString("image", response.Data.Image);
+            CookieOptions option = new CookieOptions()
+            {
+                Expires = DateTime.Now.AddDays(1)
+            };
+            // add cookie
+            Response.Cookies.Append("UserID", response.Data.Id.ToString(), option);
             return Redirect("/Home");
         }
     }

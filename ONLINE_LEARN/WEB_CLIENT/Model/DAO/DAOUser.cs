@@ -1,5 +1,4 @@
-﻿using DataAccess;
-using DataAccess.Const;
+﻿using DataAccess.Const;
 using DataAccess.DTO;
 using DataAccess.Entity;
 using Microsoft.EntityFrameworkCore;
@@ -25,6 +24,16 @@ namespace WEB_CLIENT.Model.DAO
                 return null;
             }
             return user;
+        }
+        public async Task<bool> isExist(string username, string email)
+        {
+            return await context.Users.AnyAsync(u => u.Username == username || u.Email == email.Trim());
+        }
+
+        public async Task CreateUser(User user)
+        {
+            await context.Users.AddAsync(user);
+            await context.SaveChangesAsync();
         }
     }
 }

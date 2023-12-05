@@ -68,3 +68,11 @@ D:\GitHub\PRN231\PRN231\ONLINE_LEARN\WEB_CLIENT\bin\Debug\net6.0\runtimes\win\li
 D:\GitHub\PRN231\PRN231\ONLINE_LEARN\WEB_CLIENT\bin\Debug\net6.0\runtimes\win\lib\netcoreapp3.0\System.Windows.Extensions.dll
 D:\GitHub\PRN231\PRN231\ONLINE_LEARN\WEB_CLIENT\bin\Debug\net6.0\Humanizer.dll
 D:\GitHub\PRN231\PRN231\ONLINE_LEARN\WEB_CLIENT\bin\Debug\net6.0\Microsoft.EntityFrameworkCore.Design.dll
+D:\GitHub\PRN231\PRN231\ONLINE_LEARN\WEB_CLIENT\bin\Debug\net6.0\BouncyCastle.Cryptography.dll
+D:\GitHub\PRN231\PRN231\ONLINE_LEARN\WEB_CLIENT\bin\Debug\net6.0\MailKit.dll
+D:\GitHub\PRN231\PRN231\ONLINE_LEARN\WEB_CLIENT\bin\Debug\net6.0\MimeKit.dll
+D:\GitHub\PRN231\PRN231\ONLINE_LEARN\WEB_CLIENT\bin\Debug\net6.0\System.Formats.Asn1.dll
+D:\GitHub\PRN231\PRN231\ONLINE_LEARN\WEB_CLIENT\bin\Debug\net6.0\System.Security.Cryptography.Pkcs.dll
+D:\GitHub\PRN231\PRN231\ONLINE_LEARN\WEB_CLIENT\bin\Debug\net6.0\System.Text.Encoding.CodePages.dll
+D:\GitHub\PRN231\PRN231\ONLINE_LEARN\WEB_CLIENT\bin\Debug\net6.0\runtimes\win\lib\net6.0\System.Security.Cryptography.Pkcs.dll
+D:\GitHub\PRN231\PRN231\ONLINE_LEARN\WEB_CLIENT\bin\Debug\net6.0\runtimes\win\lib\net6.0\System.Text.Encoding.CodePages.dll
