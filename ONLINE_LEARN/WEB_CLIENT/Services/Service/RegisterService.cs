@@ -30,6 +30,9 @@ namespace WEB_CLIENT.Services.Service
                 user.Address = user.Address == null || user.Address.Trim().Length == 0 ? null : user.Address.Trim();
                 user.Password = hashPw;
                 user.RoleName = UserConst.ROLE_STUDENT;
+                user.CreatedAt = DateTime.Now;
+                user.UpdateAt = DateTime.Now;
+                user.IsDeleted = false;
                 await dao.CreateUser(user);
                 return new ResponseDTO<bool>(true, "Register successful");
             }

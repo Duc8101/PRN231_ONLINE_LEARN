@@ -35,5 +35,10 @@ namespace WEB_CLIENT.Model.DAO
             await context.Users.AddAsync(user);
             await context.SaveChangesAsync();
         }
+
+        public async Task<User?> getUser(string email)
+        {
+            return await context.Users.FirstOrDefaultAsync(u => u.Email == email.Trim());
+        }
     }
 }
