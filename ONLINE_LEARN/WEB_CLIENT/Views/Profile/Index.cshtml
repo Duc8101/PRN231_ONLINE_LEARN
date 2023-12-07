@@ -1,0 +1,199 @@
+﻿@using DataAccess.Const;
+@using DataAccess.Entity;
+@model Dictionary<string,object>
+<!-- Navbar Start -->
+@{
+    string? username = Context.Session.GetString("username");
+    string? role = Context.Session.GetString("role");
+    string? image = Context.Session.GetString("image");
+    string d_none1 = role == null || role == UserConst.ROLE_STUDENT ? "d-none" : "";
+    string d_none2 = role == null || role == UserConst.ROLE_STUDENT ? "" : "d-none";
+    string d_none3 = role != null && role == UserConst.ROLE_TEACHER ? "" : "d-none";
+}
+<nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
+    <a href="/Home" class="navbar-brand d-flex align-items-center px-4 px-lg-5">
+        <h2 class="m-0 text-info"><i class="fa fa-book me-3"></i>eLEARNING</h2>
+    </a>
+    <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+        <div class="navbar-nav ms-auto p-4 p-lg-0">
+            <a href="/Home" class="nav-item nav-link">Home</a>
+            <a href="/About" class="nav-item nav-link">About</a>
+            <a href="/ManagerCourse/Create" class="nav-item nav-link @d_none1">Create Course</a>
+            @if (role == null || role == UserConst.ROLE_STUDENT)
+            {
+                <a href="/Courses" class="nav-item nav-link">Courses</a>
+            }
+        </div>
+    </div>
+
+    @if (username == null)
+    {
+        <a href="/Login" class="btn btn-info py-4 px-lg-5 d-none d-lg-block text-white">Join Now<i class="fa fa-arrow-right ms-3"></i></a>
+    }
+    else
+    {
+        <div class="nav-item dropdown">
+            <a href="#" class="btn btn-info py-4 px-lg-5 text-white"><img src="@image" alt="Avatar" class="avatar">@username</a>
+            <div class="dropdown-menu fade-down m-0">
+                <a href="/Profile" class="dropdown-item">Profile</a>
+                <a href="/MyCourse" class="dropdown-item @d_none2">My Course</a>
+                <a href="/ManagerCourse" class="dropdown-item @d_none3">My Teaching Course</a>
+                <a href="/Logout" class="dropdown-item">Log Out <i class="bi bi-box-arrow-right"></i></a>
+            </div>
+        </div>
+    }
+</nav>
+<!-- Navbar End -->
+
+@{
+    User user = (User) Model["user"];
+    List<string> list = (List<string>) Model["list"];
+}
+
+<!-- Profile Start -->
+<div class="row">
+    <div class="col-lg-3" style="margin-top: 50px">
+        <ul class="list-group">
+            <li class="list-group-item list-group-item-info list-group-item-action text-center"><a href="/Profile">Edit profile</a></li>
+            <li class="list-group-item list-group-item-info list-group-item-action text-center"><a href="/ChangePassword">Edit password</a></li>
+        </ul>
+        <p class="text-danger" style="text-align: center">@ViewData["error"]</p>
+        <p class="text-success" style="text-align: center">@ViewData["success"]</p>
+    </div>
+
+
+    <div class="col-lg-9 row">
+        <form action="/Profile" method="POST">
+            <div class="container rounded bg-white mt-5 mb-5">
+                <div class="row">
+                    <div class="col-md-4 border-right">
+                        <input id="file" type="file" name="Image" accept=".jpg, .png" multiple>
+                        <div class="d-flex flex-column align-items-center text-center p-3 py-5">
+                            <img class="rounded-circle mt-5" width="250" src="@user.Image">
+                            <span class="font-weight-bold">@user.FullName</span>
+                            <span class="text-black-50">@user.Email</span>
+                        </div>
+                        <input type="hidden" name="valueImg" value="@user.Image">
+                    </div>
+
+                    <div class="col-md-8 border-right">
+                        <div class="p-3 py-5">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h4 class="text-right">Profile Settings</h4>
+                            </div>
+                            <div class="row mt-2 form-outline">
+                                <div class="col-md-6 form-outline"><label class="labels">FullName</label><input type="text" class="form-control" placeholder="Full Name" value="@user.FullName" name="FullName" id="FullName" required></div>
+                            </div>
+                            <div class="row mt-3 form-outline">
+                                <div class="col-md-12 form-outline"><label class="labels">Address</label><input type="text" class="form-control" placeholder="Address" value="@user.Address" name="Address" id="address"></div>
+                                <div class="col-md-12 form-outline">
+                                    <label class="labels">Email</label>
+                                    <input type="email" class="form-control" placeholder="Email" value="@user.Email" name="Email" required>
+                                </div>
+                                <div class="col-md-12"><label class="labels">Phone</label><input type="number" class="form-control" placeholder="Phone" value="@user.Phone" name="Phone" id="phone"></div>
+                                <div class="col-md-12">
+                                    <label class="labels">Gender</label>
+                                    <select name="Gender" class="form-control">                     
+                                        @foreach (string gender in list)
+                                        {
+                                            if (user.Gender == gender)
+                                            {
+                                                <option value="@gender" selected>@gender</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@gender">@gender</option>
+                                            }
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="mt-5 text-center"><button class="btn btn-primary profile-button" type="submit" onclick="myFunction()">Save Profile</button></div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Profile End -->
+
+
+<!-- Footer Start -->
+<div class="container-fluid bg-dark text-light footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">
+    <div class="container py-5">
+        <div class="row g-5">
+            <div class="col-lg-4 col-md-6">
+                <h4 class="text-white mb-3">Quick Link</h4>
+                <a class="btn btn-link" href="/About">About Us</a>
+                <a class="btn btn-link" href="#">Contact Us</a>
+                <a class="btn btn-link" href="/FAQ">FAQs & Help</a>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <h4 class="text-white mb-3">Contact</h4>
+                <p class="mb-2"><i class="fa fa-map-marker-alt me-3"></i>FPT University</p>
+                <p class="mb-2"><i class="fa fa-phone-alt me-3"></i>0984 739 845</p>
+                <p class="mb-2"><i class="fa fa-envelope me-3"></i>eLearning@gmail.com</p>
+                <div class="d-flex pt-2">
+                    <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-twitter"></i></a>
+                    <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-facebook-f"></i></a>
+                    <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-youtube"></i></a>
+                    <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <h4 class="text-white mb-3">Gallery</h4>
+                <div class="row g-2 pt-2">
+                    <div class="col-4">
+                        <img class="img-fluid bg-light p-1" src="~/img/course-1.jpg" alt="">
+                    </div>
+                    <div class="col-4">
+                        <img class="img-fluid bg-light p-1" src="~/img/course-2.jpg" alt="">
+                    </div>
+                    <div class="col-4">
+                        <img class="img-fluid bg-light p-1" src="~/img/course-3.jpg" alt="">
+                    </div>
+                    <div class="col-4">
+                        <img class="img-fluid bg-light p-1" src="~/img/course-2.jpg" alt="">
+                    </div>
+                    <div class="col-4">
+                        <img class="img-fluid bg-light p-1" src="~/img/course-3.jpg" alt="">
+                    </div>
+                    <div class="col-4">
+                        <img class="img-fluid bg-light p-1" src="~/img/course-1.jpg" alt="">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Footer End -->
+
+<script>
+    function myFunction() {
+        var FullName = document.getElementById("FullName");
+        var phone = document.getElementById("phone");
+        var address = document.getElementById("address");
+        const regexUsername = new RegExp("^[a-zA-Z0-9]*$");
+        const regexNumber = new RegExp("^[0-9]");
+        if (FullName.value.toString().trim().length === 0) {
+            document.getElementById("error").innerHTML = "You have to input your name";
+            handleSubmit(event);
+        } else if (phone.value.toString().length !== 0 && phone.value.toString().length !== 10) {
+            document.getElementById("error").innerHTML = "Phone must be 10 numbers";
+            handleSubmit(event);
+        } else if (address.value.toString().trim().length !== 0 && address.value.toString().trim().length > 100) {
+            document.getElementById("error").innerHTML = "Address max 100 characters";
+            handleSubmit(event);
+        }
+    }
+
+    function handleSubmit(event) {
+        event.preventDefault();
+    }
+</script>

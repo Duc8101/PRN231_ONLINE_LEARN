@@ -1,6 +1,4 @@
-﻿using DataAccess.Const;
-using DataAccess.Entity;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace WEB_CLIENT.Controllers
 {
@@ -8,7 +6,7 @@ namespace WEB_CLIENT.Controllers
     {
         protected string? getUserID()
         {
-            return HttpContext.Session.GetString("UserID");          
+            return HttpContext.Session.GetString("UserID");
         }
 
         protected string? getUserName()

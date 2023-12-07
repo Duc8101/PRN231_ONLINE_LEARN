@@ -1,4 +1,5 @@
-﻿using MailKit.Net.Smtp;
+﻿using DataAccess.Const;
+using MailKit.Net.Smtp;
 using MimeKit;
 using System;
 using System.Collections.Generic;
@@ -77,6 +78,15 @@ namespace WEB_CLIENT.Model
                             "<p>Mật khẩu mới là: " + password + "</p>\n" +
                             "<p>Không nên chia sẻ mật khẩu của bạn với người khác.</p>";
             return body;
+        }
+
+        public static List<string> getAllGender()
+        {
+            List<string> list = new List<string>();
+            list.Add(UserConst.GENDER_MALE);
+            list.Add(UserConst.GENDER_FEMALE);
+            list.Add(UserConst.GENDER_OTHER);
+            return list;
         }
     }
 }

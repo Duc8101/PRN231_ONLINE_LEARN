@@ -1,4 +1,5 @@
 ﻿using DataAccess.DTO;
+using DataAccess.DTO.UserDTO;
 using DataAccess.Entity;
 
 namespace WEB_CLIENT.Services.IService

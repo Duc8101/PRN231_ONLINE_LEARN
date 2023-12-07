@@ -1,4 +1,5 @@
 ﻿using DataAccess.DTO;
+using DataAccess.DTO.UserDTO;
 using DataAccess.Entity;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

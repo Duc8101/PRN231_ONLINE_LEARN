@@ -1,4 +1,5 @@
 ﻿using DataAccess.DTO;
+using DataAccess.DTO.UserDTO;
 using DataAccess.Entity;
 using System.Net;
 using WEB_CLIENT.Model.DAO;
