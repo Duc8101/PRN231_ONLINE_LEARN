@@ -25,6 +25,7 @@ namespace WEB_CLIENT
             builder.Services.AddScoped<IForgotPasswordService, ForgotPasswordService>();
             builder.Services.AddScoped<IProfileService, ProfileService>();
             builder.Services.AddScoped<IChangePasswordService, ChangePasswordService>();
+            builder.Services.AddScoped<IMyCourseService, MyCourseService>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
