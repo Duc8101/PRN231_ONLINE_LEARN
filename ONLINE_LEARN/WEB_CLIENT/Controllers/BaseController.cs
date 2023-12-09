@@ -9,7 +9,7 @@ namespace WEB_CLIENT.Controllers
             return HttpContext.Session.GetString("UserID");
         }
 
-        protected string? getUserName()
+        protected string? getUsername()
         {
             return HttpContext.Session.GetString("username");
         }

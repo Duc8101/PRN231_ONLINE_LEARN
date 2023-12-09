@@ -22,7 +22,7 @@ namespace WEB_CLIENT.Controllers
             {
                 return Redirect("/Admin");
             }
-            string? username = getUserName();
+            string? username = getUsername();
             // if not found username
             if (role != null && username == null)
             {
