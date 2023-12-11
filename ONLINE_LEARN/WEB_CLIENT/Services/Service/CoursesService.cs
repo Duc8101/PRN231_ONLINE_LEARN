@@ -11,7 +11,7 @@ namespace WEB_CLIENT.Services.Service
         private readonly DAOCourse daoCourse = new DAOCourse();
         private readonly DAOCategory daoCategory = new DAOCategory();
         private readonly DAOLesson daoLesson = new DAOLesson();
-        public async Task<ResponseDTO<Dictionary<string, object>?>> Index(int? CategoryID, string? properties, string? flow, int? page)
+        public async Task<ResponseDTO<Dictionary<string, object>?>> Index(int? CategoryID, string? properties, string? flow, int? page, Guid? CreatorID)
         { 
             int pageSelected = page == null ? 1 : page.Value;
             int prePage = pageSelected - 1;
@@ -49,9 +49,9 @@ namespace WEB_CLIENT.Services.Service
             }
             try
             {
-                List<Course> listCourse = await daoCourse.getList(CategoryID, properties, flow, pageSelected);
+                List<Course> listCourse = await daoCourse.getList(CategoryID, properties, flow, pageSelected, CreatorID);
                 List<Category> listCategory = await daoCategory.getList();
-                int numberPage = await daoCourse.getNumberPage(CategoryID, properties, flow);
+                int numberPage = await daoCourse.getNumberPage(CategoryID, properties, flow, CreatorID);
                 PagedResultDTO<Course> result = new PagedResultDTO<Course>()
                 {
                     PageSelected = pageSelected,

@@ -31,10 +31,7 @@
             <a href="/Home" class="nav-item nav-link">Home</a>
             <a href="/About" class="nav-item nav-link">About</a>
             <a href="/ManagerCourse/Create" class="nav-item nav-link @d_none1">Create Course</a>
-            @if (role == null || role == UserConst.ROLE_STUDENT)
-            {
-                <a href="/Courses" class="nav-item nav-link">Courses</a>
-            }
+            <a href="/Courses" class="nav-item nav-link">Courses</a>
         </div>
     </div>
 
@@ -138,38 +135,58 @@
                                     <div style="height: 240px">
                                         <img class="img-fluid w-100" src="@course.Image" alt="">
                                     </div>
-
-                                    <div class="w-100 d-flex justify-content-center position-absolute bottom-0 start-0 mb-4">
-                                        <a href="/Courses/Detail/@course.CourseId" class="flex-shrink-0 btn btn-sm btn-primary px-3 border-end"
-                                           style="border-radius: 30px @(listLesson.Count == 0 ? "" : "0 0") 30px;">
-                                            Read More
-                                        </a>
-                                        @if (UserID != null)
-                                        {
-                                            List<EnrollCourse> listEnroll = await daoEnroll.getList(Guid.Parse(UserID));
-                                            foreach (EnrollCourse enroll in listEnroll)
+                                    @if(role == null || role == UserConst.ROLE_STUDENT)
+                                    {
+                                        <div class="w-100 d-flex justify-content-center position-absolute bottom-0 start-0 mb-4">
+                                            <a href="/Courses/Detail/@course.CourseId" class="flex-shrink-0 btn btn-sm btn-primary px-3 border-end"
+                                               style="border-radius: 30px @(listLesson.Count == 0 ? "" : "0 0") 30px;">
+                                                Read More
+                                            </a>
+                                            @if (UserID != null)
                                             {
-                                                if (enroll.CourseId == course.CourseId)
+                                                List<EnrollCourse> listEnroll = await daoEnroll.getList(Guid.Parse(UserID));
+                                                foreach (EnrollCourse enroll in listEnroll)
                                                 {
-                                                    isExist = true;
-                                                    break;
+                                                    if (enroll.CourseId == course.CourseId)
+                                                    {
+                                                        isExist = true;
+                                                        break;
+                                                    }
                                                 }
+                                                // if exist student learn course and exist lesson in course
                                             }
-                                            // if exist student learn course and exist lesson in course
-                                        }
 
-                                        @if (isExist && listLesson.Count > 0)
-                                        {
-                                            <a href="/Courses/LearnCourse/@course.CourseId" class="flex-shrink-0 btn btn-sm btn-primary px-3"
-                                               style="border-radius: 0 30px 30px 0;">Enroll Course</a>
-                                            // if not exist student learn course and exist lesson in course
-                                        }
-                                        else if (listLesson.Count > 0)
-                                        {
-                                            <a href="/Courses/EnrollCourse/@course.CourseId" class="flex-shrink-0 btn btn-sm btn-primary px-3"
-                                               style="border-radius: 0 30px 30px 0;">Enroll Course</a>
-                                        }
-                                    </div>
+                                            @if (isExist && listLesson.Count > 0)
+                                            {
+                                                <a href="/Courses/LearnCourse/@course.CourseId" class="flex-shrink-0 btn btn-sm btn-primary px-3"
+                                                   style="border-radius: 0 30px 30px 0;">Enroll Course</a>
+                                                // if not exist student learn course and exist lesson in course
+                                            }
+                                            else if (listLesson.Count > 0)
+                                            {
+                                                <a href="/Courses/EnrollCourse/@course.CourseId" class="flex-shrink-0 btn btn-sm btn-primary px-3"
+                                                   style="border-radius: 0 30px 30px 0;">Enroll Course</a>
+                                            }
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="col-4 bg-primary border">
+                                            <form action="/ManagerLesson">
+                                                <input type="hidden" name="CourseID" value="@course.CourseId">
+                                                <input type="submit" value="View Lesson" class="btn btn-primary">
+                                            </form>
+                                        </div>
+
+                                        <div class="col-4 bg-primary border">
+                                            <a href="/ManagerCourse/Edit/@course.CourseId" class="text-light">Update Course</a>
+                                        </div>
+
+                                        <div class="col-4 bg-primary border">
+                                            <a href="/ManagerCourse/Delete/@course.CourseId" class="text-light"
+                                               onclick="return confirm('Are you sure you want to delete this course :\n@(course.CourseName)')">Delete Course</a>
+                                        </div>                         
+                                    }
                                 </div>
 
                                 <div class="text-center p-4 pb-0">

@@ -17,17 +17,26 @@ namespace WEB_CLIENT.Controllers
         public async Task<ActionResult> Index(int? CategoryID, string? properties, string? flow, int? page)
         {
             string? role = getRole();
-            if(role == null || role == UserConst.ROLE_STUDENT)
+            ResponseDTO<Dictionary<string, object>?> result = new ResponseDTO<Dictionary<string, object>?>();
+            if (role == null || role != UserConst.ROLE_TEACHER)
             {
-                ResponseDTO<Dictionary<string, object>?> result = await service.Index(CategoryID, properties, flow, page);
-                // if get result failed
-                if(result.Data == null)
-                {
-                    return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, result.Message, result.Code));
-                }
-                return View(result.Data);
+                result = await service.Index(CategoryID, properties, flow, page, null);
             }
-            return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null,"You are not allowed to access this page", (int) HttpStatusCode.Forbidden));
+            else
+            {
+                string? CreatorID = getUserID();
+                if(CreatorID == null)
+                {
+                    return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, "Not found ID. Please check login information", (int)HttpStatusCode.NotFound));
+                }
+                result = await service.Index(CategoryID, properties, flow, page, Guid.Parse(CreatorID));
+            }
+            // if get result failed
+            if (result.Data == null)
+            {
+                return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, result.Message, result.Code));
+            }
+            return View(result.Data);        
         }
         public async Task<ActionResult> Detail(Guid? id)
         {
