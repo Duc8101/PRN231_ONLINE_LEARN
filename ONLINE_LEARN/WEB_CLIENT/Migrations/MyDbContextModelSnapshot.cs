@@ -287,20 +287,19 @@ namespace WEB_CLIENT.Migrations
 
             modelBuilder.Entity("DataAccess.Entity.Result", b =>
                 {
-                    b.Property<Guid>("ResultId")
-                        .ValueGeneratedOnAdd()
+                    b.Property<Guid>("LessonId")
                         .HasColumnType("uniqueidentifier")
-                        .HasColumnName("ResultID");
+                        .HasColumnName("LessonID");
+
+                    b.Property<Guid>("StudentId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("StudentID");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
-
-                    b.Property<Guid>("LessonId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("LessonID");
 
                     b.Property<decimal>("Score")
                         .HasColumnType("decimal(18,2)")
@@ -311,16 +310,10 @@ namespace WEB_CLIENT.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("status");
 
-                    b.Property<Guid>("StudentId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("StudentID");
-
                     b.Property<DateTime>("UpdateAt")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("ResultId");
-
-                    b.HasIndex("LessonId");
+                    b.HasKey("LessonId", "StudentId");
 
                     b.HasIndex("StudentId");
 

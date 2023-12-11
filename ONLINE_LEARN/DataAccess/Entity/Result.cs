@@ -11,9 +11,6 @@ namespace DataAccess.Entity
     [Table("Result")]
     public partial class Result : CommonEntity
     {
-        [Key]
-        [Column("ResultID")]
-        public Guid ResultId { get; set; }
         [ForeignKey("Lesson")]
         [Column("LessonID")]
         public Guid LessonId { get; set; }

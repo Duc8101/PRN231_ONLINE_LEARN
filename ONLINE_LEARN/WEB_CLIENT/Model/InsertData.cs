@@ -14,6 +14,37 @@ namespace WEB_CLIENT.Model
             List<Course> listCourse = await InsertCourse(listUser, listCategory);
             await InsertEnrollCourse(listCourse, listUser);
             List<Lesson> listLesson = await InsertLesson(listCourse);
+            await InsertLessonPDF(listLesson);
+        }
+        private static async Task InsertLessonPDF(List<Lesson> listLesson)
+        {
+            if(listLesson.Count > 0)
+            {
+                if(await context.LessonPdfs.AnyAsync() == false)
+                {
+                    List<LessonPdf> listPDF = new List<LessonPdf>()
+                    {
+                        /*1*/new LessonPdf() {Pdfname = "Get More from the Georgia Tech Language Institute", FilePdf = "Get More from the Georgia Tech Language Institute.pdf", LessonId = listLesson[17].LessonId, CreatedAt = DateTime.Now, UpdateAt = DateTime.Now, IsDeleted = false},
+                        /*2*/new LessonPdf() {Pdfname = "Reading", FilePdf = "Reading.pdf", LessonId = listLesson[16].LessonId, CreatedAt = DateTime.Now, UpdateAt = DateTime.Now, IsDeleted = false},
+                        /*3*/new LessonPdf() {Pdfname = "Farewell and Hello", FilePdf = "Farewell and Hello.pdf", LessonId = listLesson[19].LessonId, CreatedAt = DateTime.Now, UpdateAt = DateTime.Now, IsDeleted = false},
+                        /*4*/new LessonPdf() {Pdfname = "Welcome and Course Information", FilePdf = "Welcome and Course Information.pdf", LessonId = listLesson[10].LessonId, CreatedAt = DateTime.Now, UpdateAt = DateTime.Now, IsDeleted = false},
+                        /*5*/new LessonPdf() {Pdfname = "Written Communication", FilePdf = "Written Communication.pdf", LessonId = listLesson[18].LessonId, CreatedAt = DateTime.Now, UpdateAt = DateTime.Now, IsDeleted = false},
+                        /*6*/new LessonPdf() {Pdfname = "Get to Know Your Classmates", FilePdf = "Get to Know Your Classmates.pdf", LessonId = listLesson[11].LessonId, CreatedAt = DateTime.Now, UpdateAt = DateTime.Now, IsDeleted = false},
+                        /*7*/new LessonPdf() {Pdfname = "Focused versus Diffuse Thinking", FilePdf = "Focused versus Diffuse Thinking.pdf", LessonId = listLesson[12].LessonId, CreatedAt = DateTime.Now, UpdateAt = DateTime.Now, IsDeleted = false},
+                        /*8*/new LessonPdf() {Pdfname = "A Posting about Anxiety", FilePdf = "A Posting about Anxiety.pdf", LessonId = listLesson[13].LessonId, CreatedAt = DateTime.Now, UpdateAt = DateTime.Now, IsDeleted = false},
+                        /*9*/new LessonPdf() {Pdfname = "Chunking", FilePdf = "Chunking.pdf", LessonId = listLesson[14].LessonId, CreatedAt = DateTime.Now, UpdateAt = DateTime.Now, IsDeleted = false},
+                        /*10*/new LessonPdf() {Pdfname = "Ethical Considerations for Data Science", FilePdf = "Ethical Considerations for Data Science.pdf", LessonId = listLesson[6].LessonId, CreatedAt = DateTime.Now, UpdateAt = DateTime.Now, IsDeleted = false},
+                        /*11*/new LessonPdf() {Pdfname = "Benefits of Ethical Data Science", FilePdf = "Benefits of Ethical Data Science.pdf", LessonId = listLesson[7].LessonId, CreatedAt = DateTime.Now, UpdateAt = DateTime.Now, IsDeleted = false},
+                        /*12*/new LessonPdf() {Pdfname = "A Day in the Life of an Ethical Data Scientis", FilePdf = "A Day in the Life of an Ethical Data Scientist.pdf", LessonId = listLesson[6].LessonId, CreatedAt = DateTime.Now, UpdateAt = DateTime.Now, IsDeleted = false},
+                        /*13*/new LessonPdf() {Pdfname = "How to Teach Artificial Intelligence Some Common Sense", FilePdf = "How to Teach Artificial Intelligence Some Common Sense.pdf", LessonId = listLesson[8].LessonId, CreatedAt = DateTime.Now, UpdateAt = DateTime.Now, IsDeleted = false},
+                        /*14*/new LessonPdf() {Pdfname = "Ethical Considerations for AI", FilePdf = "Ethical Considerations for AI.pdf", LessonId = listLesson[9].LessonId, CreatedAt = DateTime.Now, UpdateAt = DateTime.Now, IsDeleted = false},
+                        /*15*/new LessonPdf() {Pdfname = "How AI detectives are cracking open the black box of deep learning", FilePdf = "How AI detectives are cracking open the black box of deep learning.pdf", LessonId = listLesson[8].LessonId, CreatedAt = DateTime.Now, UpdateAt = DateTime.Now, IsDeleted = false},
+                        /*16*/new LessonPdf() {Pdfname = "Reading Summary", FilePdf = "Chunking.pdf", LessonId = listLesson[25].LessonId, CreatedAt = DateTime.Now, UpdateAt = DateTime.Now, IsDeleted = false},
+                    };
+                    await context.LessonPdfs.AddRangeAsync(listPDF);
+                    await context.SaveChangesAsync();
+                }
+            }
         }
         private static async Task<List<Lesson>> InsertLesson(List<Course> listCourse)
         {

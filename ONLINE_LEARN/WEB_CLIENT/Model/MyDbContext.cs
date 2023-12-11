@@ -38,6 +38,7 @@ namespace WEB_CLIENT.Model
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<EnrollCourse>().HasKey(e => new {e.CourseId, e.StudentId});
+            modelBuilder.Entity<Result>().HasKey(r => new { r.LessonId, r.StudentId });
         }
 
     }
