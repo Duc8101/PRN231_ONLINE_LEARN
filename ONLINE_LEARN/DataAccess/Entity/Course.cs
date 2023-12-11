@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DataAccess.Entity
 {
@@ -25,12 +20,12 @@ namespace DataAccess.Entity
         [Column("CategoryID")]
         public int CategoryId { get; set; }
         [ForeignKey("User")]
-        [Column("TeacherID")]
-        public Guid TeacherId { get; set; }
+        [Column("CreatorID")]
+        public Guid CreatorId { get; set; }
         [Column("description")]
         public string? Description { get; set; }
         public virtual Category Category { get; set; } = null!;
-        public virtual User Teacher { get; set; } = null!;
+        public virtual User Creator { get; set; } = null!;
         public virtual ICollection<EnrollCourse> EnrollCourses { get; set; }
         public virtual ICollection<Lesson> Lessons { get; set; }
     }

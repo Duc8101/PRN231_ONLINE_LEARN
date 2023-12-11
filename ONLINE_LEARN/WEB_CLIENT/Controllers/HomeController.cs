@@ -1,5 +1,4 @@
-﻿using DataAccess.Const;
-using DataAccess.DTO;
+﻿using DataAccess.DTO;
 using DataAccess.Entity;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -17,21 +16,16 @@ namespace WEB_CLIENT.Controllers
 
         public async Task<ActionResult> Index()
         {
-            string? role = getRole();
-            if (role != null && role == UserConst.ROLE_ADMIN)
-            {
-                return Redirect("/Admin");
-            }
             string? username = getUsername();
             // if not found username
-            if (role != null && username == null)
+            if (username == null)
             {
-                return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, "Not found username. Please check login information", (int) HttpStatusCode.NotFound));
+                return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, "Not found username. Please check login information", (int)HttpStatusCode.NotFound));
             }
             // get top 4 teacher
             ResponseDTO<List<User>?> response = await service.Index();
             // if get list failed
-            if(response.Data == null)
+            if (response.Data == null)
             {
                 return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, response.Message, response.Code));
             }

@@ -6,9 +6,9 @@ namespace WEB_CLIENT.Model.DAO
 {
     public class DAOCourse : BaseDAO
     {
-        private IQueryable<Course> getQuery(int? CategoryID, string? properties, string? flow,  Guid? TeacherID)
+        private IQueryable<Course> getQuery(int? CategoryID, string? properties, string? flow,  Guid? CreatorID)
         {
-            IQueryable<Course> query = context.Courses.Include(c => c.Teacher).Where(c => c.IsDeleted == false);
+            IQueryable<Course> query = context.Courses.Include(c => c.Creator).Where(c => c.IsDeleted == false);
             if(CategoryID != null)
             {
                 query = query.Where(c => c.CategoryId == CategoryID);
@@ -28,9 +28,9 @@ namespace WEB_CLIENT.Model.DAO
                 }
             }
 
-            if(TeacherID != null)
+            if(CreatorID != null)
             {
-                query = query.Where(c => c.TeacherId == TeacherID);
+                query = query.Where(c => c.CreatorId == CreatorID);
             }
             return query;
         }
@@ -47,7 +47,7 @@ namespace WEB_CLIENT.Model.DAO
         }
         public async Task<Course?> getCourse(Guid CourseID)
         {
-            return await context.Courses.Include(c => c.Teacher).SingleOrDefaultAsync(c => c.CourseId == CourseID && c.IsDeleted == false);
+            return await context.Courses.Include(c => c.Creator).SingleOrDefaultAsync(c => c.CourseId == CourseID && c.IsDeleted == false);
         } 
     }
 }

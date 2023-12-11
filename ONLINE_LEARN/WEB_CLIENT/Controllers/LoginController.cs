@@ -1,7 +1,6 @@
 ﻿using DataAccess.DTO;
 using DataAccess.DTO.UserDTO;
 using DataAccess.Entity;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using WEB_CLIENT.Services.IService;
@@ -21,13 +20,13 @@ namespace WEB_CLIENT.Controllers
         {
             string? UserID = Request.Cookies["UserID"];
             // if not set cookie or cookie expired
-            if(UserID == null)
+            if (UserID == null)
             {
                 return View();
             }
             ResponseDTO<User?> response = await service.Index(Guid.Parse(UserID));
             // if get user failed
-            if(response.Data == null)
+            if (response.Data == null)
             {
                 return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, response.Message, response.Code));
             }
@@ -45,7 +44,7 @@ namespace WEB_CLIENT.Controllers
             // if get user failed
             if (response.Data == null)
             {
-                if(response.Code == (int) HttpStatusCode.InternalServerError)
+                if (response.Code == (int)HttpStatusCode.InternalServerError)
                 {
                     return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, response.Message, response.Code));
                 }

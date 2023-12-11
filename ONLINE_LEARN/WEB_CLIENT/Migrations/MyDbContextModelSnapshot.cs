@@ -68,6 +68,10 @@ namespace WEB_CLIENT.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid>("CreatorId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("CreatorID");
+
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("description");
@@ -80,10 +84,6 @@ namespace WEB_CLIENT.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<Guid>("TeacherId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("TeacherID");
-
                     b.Property<DateTime>("UpdateAt")
                         .HasColumnType("datetime2");
 
@@ -91,7 +91,7 @@ namespace WEB_CLIENT.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.HasIndex("TeacherId");
+                    b.HasIndex("CreatorId");
 
                     b.ToTable("Course");
                 });
@@ -403,15 +403,15 @@ namespace WEB_CLIENT.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("DataAccess.Entity.User", "Teacher")
+                    b.HasOne("DataAccess.Entity.User", "Creator")
                         .WithMany("Courses")
-                        .HasForeignKey("TeacherId")
+                        .HasForeignKey("CreatorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Category");
 
-                    b.Navigation("Teacher");
+                    b.Navigation("Creator");
                 });
 
             modelBuilder.Entity("DataAccess.Entity.EnrollCourse", b =>

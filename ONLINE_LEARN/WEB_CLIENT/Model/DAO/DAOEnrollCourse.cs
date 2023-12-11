@@ -8,7 +8,7 @@ namespace WEB_CLIENT.Model.DAO
     {
         private IQueryable<EnrollCourse> getQuery(Guid StudentID)
         {
-            IQueryable<EnrollCourse> query = context.EnrollCourses.Include(e => e.Course).ThenInclude(e => e.Teacher)
+            IQueryable<EnrollCourse> query = context.EnrollCourses.Include(e => e.Course).ThenInclude(e => e.Creator)
                 .Where(e => e.StudentId == StudentID && e.Course.IsDeleted == false);
             return query;
         }
