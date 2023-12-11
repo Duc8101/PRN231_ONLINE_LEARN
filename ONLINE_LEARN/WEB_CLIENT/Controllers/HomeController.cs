@@ -17,8 +17,9 @@ namespace WEB_CLIENT.Controllers
         public async Task<ActionResult> Index()
         {
             string? username = getUsername();
+            string? role = getRole();
             // if not found username
-            if (username == null)
+            if (role != null && username == null)
             {
                 return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, "Not found username. Please check login information", (int)HttpStatusCode.NotFound));
             }

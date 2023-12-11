@@ -13,6 +13,49 @@ namespace WEB_CLIENT.Model
             List<User> listUser = await InsertUser();
             List<Course> listCourse = await InsertCourse(listUser, listCategory);
             await InsertEnrollCourse(listCourse, listUser);
+            List<Lesson> listLesson = await InsertLesson(listCourse);
+        }
+        private static async Task<List<Lesson>> InsertLesson(List<Course> listCourse)
+        {
+            List<Lesson> listLesson = new List<Lesson>();
+            if(listCourse.Count > 0)
+            {
+                if(await context.Lessons.AnyAsync() == false)
+                {
+                    listLesson = new List<Lesson>()
+                    {
+                        /*1*/ new Lesson() {LessonId = Guid.NewGuid() , LessonName = "Introduction" , CourseId = listCourse[0].CourseId, LessonNo = 1, CreatedAt = DateTime.Now, UpdateAt = DateTime.Now, IsDeleted = false},
+                        /*2*/ new Lesson() {LessonId = Guid.NewGuid() , LessonName = "Basic Color Theory" , CourseId = listCourse[0].CourseId, LessonNo = 2, CreatedAt = DateTime.Now, UpdateAt = DateTime.Now, IsDeleted = false},
+                        /*3*/ new Lesson() {LessonId = Guid.NewGuid() , LessonName = "Color Modes" , CourseId = listCourse[0].CourseId, LessonNo = 3, CreatedAt = DateTime.Now, UpdateAt = DateTime.Now, IsDeleted = false},
+                        /*4*/ new Lesson() {LessonId = Guid.NewGuid() , LessonName = "Working With Color" , CourseId = listCourse[0].CourseId, LessonNo = 4, CreatedAt = DateTime.Now, UpdateAt = DateTime.Now, IsDeleted = false},
+                        /*5*/ new Lesson() {LessonId = Guid.NewGuid() , LessonName = "Tips and Tricks" , CourseId = listCourse[0].CourseId, LessonNo = 5, CreatedAt = DateTime.Now, UpdateAt = DateTime.Now, IsDeleted = false},
+                        /*6*/ new Lesson() {LessonId = Guid.NewGuid() , LessonName = "Overview" , CourseId = listCourse[1].CourseId, LessonNo = 1, CreatedAt = DateTime.Now, UpdateAt = DateTime.Now, IsDeleted = false},
+                        /*7*/ new Lesson() {LessonId = Guid.NewGuid() , LessonName = "Data Science Fundamentals" , CourseId = listCourse[1].CourseId, LessonNo = 2, CreatedAt = DateTime.Now, UpdateAt = DateTime.Now, IsDeleted = false},
+                        /*8*/ new Lesson() {LessonId = Guid.NewGuid() , LessonName = "Artificial Intelligence Fundamentals" , CourseId = listCourse[1].CourseId, LessonNo = 3, CreatedAt = DateTime.Now, UpdateAt = DateTime.Now, IsDeleted = false},
+                        /*9*/ new Lesson() {LessonId = Guid.NewGuid() , LessonName = "Data and Privacy" , CourseId = listCourse[1].CourseId, LessonNo = 4, CreatedAt = DateTime.Now, UpdateAt = DateTime.Now, IsDeleted = false},
+                        /*10*/ new Lesson() {LessonId = Guid.NewGuid() , LessonName = "Legal Concepts Related to Data-Driven Technologies" , CourseId = listCourse[1].CourseId, LessonNo = 5, CreatedAt = DateTime.Now, UpdateAt = DateTime.Now, IsDeleted = false},
+                        /*11*/ new Lesson() {LessonId = Guid.NewGuid() , LessonName = "Introduction" , CourseId = listCourse[2].CourseId, LessonNo = 1, CreatedAt = DateTime.Now, UpdateAt = DateTime.Now, IsDeleted = false},
+                        /*12*/ new Lesson() {LessonId = Guid.NewGuid() , LessonName = "Forcused versus Diffuse Thinking" , CourseId = listCourse[2].CourseId, LessonNo = 2, CreatedAt = DateTime.Now, UpdateAt = DateTime.Now, IsDeleted = false},
+                        /*13*/ new Lesson() {LessonId = Guid.NewGuid() , LessonName = "Procrastination, Memory, and Sleep" , CourseId = listCourse[2].CourseId, LessonNo = 3, CreatedAt = DateTime.Now, UpdateAt = DateTime.Now, IsDeleted = false},
+                        /*14*/ new Lesson() {LessonId = Guid.NewGuid() , LessonName = "Summary" , CourseId = listCourse[2].CourseId, LessonNo = 4, CreatedAt = DateTime.Now, UpdateAt = DateTime.Now, IsDeleted = false},
+                        /*15*/ new Lesson() {LessonId = Guid.NewGuid() , LessonName = "Optional Further Readings and Interviews" , CourseId = listCourse[2].CourseId, LessonNo = 5, CreatedAt = DateTime.Now, UpdateAt = DateTime.Now, IsDeleted = false},
+                        /*16*/ new Lesson() {LessonId = Guid.NewGuid() , LessonName = "Perosonal Voice" , CourseId = listCourse[3].CourseId, LessonNo = 1, CreatedAt = DateTime.Now, UpdateAt = DateTime.Now, IsDeleted = false},
+                        /*17*/ new Lesson() {LessonId = Guid.NewGuid() , LessonName = "Sentence Types" , CourseId = listCourse[3].CourseId, LessonNo = 2, CreatedAt = DateTime.Now, UpdateAt = DateTime.Now, IsDeleted = false},
+                        /*18*/ new Lesson() {LessonId = Guid.NewGuid() , LessonName = "3 Key Parts of a Proposal" , CourseId = listCourse[3].CourseId, LessonNo = 3, CreatedAt = DateTime.Now, UpdateAt = DateTime.Now, IsDeleted = false},
+                        /*19*/ new Lesson() {LessonId = Guid.NewGuid() , LessonName = "Write Better Sentences" , CourseId = listCourse[3].CourseId, LessonNo = 4, CreatedAt = DateTime.Now, UpdateAt = DateTime.Now, IsDeleted = false},
+                        /*20*/ new Lesson() {LessonId = Guid.NewGuid() , LessonName = "Connect Ideas & Sentences" , CourseId = listCourse[3].CourseId, LessonNo = 5, CreatedAt = DateTime.Now, UpdateAt = DateTime.Now, IsDeleted = false},
+                        /*21*/ new Lesson() {LessonId = Guid.NewGuid() , LessonName = "Security, Privacy & Governance Concerns" , CourseId = listCourse[4].CourseId, LessonNo = 1, CreatedAt = DateTime.Now, UpdateAt = DateTime.Now, IsDeleted = false},
+                        /*22*/ new Lesson() {LessonId = Guid.NewGuid() , LessonName = "Most Important Metrics to Observe" , CourseId = listCourse[4].CourseId, LessonNo = 2, CreatedAt = DateTime.Now, UpdateAt = DateTime.Now, IsDeleted = false},
+                        /*23*/ new Lesson() {LessonId = Guid.NewGuid() , LessonName = "Building a Successful Social Marketing Program" , CourseId = listCourse[4].CourseId, LessonNo = 3, CreatedAt = DateTime.Now, UpdateAt = DateTime.Now, IsDeleted = false},
+                        /*24*/ new Lesson() {LessonId = Guid.NewGuid() , LessonName = "Sustaining Your Social Programs" , CourseId = listCourse[4].CourseId, LessonNo = 4, CreatedAt = DateTime.Now, UpdateAt = DateTime.Now, IsDeleted = false},
+                        /*25*/ new Lesson() {LessonId = Guid.NewGuid() , LessonName = "Why is listening critical to your social programs?" , CourseId = listCourse[4].CourseId, LessonNo = 5, CreatedAt = DateTime.Now, UpdateAt = DateTime.Now, IsDeleted = false},
+                        /*26*/ new Lesson() {LessonId = Guid.NewGuid() , LessonName = "Summary" , CourseId = listCourse[0].CourseId, LessonNo = 6, CreatedAt = DateTime.Now, UpdateAt = DateTime.Now, IsDeleted = false},
+                    };
+                    await context.Lessons.AddRangeAsync(listLesson);
+                    await context.SaveChangesAsync();
+                }      
+            }
+            return listLesson;
         }
         private static async Task InsertEnrollCourse(List<Course> listCourse, List<User> listUser)
         {
