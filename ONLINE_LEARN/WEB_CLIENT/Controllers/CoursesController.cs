@@ -1,6 +1,5 @@
 ﻿using DataAccess.Const;
 using DataAccess.DTO;
-using DataAccess.Entity;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using WEB_CLIENT.Services.IService;
@@ -17,7 +16,7 @@ namespace WEB_CLIENT.Controllers
         public async Task<ActionResult> Index(int? CategoryID, string? properties, string? flow, int? page)
         {
             string? role = getRole();
-            ResponseDTO<Dictionary<string, object>?> result = new ResponseDTO<Dictionary<string, object>?>();
+            ResponseDTO<Dictionary<string, object>?> result;
             if (role == null || role != UserConst.ROLE_TEACHER)
             {
                 result = await service.Index(CategoryID, properties, flow, page, null);
@@ -25,7 +24,7 @@ namespace WEB_CLIENT.Controllers
             else
             {
                 string? CreatorID = getUserID();
-                if(CreatorID == null)
+                if (CreatorID == null)
                 {
                     return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, "Not found ID. Please check login information", (int)HttpStatusCode.NotFound));
                 }
@@ -36,25 +35,53 @@ namespace WEB_CLIENT.Controllers
             {
                 return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, result.Message, result.Code));
             }
-            return View(result.Data);        
+            return View(result.Data);
         }
         public async Task<ActionResult> Detail(Guid? id)
         {
             string? role = getRole();
             if (role == null || role == UserConst.ROLE_STUDENT)
             {
-                if(id == null)
+                if (id == null)
                 {
                     return Redirect("/Courses");
                 }
                 ResponseDTO<Dictionary<string, object>?> response = await service.Detail(id.Value);
-                if(response.Data == null)
+                if (response.Data == null)
                 {
                     return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, response.Message, response.Code));
                 }
                 return View(response.Data);
             }
-            return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, "You are not allowed to access this page", (int) HttpStatusCode.Forbidden));
+            return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, "You are not allowed to access this page", (int)HttpStatusCode.Forbidden));
+        }
+        public async Task<ActionResult> EnrollCourse(Guid? id)
+        {
+            string? role = getRole();
+            if (role == null || role == UserConst.ROLE_STUDENT)
+            {
+                if (role == null)
+                {
+                    return Redirect("/Login");
+                }
+                string? StudentID = getUserID();
+                if (StudentID == null)
+                {
+                    return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, "Not found ID. Please check login information", (int)HttpStatusCode.NotFound));
+                }
+                if (id == null)
+                {
+                    return Redirect("/Courses");
+                }
+                ResponseDTO<Dictionary<string, object>?> result = await service.EnrollCourse(id.Value, Guid.Parse(StudentID));
+                if (result.Data == null)
+                {
+                    return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, result.Message, result.Code));
+                }
+                ViewData["enroll"] = result.Message;
+                return View("/Views/Courses/Index.cshtml", result.Data);
+            }
+            return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, "You are not allowed to access this page", (int)HttpStatusCode.Forbidden));
         }
     }
 }

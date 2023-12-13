@@ -11,6 +11,7 @@ namespace WEB_CLIENT.Services.Service
         private readonly DAOCourse daoCourse = new DAOCourse();
         private readonly DAOCategory daoCategory = new DAOCategory();
         private readonly DAOLesson daoLesson = new DAOLesson();
+        private readonly DAOEnrollCourse daoEnroll = new DAOEnrollCourse();
         public async Task<ResponseDTO<Dictionary<string, object>?>> Index(int? CategoryID, string? properties, string? flow, int? page, Guid? CreatorID)
         { 
             int pageSelected = page == null ? 1 : page.Value;
@@ -92,6 +93,42 @@ namespace WEB_CLIENT.Services.Service
             {
                 return new ResponseDTO<Dictionary<string, object>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }            
+        }
+        public async Task<ResponseDTO<Dictionary<string, object>?>> EnrollCourse(Guid CourseID, Guid UserID)
+        {
+            try
+            {
+                Course? course = await daoCourse.getCourse(CourseID);
+                if (course == null)
+                {
+                    return new ResponseDTO<Dictionary<string, object>?>(null, "Not found course", (int)HttpStatusCode.NotFound);
+                }
+                ResponseDTO<Dictionary<string, object>?> result = await Index(null, null, null, null, null);
+                // if get result failed
+                if(result.Data == null)
+                {
+                    return new ResponseDTO<Dictionary<string, object>?>(null, result.Message, result.Code);
+                }
+                // if already enroll course
+                if(await daoEnroll.isExist(CourseID, UserID))
+                {
+                    return new ResponseDTO<Dictionary<string, object>?>(result.Data, "You have enrolled this course", (int) HttpStatusCode.Conflict);
+                }
+                EnrollCourse enroll = new EnrollCourse()
+                {
+                    CourseId = CourseID,
+                    StudentId = UserID,
+                    CreatedAt = DateTime.Now,
+                    UpdateAt = DateTime.Now,
+                    IsDeleted = false,
+                };
+                await daoEnroll.CreateEnrollCourse(enroll);
+                return new ResponseDTO<Dictionary<string, object>?>(result.Data, "Enroll successful");
+            }
+            catch (Exception ex)
+            {
+                return new ResponseDTO<Dictionary<string, object>?>(null, ex.Message + " " + ex, (int) HttpStatusCode.InternalServerError);
+            }
         }
     }
 }
