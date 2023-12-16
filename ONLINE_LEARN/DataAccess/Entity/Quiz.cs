@@ -11,9 +11,9 @@ namespace DataAccess.Entity
     [Table("Quiz")]
     public partial class Quiz : CommonEntity
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Key]
         [Column("QuestionID")]
-        public int QuestionId { get; set; }
+        public Guid QuestionId { get; set; }
         [Column("Question")]
         public string Question { get; set; } = null!;
         [ForeignKey("Lesson")]

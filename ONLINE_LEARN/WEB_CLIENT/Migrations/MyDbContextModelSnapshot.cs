@@ -236,12 +236,10 @@ namespace WEB_CLIENT.Migrations
 
             modelBuilder.Entity("DataAccess.Entity.Quiz", b =>
                 {
-                    b.Property<int>("QuestionId")
+                    b.Property<Guid>("QuestionId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("QuestionID");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("QuestionId"), 1L, 1);
 
                     b.Property<string>("Answer1")
                         .IsRequired()
