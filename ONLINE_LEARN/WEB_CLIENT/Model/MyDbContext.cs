@@ -24,6 +24,7 @@ namespace WEB_CLIENT.Model
         public virtual DbSet<Quiz> Quizzes { get; set; } = null!;
         public virtual DbSet<Result> Results { get; set; } = null!;
         public virtual DbSet<User> Users { get; set; } = null!;
+        public virtual DbSet<Start_Quiz> Start_Quizzes { get; set; } = null!;
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)

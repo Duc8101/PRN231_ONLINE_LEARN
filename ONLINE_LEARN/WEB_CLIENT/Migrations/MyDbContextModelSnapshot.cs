@@ -318,6 +318,46 @@ namespace WEB_CLIENT.Migrations
                     b.ToTable("Result");
                 });
 
+            modelBuilder.Entity("DataAccess.Entity.Start_Quiz", b =>
+                {
+                    b.Property<Guid>("StartId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("StartID");
+
+                    b.Property<int>("ChosenAnwser")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsFinish")
+                        .HasColumnType("bit")
+                        .HasColumnName("isFinish");
+
+                    b.Property<Guid>("QuestionId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("QuestionID");
+
+                    b.Property<Guid>("StudentId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("StudentID");
+
+                    b.Property<DateTime>("UpdateAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("StartId");
+
+                    b.HasIndex("QuestionId");
+
+                    b.HasIndex("StudentId");
+
+                    b.ToTable("Start_Quiz");
+                });
+
             modelBuilder.Entity("DataAccess.Entity.User", b =>
                 {
                     b.Property<Guid>("Id")
@@ -483,6 +523,25 @@ namespace WEB_CLIENT.Migrations
                         .IsRequired();
 
                     b.Navigation("Lesson");
+
+                    b.Navigation("Student");
+                });
+
+            modelBuilder.Entity("DataAccess.Entity.Start_Quiz", b =>
+                {
+                    b.HasOne("DataAccess.Entity.Quiz", "Question")
+                        .WithMany()
+                        .HasForeignKey("QuestionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DataAccess.Entity.User", "Student")
+                        .WithMany()
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Question");
 
                     b.Navigation("Student");
                 });
