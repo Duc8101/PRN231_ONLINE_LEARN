@@ -1,4 +1,5 @@
-﻿using DataAccess.DTO;
+﻿using DataAccess.Const;
+using DataAccess.DTO;
 using DataAccess.DTO.UserDTO;
 using DataAccess.Entity;
 using Microsoft.AspNetCore.Mvc;
@@ -61,6 +62,10 @@ namespace WEB_CLIENT.Controllers
             };
             // add cookie
             Response.Cookies.Append("UserID", response.Data.Id.ToString(), option);
+            if(response.Data.RoleName == UserConst.ROLE_ADMIN)
+            {
+                return Redirect("/Admin");
+            }
             return Redirect("/Home");
         }
     }
