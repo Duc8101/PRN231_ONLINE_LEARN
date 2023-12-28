@@ -30,7 +30,10 @@
             <a href="/Home" class="nav-item nav-link">Home</a>
             <a href="/About" class="nav-item nav-link">About</a>
             <a href="/ManagerCourse/Create" class="nav-item nav-link @d_none1">Create Course</a>
-            <a href="/Courses" class="nav-item nav-link">Courses</a>
+            @if (role == null || role == UserConst.ROLE_STUDENT)
+            {
+                <a href="/Courses" class="nav-item nav-link">Courses</a>
+            }
         </div>
     </div>
 

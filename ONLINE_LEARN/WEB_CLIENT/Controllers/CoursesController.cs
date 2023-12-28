@@ -1,5 +1,6 @@
 ﻿using DataAccess.Const;
 using DataAccess.DTO;
+using DataAccess.Entity;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using WEB_CLIENT.Services.IService;
@@ -16,26 +17,17 @@ namespace WEB_CLIENT.Controllers
         public async Task<ActionResult> Index(int? CategoryID, string? properties, string? flow, int? page)
         {
             string? role = getRole();
-            ResponseDTO<Dictionary<string, object>?> result;
-            if (role == null || role != UserConst.ROLE_TEACHER)
+            if(role == null || role == UserConst.ROLE_STUDENT)
             {
-                result = await service.Index(CategoryID, properties, flow, page, null);
-            }
-            else
-            {
-                string? CreatorID = getUserID();
-                if (CreatorID == null)
+                ResponseDTO<Dictionary<string, object>?> result = await service.Index(CategoryID, properties, flow, page, null);
+                // if get result failed
+                if (result.Data == null)
                 {
-                    return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, "Not found ID. Please check login information", (int)HttpStatusCode.NotFound));
+                    return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, result.Message, result.Code));
                 }
-                result = await service.Index(CategoryID, properties, flow, page, Guid.Parse(CreatorID));
+                return View(result.Data);
             }
-            // if get result failed
-            if (result.Data == null)
-            {
-                return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, result.Message, result.Code));
-            }
-            return View(result.Data);
+            return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, "You are not allowed to access this page", (int) HttpStatusCode.Forbidden));
         }
         public async Task<ActionResult> Detail(Guid? id)
         {
