@@ -12,6 +12,9 @@ namespace WEB_CLIENT.Services.Service
         private readonly DAOCategory daoCategory = new DAOCategory();
         private readonly DAOLesson daoLesson = new DAOLesson();
         private readonly DAOEnrollCourse daoEnroll = new DAOEnrollCourse();
+        private readonly DAOLessonPDF daoPDF = new DAOLessonPDF();
+        private readonly DAOQuiz daoQuiz = new DAOQuiz();
+        private readonly DAOLessonVideo daoVideo = new DAOLessonVideo();
         public async Task<ResponseDTO<Dictionary<string, object>?>> Index(int? CategoryID, string? properties, string? flow, int? page, Guid? CreatorID)
         { 
             int pageSelected = page == null ? 1 : page.Value;
@@ -128,6 +131,54 @@ namespace WEB_CLIENT.Services.Service
             catch (Exception ex)
             {
                 return new ResponseDTO<Dictionary<string, object>?>(null, ex.Message + " " + ex, (int) HttpStatusCode.InternalServerError);
+            }
+        }
+        public async Task<ResponseDTO<Dictionary<string, object>?>> LearnCourse(Guid CourseID, Guid UserID, string? video /* file video */, string? name /*video name or pdf name*/, string? PDF /*file PDF */, Guid? LessonID, int? VideoID, int? PDFID)
+        {
+            try
+            {
+                Course? course = await daoCourse.getCourse(CourseID);
+                if (course == null)
+                {
+                    return new ResponseDTO<Dictionary<string, object>?>(null, "Not found course", (int) HttpStatusCode.NotFound);
+                }
+                // if enroll course
+                if (await daoEnroll.isExist(CourseID, UserID))
+                {
+                    List<Lesson> listLesson = await daoLesson.getList(CourseID);
+                    List<LessonPdf> listPDF = await daoPDF.getList();
+                    List<Guid> listLessonQuiz = await daoQuiz.getListLesson();
+                    List<LessonVideo> listVideo = await daoVideo.getList();      
+                    // if start to learn course
+                    if (video == null && PDF == null)
+                    {
+                        LessonVideo? lessonVideo = await daoVideo.getFirstVideo(CourseID);
+                        if (lessonVideo != null)
+                        {
+                            video = lessonVideo.FileVideo;
+                            name = lessonVideo.VideoName;
+                            VideoID = lessonVideo.VideoId;
+                            LessonID = lessonVideo.LessonId;
+                        }
+                    }
+                    Dictionary<string, object> result = new Dictionary<string, object>();
+                    result["listLesson"] = listLesson;
+                    result["listPDF"] = listPDF;
+                    result["listLessonQuiz"] = listLessonQuiz;
+                    result["listVideo"] = listVideo;
+                    result["video"] = video == null ? "" : video;
+                    result["PDF"] = PDF == null ? "" : PDF;
+                    result["name"] = name == null ? "" : name;
+                    result["vID"] = VideoID == null ? 0 : VideoID;
+                    result["lID"] = LessonID == null ? Guid.NewGuid() : LessonID;
+                    result["pID"] = PDFID == null ? 0 : PDFID;
+                    return new ResponseDTO<Dictionary<string, object>?>(result, string.Empty);
+                }
+                return new ResponseDTO<Dictionary<string, object>?>(null, string.Empty, (int) HttpStatusCode.Conflict);
+            }
+            catch (Exception ex)
+            {
+                return new ResponseDTO<Dictionary<string, object>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
     }

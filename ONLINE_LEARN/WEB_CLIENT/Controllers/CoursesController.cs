@@ -75,5 +75,36 @@ namespace WEB_CLIENT.Controllers
             }
             return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, "You are not allowed to access this page", (int)HttpStatusCode.Forbidden));
         }
+
+        public async Task<ActionResult> LearnCourse(Guid? id, string? video /* file video */, string? name /*video name or pdf name*/, string? PDF /*file PDF */, Guid? LessonID, int? VideoID, int? PDFID)
+        {
+            string? role = getRole();
+            if (role != null && role == UserConst.ROLE_STUDENT)
+            {
+                ViewData["LearnCourse"] = true;
+                if (id == null)
+                {
+                    return Redirect("/Courses");
+                }
+                string? StudentID = getUserID();
+                if (StudentID == null)
+                {
+                    return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, "Not found ID. Please check login information", (int)HttpStatusCode.NotFound));
+                }
+                ResponseDTO<Dictionary<string, object>?> result = await service.LearnCourse(id.Value, Guid.Parse(StudentID), video, name, PDF, LessonID, VideoID, PDFID);
+                if (result.Data == null)
+                {
+                    if (result.Code == (int)HttpStatusCode.InternalServerError)
+                    {
+                        return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, result.Message, result.Code));
+                    }
+                    return Redirect("/Courses");
+                }
+                result.Data["CourseID"] = id;
+                return View(result.Data);
+            }
+            return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, "You are not allowed to access this page", (int)HttpStatusCode.Forbidden));
+
+        }
     }
 }
