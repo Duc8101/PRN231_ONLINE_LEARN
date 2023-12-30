@@ -1,0 +1,317 @@
+﻿@using DataAccess.Const;
+@using DataAccess.Entity;
+@model Dictionary<string ,object>
+<style>
+    html {
+        font-size: 80%;
+        font-family: "Poppins", sans-serif;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        list-style-type: none;
+        text-decoration: none;
+    }
+
+    body {
+        letter-spacing: 1px;
+        width: 100%;
+        height: 100vh;
+    }
+
+    a {
+        color: #555;
+    }
+
+    /*# sourceMappingURL=home.css.map */
+    .section {
+        width: 1200px;
+        min-height: 600px;
+        margin: 70px auto;
+        background-color: white;
+        box-shadow: 0 0 3px 3px #eee;
+        padding: 35px;
+        border-radius: 1rem;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        justify-content: space-between;
+    }
+
+    .section__time {
+        width: 20%;
+        height: 50%;
+        padding: 15px 0 15px 20px;
+    }
+
+    .section__countdown {
+        font-size: 1.6rem;
+        font-weight: bold;
+    }
+
+        .section__countdown span:first-child {
+            margin-left: 10px;
+            color: #0eb582;
+        }
+
+        .section__countdown span:not(:first-child) {
+            color: #0eb582;
+        }
+
+    .section__exam {
+        width: 75%;
+        padding: 15px 0 15px 15px;
+        border: 2px solid #0eb582;
+    }
+
+    .section__quiz {
+        font-size: 1.4rem;
+        margin: 10px 0 30px 0;
+    }
+
+        .section__quiz span {
+            font-size: 1.6rem;
+            text-transform: uppercase;
+            display: block;
+            margin-bottom: 15px;
+            font-weight: bold;
+            color: #0eb582;
+        }
+
+    .section__form {
+        font-size: 1.3rem;
+        margin: 25px 0;
+    }
+
+    .section__submit {
+        margin-top: 70px;
+        font-weight: bold;
+        font-size: 1.5rem;
+        color: #555;
+        display: block;
+        margin-left: 80%;
+        border: none;
+        outline: none;
+        padding: 12px 30px;
+        border: 2px solid #0eb582;
+        background-color: white;
+        cursor: pointer;
+        transition: 0.25s linear;
+    }
+
+        .section__submit:hover {
+            background-color: #0eb582;
+            color: white;
+        }
+
+    .section__lable {
+        padding-left: 50px;
+        position: relative;
+        cursor: pointer;
+    }
+
+        .section__lable::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
+            width: 23px;
+            height: 23px;
+            border-radius: 50%;
+            background-color: rgba(14, 181, 130, 0.5);
+        }
+
+        .section__lable::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 5px;
+            width: 13px;
+            height: 13px;
+            border-radius: 50%;
+            transform: translateY(-50%);
+            background-color: #0eb582;
+            opacity: 0;
+            visibility: hidden;
+        }
+
+    .section__input {
+        display: none;
+    }
+
+        .section__input:checked + .section__lable::after {
+            opacity: 1;
+            visibility: visible;
+        }
+
+    /*# sourceMappingURL=doExam.css.map */
+
+</style>
+<!-- Spinner Start -->
+<div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+    <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+        <span class="sr-only">Loading...</span>
+    </div>
+</div>
+<!-- Spinner End -->
+<!-- Navbar Start -->
+@{
+    string? username = Context.Session.GetString("username");
+    string? role = Context.Session.GetString("role");
+    string? image = Context.Session.GetString("image");
+    string d_none1 = role == null || role == UserConst.ROLE_STUDENT ? "d-none" : "";
+    string d_none2 = role == null || role == UserConst.ROLE_STUDENT ? "" : "d-none";
+    string d_none3 = role != null && role == UserConst.ROLE_TEACHER ? "" : "d-none";
+}
+<nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
+    <a href="/Home" class="navbar-brand d-flex align-items-center px-4 px-lg-5">
+        <h2 class="m-0 text-info"><i class="fa fa-book me-3"></i>eLEARNING</h2>
+    </a>
+    <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+        <div class="navbar-nav ms-auto p-4 p-lg-0">
+            <a href="/Home" class="nav-item nav-link">Home</a>
+            <a href="/About" class="nav-item nav-link">About</a>
+            <a href="/ManagerCourse/Create" class="nav-item nav-link @d_none1">Create Course</a>
+            @if (role == null || role == UserConst.ROLE_STUDENT)
+            {
+                <a href="/Courses" class="nav-item nav-link">Courses</a>
+            }
+        </div>
+    </div>
+
+    @if (username == null)
+    {
+        <a href="/Login" class="btn btn-info py-4 px-lg-5 d-none d-lg-block text-white">Join Now<i class="fa fa-arrow-right ms-3"></i></a>
+    }
+    else
+    {
+        <div class="nav-item dropdown">
+            <a href="#" class="btn btn-info py-4 px-lg-5 text-white"><img src="@image" alt="Avatar" class="avatar">@username</a>
+            <div class="dropdown-menu fade-down m-0">
+                <a href="/Profile" class="dropdown-item">Profile</a>
+                <a href="/MyCourse" class="dropdown-item @d_none2">My Course</a>
+                <a href="/ManagerCourse" class="dropdown-item @d_none3">My Teaching Course</a>
+                <a href="/Logout" class="dropdown-item">Log Out <i class="bi bi-box-arrow-right"></i></a>
+            </div>
+        </div>
+    }
+</nav>
+<!-- Navbar End -->
+<!-- TAKE Start -->
+@{
+    Quiz quiz = (Quiz)Model["quiz"];
+    string button = (string)Model["button"];
+    int Question_No = (int)Model["question_no"];
+    int minutes = (int)Model["minutes"];
+    int seconds = (int)Model["seconds"];
+    Guid LessonID = (Guid) Model["LessonID"];
+    Result? result = (Result?)Model["result"];
+    int? answer = Context.Session.GetInt32(Question_No.ToString());
+}
+@if (result != null)
+{
+    <br />
+    <br />
+    <h3 style="margin-left:10%">Your latest submission : @result.Score</h3>
+    <h3 style="margin-left:10%">Your latest submitted date : @result.UpdateAt.ToShortDateString()</h3>
+    <h3 style="margin-left:10%">Status: <span style="color:@(result.Status == ResultConst.STATUS_NOT_PASSED ? "red" : "green")">@result.Status</span></h3>
+}
+<div class="section">
+    <div class="section__exam">
+        <form action="/TakeQuiz/Index/@LessonID" method="POST" id="quiz_form">
+            <div class="section__quiz">
+                <span>Question @Question_No</span>
+                <p class="section__question">
+                    @quiz.Question
+                </p>
+            </div>
+
+            <div class="section__group">
+                <div class="section__form">
+                    <input type="radio" name="answer" value="1" class="section__input" id="section__input1" @(answer == 1 ? "checked" : "")>
+                    <label for="section__input1" class="section__lable">@quiz.Answer1</label>
+                </div>
+                <div class="section__form">
+                    <input type="radio" name="answer" value="2" class="section__input" id="section__input2" @(answer == 2 ? "checked" : "")>
+                    <label for="section__input2" class="section__lable">@quiz.Answer2</label>
+                </div>
+                @if (quiz.Answer3 != null)
+                {
+                    <div class="section__form">
+                        <input type="radio" name="answer" value="3" class="section__input" id="section__input3" @(answer == 3 ? "checked" : "")>
+                        <label for="section__input3" class="section__lable">@quiz.Answer3</label>
+                    </div>
+                }
+
+                @if (quiz.Answer4 != null)
+                {
+                    <div class="section__form">
+                        <input type="radio" name="answer" value="4" class="section__input" id="section__input4" @(answer == 4 ? "checked" : "")>
+                        <label for="section__input4" class="section__lable">@quiz.Answer4</label>
+                    </div>
+                }
+                <div class="section__form">
+                    <button type="submit" class="section__submit" name="button" value="Back" @(Question_No == 1 ? "disabled" : "")>Back</button>
+                    @if (button.Equals("Finish"))
+                    {
+                        <button type="submit" class="section__submit" name="button" value="@button" onclick="return confirm('Are you sure you want to finish quiz??')">@button</button>
+                    }
+                    else
+                    {
+                        <button type="submit" class="section__submit" name="button" value="@button">@button</button>
+                    }
+
+                </div>
+            </div>
+            <input type="hidden" id="minute" name="minutes" />
+            <input type="hidden" id="second" name="seconds" />
+            <input type="hidden" name="question_no" value="@Question_No" />
+            <input type="hidden" id="timeout" name="timeOut" value="0" />
+        </form>
+    </div>
+
+    <div class="section__time">
+        <p class="section__countdown">
+            Time left
+            <span id="min"></span>
+            <span>:</span>
+            <span id="remain"></span>
+        </p>
+    </div>
+</div>
+<!-- TAKE End -->
+
+<script type="text/javascript">
+    window.onload = counter;
+    function counter() {
+        minutes = @minutes;
+        seconds = @seconds;
+        countDown();
+    }
+</script>
+
+<script type="text/javascript">
+    function countDown() {
+        document.getElementById("min").innerHTML = minutes;
+        document.getElementById("remain").innerHTML = seconds;
+        document.getElementById("minute").value = minutes;
+        document.getElementById("second").value = seconds;
+        setTimeout("countDown()", 1000);
+        if (minutes == 0 && seconds == 0) {
+            document.getElementById("timeout").value = 1;
+            document.getElementById("quiz_form").submit();
+        } else {
+            seconds--;
+            if (seconds == 0 && minutes > 0) {
+                minutes--;
+                seconds = 60;
+            }
+        }
+    }
+</script>

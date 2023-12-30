@@ -9,5 +9,10 @@ namespace WEB_CLIENT.Model.DAO
         {
             return await context.Lessons.Where(l => l.IsDeleted == false && l.CourseId == CourseID).OrderBy(l => l.LessonNo).ToListAsync();
         }
+
+        public async Task<Lesson?> getLesson(Guid LessonID)
+        {
+            return await context.Lessons.SingleOrDefaultAsync(l => l.IsDeleted == false && l.LessonId == LessonID);
+        }
     }
 }
