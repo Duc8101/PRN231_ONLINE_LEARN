@@ -19,7 +19,7 @@ namespace WEB_CLIENT.Controllers
             string? role = getRole();
             if(role == null || role == UserConst.ROLE_STUDENT)
             {
-                ResponseDTO<Dictionary<string, object>?> result = await service.Index(CategoryID, properties, flow, page, null);
+                ResponseDTO<Dictionary<string, object>?> result = await service.Index(CategoryID, properties, flow, page);
                 // if get result failed
                 if (result.Data == null)
                 {

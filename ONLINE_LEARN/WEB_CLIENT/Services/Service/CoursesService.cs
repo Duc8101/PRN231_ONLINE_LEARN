@@ -15,7 +15,7 @@ namespace WEB_CLIENT.Services.Service
         private readonly DAOLessonPDF daoPDF = new DAOLessonPDF();
         private readonly DAOQuiz daoQuiz = new DAOQuiz();
         private readonly DAOLessonVideo daoVideo = new DAOLessonVideo();
-        public async Task<ResponseDTO<Dictionary<string, object>?>> Index(int? CategoryID, string? properties, string? flow, int? page, Guid? CreatorID)
+        public async Task<ResponseDTO<Dictionary<string, object>?>> Index(int? CategoryID, string? properties, string? flow, int? page)
         { 
             int pageSelected = page == null ? 1 : page.Value;
             int prePage = pageSelected - 1;
@@ -53,9 +53,9 @@ namespace WEB_CLIENT.Services.Service
             }
             try
             {
-                List<Course> listCourse = await daoCourse.getList(CategoryID, properties, flow, pageSelected, CreatorID);
+                List<Course> listCourse = await daoCourse.getList(CategoryID, properties, flow, pageSelected, null);
                 List<Category> listCategory = await daoCategory.getList();
-                int numberPage = await daoCourse.getNumberPage(CategoryID, properties, flow, CreatorID);
+                int numberPage = await daoCourse.getNumberPage(CategoryID, properties, flow, null);
                 PagedResultDTO<Course> result = new PagedResultDTO<Course>()
                 {
                     PageSelected = pageSelected,
@@ -106,7 +106,7 @@ namespace WEB_CLIENT.Services.Service
                 {
                     return new ResponseDTO<Dictionary<string, object>?>(null, "Not found course", (int)HttpStatusCode.NotFound);
                 }
-                ResponseDTO<Dictionary<string, object>?> result = await Index(null, null, null, null, null);
+                ResponseDTO<Dictionary<string, object>?> result = await Index(null, null, null, null);
                 // if get result failed
                 if(result.Data == null)
                 {

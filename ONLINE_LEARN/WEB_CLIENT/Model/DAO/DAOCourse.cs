@@ -36,14 +36,14 @@ namespace WEB_CLIENT.Model.DAO
         }
         public async Task<List<Course>> getList(int? CategoryID, string? properties, string? flow, int page, Guid? CreatorID)
         {
-            IQueryable<Course> query = getQuery(CategoryID, properties, flow, null);
+            IQueryable<Course> query = getQuery(CategoryID, properties, flow, CreatorID);
             return await query.Skip(PageSizeConst.MAX_COURSE_IN_PAGE * (page - 1)).Take(PageSizeConst.MAX_COURSE_IN_PAGE).ToListAsync();
         }
         public async Task<int> getNumberPage(int? CategoryID, string? properties, string? flow, Guid? CreatorID)
         {
             IQueryable<Course> query = getQuery(CategoryID, properties, flow, CreatorID);
             int count = await query.CountAsync();
-            return (int )Math.Ceiling((double) count / PageSizeConst.MAX_COURSE_IN_PAGE);
+            return (int) Math.Ceiling((double) count / PageSizeConst.MAX_COURSE_IN_PAGE);
         }
         public async Task<Course?> getCourse(Guid CourseID)
         {
