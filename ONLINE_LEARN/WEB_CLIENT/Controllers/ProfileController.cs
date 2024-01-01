@@ -1,20 +1,16 @@
 ﻿using DataAccess.Const;
 using DataAccess.DTO;
 using DataAccess.DTO.UserDTO;
-using DataAccess.Entity;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
-using WEB_CLIENT.Services.IService;
+using WEB_CLIENT.Services.Service;
 
 namespace WEB_CLIENT.Controllers
 {
     public class ProfileController : BaseController
     {
-        private readonly IProfileService service;
-        public ProfileController(IProfileService service)
-        {
-            this.service = service;
-        }
+        private readonly ProfileService service = new ProfileService();
+
         public async Task<ActionResult> Index()
         {
             string? role = getRole();
@@ -49,15 +45,15 @@ namespace WEB_CLIENT.Controllers
             {
                 return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, "Not found id. Please check login information", (int)HttpStatusCode.NotFound));
             }
-            ResponseDTO<Dictionary<string, object>?> response = await service.Index(Guid.Parse(UserID),DTO,valueImg);
+            ResponseDTO<Dictionary<string, object>?> response = await service.Index(Guid.Parse(UserID), DTO, valueImg);
             // if get data failed
             if (response.Data == null)
             {
                 return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, response.Message, response.Code));
             }
-            if (response.Code == (int) HttpStatusCode.Conflict)
+            if (response.Code == (int)HttpStatusCode.Conflict)
             {
-                ViewData["error"] = response.Message; 
+                ViewData["error"] = response.Message;
             }
             else
             {

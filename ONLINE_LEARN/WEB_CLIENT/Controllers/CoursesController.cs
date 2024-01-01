@@ -1,23 +1,18 @@
 ﻿using DataAccess.Const;
 using DataAccess.DTO;
-using DataAccess.Entity;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
-using WEB_CLIENT.Services.IService;
+using WEB_CLIENT.Services.Service;
 
 namespace WEB_CLIENT.Controllers
 {
     public class CoursesController : BaseController
     {
-        private readonly ICoursesService service;
-        public CoursesController(ICoursesService service)
-        {
-            this.service = service;
-        }
+        private readonly CoursesService service = new CoursesService();
         public async Task<ActionResult> Index(int? CategoryID, string? properties, string? flow, int? page)
         {
             string? role = getRole();
-            if(role == null || role == UserConst.ROLE_STUDENT)
+            if (role == null || role == UserConst.ROLE_STUDENT)
             {
                 ResponseDTO<Dictionary<string, object>?> result = await service.Index(CategoryID, properties, flow, page);
                 // if get result failed
@@ -27,7 +22,7 @@ namespace WEB_CLIENT.Controllers
                 }
                 return View(result.Data);
             }
-            return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, "You are not allowed to access this page", (int) HttpStatusCode.Forbidden));
+            return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, "You are not allowed to access this page", (int)HttpStatusCode.Forbidden));
         }
         public async Task<ActionResult> Detail(Guid? id)
         {
@@ -75,11 +70,10 @@ namespace WEB_CLIENT.Controllers
             }
             return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, "You are not allowed to access this page", (int)HttpStatusCode.Forbidden));
         }
-
         public async Task<ActionResult> LearnCourse(Guid? id, string? video /* file video */, string? name /*video name or pdf name*/, string? PDF /*file PDF */, Guid? LessonID, int? VideoID, int? PDFID)
         {
             string? role = getRole();
-            if (role != null && role == UserConst.ROLE_STUDENT)
+            if (role == UserConst.ROLE_STUDENT)
             {
                 ViewData["LearnCourse"] = true;
                 if (id == null)

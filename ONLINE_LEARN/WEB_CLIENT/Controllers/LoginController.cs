@@ -5,17 +5,13 @@ using DataAccess.Entity;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using WEB_CLIENT.Services.IService;
+using WEB_CLIENT.Services.Service;
 
 namespace WEB_CLIENT.Controllers
 {
     public class LoginController : BaseController
     {
-        private readonly ILoginService service;
-
-        public LoginController(ILoginService service)
-        {
-            this.service = service;
-        }
+        private readonly LoginService service = new LoginService();
 
         public async Task<ActionResult> Index()
         {

@@ -11,15 +11,9 @@ namespace WEB_CLIENT.Controllers
         {
             ViewData["FAQ"] = true;
             string? role = getRole();
-            if (role != null && role == UserConst.ROLE_ADMIN)
+            if (role == UserConst.ROLE_ADMIN)
             {
                 return Redirect("/Admin");
-            }
-            string? username = getUsername();
-            // if not found username
-            if (role != null && username == null)
-            {
-                return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, "Not found username. Please check login information", (int)HttpStatusCode.NotFound));
             }
             return View();
         }

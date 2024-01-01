@@ -4,22 +4,18 @@ using DataAccess.Entity;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using WEB_CLIENT.Services.IService;
+using WEB_CLIENT.Services.Service;
 
 namespace WEB_CLIENT.Controllers
 {
     public class MyCourseController : BaseController
     {
-        private readonly IMyCourseService service;
-
-        public MyCourseController(IMyCourseService service)
-        {
-            this.service = service;
-        }
+        private readonly MyCourseService service = new MyCourseService();
 
         public async Task<ActionResult> Index(int? page)
         {
             string? role = getRole();
-            if(role == null || role != UserConst.ROLE_STUDENT)
+            if(role != UserConst.ROLE_STUDENT)
             {
                 return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, "You are not allowed to access this page", (int)HttpStatusCode.Forbidden));
             }

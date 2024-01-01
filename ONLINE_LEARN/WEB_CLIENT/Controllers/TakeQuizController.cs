@@ -3,17 +3,14 @@ using DataAccess.DTO;
 using DataAccess.Entity;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
-using WEB_CLIENT.Services.IService;
+using WEB_CLIENT.Services.Service;
 
 namespace WEB_CLIENT.Controllers
 {
     public class TakeQuizController : BaseController
     {
-        private readonly ITakeQuizService service;
-        public TakeQuizController(ITakeQuizService service)
-        {
-            this.service = service;
-        }
+        private readonly TakeQuizService service = new TakeQuizService();
+
         public async Task<ActionResult> Index(Guid? id /*LessonID*/)
         {
             string? role = getRole();

@@ -18,16 +18,6 @@ namespace WEB_CLIENT
                 // set time for session
                 options.IdleTimeout = TimeSpan.FromMinutes(30);
             });
-            builder.Services.AddScoped<IHomeService, HomeService>();
-            builder.Services.AddScoped<ICoursesService, CoursesService>();
-            builder.Services.AddScoped<ILoginService, LoginService>();
-            builder.Services.AddScoped<IRegisterService, RegisterService>();
-            builder.Services.AddScoped<IForgotPasswordService, ForgotPasswordService>();
-            builder.Services.AddScoped<IProfileService, ProfileService>();
-            builder.Services.AddScoped<IChangePasswordService, ChangePasswordService>();
-            builder.Services.AddScoped<IMyCourseService, MyCourseService>();
-            builder.Services.AddScoped<ITakeQuizService, TakeQuizService>();
-            builder.Services.AddScoped<IManagerCourseService, ManagerCourseService>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

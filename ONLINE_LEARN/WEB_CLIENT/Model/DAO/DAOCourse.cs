@@ -48,6 +48,15 @@ namespace WEB_CLIENT.Model.DAO
         public async Task<Course?> getCourse(Guid CourseID)
         {
             return await context.Courses.Include(c => c.Creator).SingleOrDefaultAsync(c => c.CourseId == CourseID && c.IsDeleted == false);
-        } 
+        }
+        public async Task<bool> isExist(string CourseName, int CategoryID)
+        {
+            return await context.Courses.AnyAsync(c => c.CourseName == CourseName.Trim() && c.CategoryId == CategoryID && c.IsDeleted == false);
+        }
+        public async Task CreateCourse(Course course)
+        {
+            await context.Courses.AddAsync(course);
+            await context.SaveChangesAsync();
+        }
     }
 }

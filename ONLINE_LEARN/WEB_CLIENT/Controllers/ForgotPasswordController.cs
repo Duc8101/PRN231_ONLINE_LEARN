@@ -2,17 +2,14 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using WEB_CLIENT.Services.IService;
+using WEB_CLIENT.Services.Service;
 
 namespace WEB_CLIENT.Controllers
 {
     public class ForgotPasswordController : BaseController
     {
-        private readonly IForgotPasswordService service;
+        private readonly ForgotPasswordService service = new ForgotPasswordService();
 
-        public ForgotPasswordController(IForgotPasswordService service)
-        {
-            this.service = service;
-        }
         public ActionResult Index()
         {
             return View();
