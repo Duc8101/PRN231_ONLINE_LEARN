@@ -12,7 +12,7 @@ namespace WEB_CLIENT.Model.DAO
 
         public async Task<Lesson?> getLesson(Guid LessonID)
         {
-            return await context.Lessons.SingleOrDefaultAsync(l => l.IsDeleted == false && l.LessonId == LessonID);
+            return await context.Lessons.Where(l => l.IsDeleted == false && l.LessonId == LessonID && l.Course.IsDeleted == false).FirstOrDefaultAsync();
         }
     }
 }

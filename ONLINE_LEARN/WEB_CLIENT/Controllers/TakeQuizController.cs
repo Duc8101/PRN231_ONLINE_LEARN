@@ -36,7 +36,7 @@ namespace WEB_CLIENT.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Index(Guid? id /*LessonID*/, string? button, int? answer, int timeOut, int minutes, int question_no, int seconds)
+        public async Task<ActionResult> Index(Guid id /*LessonID*/, string? button, int? answer, int timeOut, int minutes, int question_no, int seconds)
         {
             string? role = getRole();
             if (role != null && role == UserConst.ROLE_STUDENT)
@@ -46,15 +46,11 @@ namespace WEB_CLIENT.Controllers
                 {
                     return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, "Not found ID. Please check login information", (int)HttpStatusCode.NotFound));
                 }
-                if (id == null)
-                {
-                    return Redirect("/MyCourse");
-                }
                 HttpContext.Session.SetInt32(question_no.ToString(), answer == null ? 0 : answer.Value);
                 // if finish exam
                 if ((button != null && button.Equals("Finish")) || timeOut == 1)
                 {
-                    ResponseDTO<List<Quiz>?> response = await service.Finish(id.Value);
+                    ResponseDTO<List<Quiz>?> response = await service.Finish(id);
                     if (response.Data == null)
                     {
                         return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, response.Message, response.Code));
@@ -74,14 +70,14 @@ namespace WEB_CLIENT.Controllers
                     }
                     float FinalScore = (float)score / response.Data.Count * 10;
                     string status = FinalScore >= 5.0 ? ResultConst.STATUS_PASSED : ResultConst.STATUS_NOT_PASSED;
-                    ResponseDTO<Result?> responseDTO = await service.Finish(id.Value, Guid.Parse(StudentID), FinalScore, status);
+                    ResponseDTO<Result?> responseDTO = await service.Finish(id, Guid.Parse(StudentID), FinalScore, status);
                     if (responseDTO.Data == null)
                     {
                         return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, response.Message, response.Code));
                     }
                     return View("/Views/TakeQuiz/Result.cshtml", responseDTO.Data);
                 }
-                ResponseDTO<Dictionary<string, object?>?> responseDic = await service.Index(id.Value, Guid.Parse(StudentID), button, minutes, question_no, seconds);
+                ResponseDTO<Dictionary<string, object?>?> responseDic = await service.Index(id, Guid.Parse(StudentID), button, minutes, question_no, seconds);
                 if (responseDic.Data == null)
                 {
                     return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, responseDic.Message, responseDic.Code));
