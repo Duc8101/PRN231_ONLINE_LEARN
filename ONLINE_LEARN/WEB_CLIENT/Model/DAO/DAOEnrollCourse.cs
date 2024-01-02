@@ -32,7 +32,7 @@ namespace WEB_CLIENT.Model.DAO
         }
         public async Task<bool> isExist(Guid CourseID, Guid StudentID)
         {
-            return await context.EnrollCourses.AnyAsync(e => e.CourseId == CourseID && e.StudentId == StudentID && e.Course.IsDeleted == false);
+            return await context.EnrollCourses.AnyAsync(e => e.CourseId == CourseID && e.StudentId == StudentID);
         }
         public async Task CreateEnrollCourse(EnrollCourse enroll)
         {
