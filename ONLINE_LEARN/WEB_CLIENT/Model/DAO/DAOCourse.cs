@@ -58,5 +58,24 @@ namespace WEB_CLIENT.Model.DAO
             await context.Courses.AddAsync(course);
             await context.SaveChangesAsync();
         }
+        public async Task<Course?> getCourse(Guid CourseID, Guid CreatorID)
+        {
+            return await context.Courses.Include(c => c.Creator).SingleOrDefaultAsync(c => c.CourseId == CourseID && c.IsDeleted == false && c.CreatorId == CreatorID);
+        }
+        public async Task<bool> isExist(string CourseName, int CategoryID, Guid CourseID)
+        {
+            return await context.Courses.AnyAsync(c => c.CourseName == CourseName.Trim() && c.CategoryId == CategoryID && c.IsDeleted == false && c.CourseId != CourseID);
+        }
+        public async Task UpdateCourse(Course course)
+        {
+            context.Courses.Update(course);
+            await context.SaveChangesAsync();
+        }
+        public async Task DeleteCourse(Course course)
+        {
+            course.IsDeleted = true;
+            await UpdateCourse(course);
+        }
+
     }
 }

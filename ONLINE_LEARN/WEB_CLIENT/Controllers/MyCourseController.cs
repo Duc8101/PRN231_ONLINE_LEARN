@@ -3,7 +3,6 @@ using DataAccess.DTO;
 using DataAccess.Entity;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
-using WEB_CLIENT.Services.IService;
 using WEB_CLIENT.Services.Service;
 
 namespace WEB_CLIENT.Controllers
@@ -15,18 +14,18 @@ namespace WEB_CLIENT.Controllers
         public async Task<ActionResult> Index(int? page)
         {
             string? role = getRole();
-            if(role != UserConst.ROLE_STUDENT)
+            if (role != UserConst.ROLE_STUDENT)
             {
                 return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, "You are not allowed to access this page", (int)HttpStatusCode.Forbidden));
             }
             string? StudentID = getUserID();
-            if(StudentID == null)
+            if (StudentID == null)
             {
                 return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, "Not found id. Please check login information", (int)HttpStatusCode.NotFound));
             }
             int pageSelected = page == null ? 1 : page.Value;
             ResponseDTO<PagedResultDTO<Course>?> response = await service.Index(Guid.Parse(StudentID), pageSelected);
-            if(response.Data == null)
+            if (response.Data == null)
             {
                 return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, response.Message, response.Code));
             }

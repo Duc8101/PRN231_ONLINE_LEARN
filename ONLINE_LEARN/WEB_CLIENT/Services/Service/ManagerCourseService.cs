@@ -72,5 +72,78 @@ namespace WEB_CLIENT.Services.Service
                 return new ResponseDTO<List<Category>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
+        public async Task<ResponseDTO<Dictionary<string, object>?>> Update(Guid CourseID, Guid CreatorID)
+        {
+            try
+            {
+                Course? course = await daoCourse.getCourse(CourseID, CreatorID);
+                if (course == null)
+                {
+                    return new ResponseDTO<Dictionary<string, object>?>(null, string.Empty, (int)HttpStatusCode.NotFound);
+                }
+                List<Category> list = await daoCategory.getList();
+                Dictionary<string, object> dic = new Dictionary<string, object>();
+                dic["course"] = course;
+                dic["list"] = list;
+                return new ResponseDTO<Dictionary<string, object>?>(dic, string.Empty);
+            }
+            catch (Exception ex)
+            {
+                return new ResponseDTO<Dictionary<string, object>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+            }
+        }
+        public async Task<ResponseDTO<Dictionary<string, object>?>> Update(Guid CourseID, Course course)
+        {
+            try
+            {
+                Course? update = await daoCourse.getCourse(CourseID);
+                if (update == null)
+                {
+                    return new ResponseDTO<Dictionary<string, object>?>(null, "Not found course", (int) HttpStatusCode.NotFound);
+                }
+                update.CourseName = course.CourseName.Trim();
+                update.CategoryId = course.CategoryId;
+                update.Image = course.Image.Trim();
+                update.Description = course.Description == null || course.Description.Trim().Length == 0 ? null : course.Description.Trim();
+                List<Category> list = await daoCategory.getList();
+                Dictionary<string, object> dic = new Dictionary<string, object>();
+                dic["course"] = update;
+                dic["list"] = list;
+                if (await daoCourse.isExist(course.CourseName.Trim(), course.CategoryId, CourseID))
+                {
+                    return new ResponseDTO<Dictionary<string, object>?>(dic, "Course existed", (int) HttpStatusCode.Conflict);
+                }
+                update.UpdateAt = DateTime.Now;
+                await daoCourse.UpdateCourse(update);
+                dic["course"] = update;
+                return new ResponseDTO<Dictionary<string, object>?>(dic, "Update successful");
+            }
+            catch (Exception ex)
+            {
+                return new ResponseDTO<Dictionary<string, object>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+            }
+        }
+        public async Task<ResponseDTO<PagedResultDTO<Course>?>> Delete(Guid CourseID, Guid CreatorID)
+        {
+            try
+            {
+                Course? course = await daoCourse.getCourse(CourseID, CreatorID);
+                if (course == null)
+                {
+                    return new ResponseDTO<PagedResultDTO<Course>?>(null, string.Empty, (int)HttpStatusCode.NotFound);
+                }
+                ResponseDTO<PagedResultDTO<Course>?> result = await Index(null, CreatorID);
+                if(result.Data == null)
+                {
+                    return new ResponseDTO<PagedResultDTO<Course>?>(null, "Get data failed", (int)HttpStatusCode.Conflict);
+                }
+                await daoCourse.DeleteCourse(course);
+                return new ResponseDTO<PagedResultDTO<Course>?>(result.Data, "Course name : " + course.CourseName + " deleted successfully");
+            }
+            catch (Exception ex)
+            {
+                return new ResponseDTO<PagedResultDTO<Course>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+            }
+        }
     }
 }
