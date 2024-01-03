@@ -179,14 +179,14 @@
 
         <div class="col-md-9">
             <h3>Learning: @name</h3>
-            @if (Video.Length != 0)
+            @if (Video.Length > 0)
             {
                 <video id="myVideo" controls autoplay>
                     <source src="~/Video/@Video" type="video/mp4">
                 </video>
             }
 
-            @if (pdf.Length != 0)
+            @if (pdf.Length > 0)
             {
                 <div class="mx-5">
                     <embed id="myPDF" src="~/PDF/@pdf" width="98%" height="750" type="application/pdf" alt="sorry">

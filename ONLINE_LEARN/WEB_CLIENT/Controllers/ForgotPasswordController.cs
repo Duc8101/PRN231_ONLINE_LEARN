@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using WEB_CLIENT.Services;
-using WEB_CLIENT.Services.IService;
 
 namespace WEB_CLIENT.Controllers
 {
@@ -19,11 +18,11 @@ namespace WEB_CLIENT.Controllers
         public async Task<ActionResult> Index(string email)
         {
             ResponseDTO<bool> response = await service.Index(email);
-            if(response.Data == false)
+            if (response.Data == false)
             {
-                if(response.Code == (int) HttpStatusCode.NotFound)
+                if (response.Code == (int)HttpStatusCode.NotFound)
                 {
-                    ViewData["error"] = response.Message; 
+                    ViewData["error"] = response.Message;
                     return View();
                 }
                 return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, response.Message, response.Code));

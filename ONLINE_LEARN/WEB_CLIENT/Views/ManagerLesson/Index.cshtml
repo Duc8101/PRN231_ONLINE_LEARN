@@ -1,0 +1,335 @@
+﻿@using DataAccess.Const;
+@using DataAccess.Entity;
+@model Dictionary<string,object>
+<script src="https://kit.fontawesome.com/42147adfb1.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet">
+<style>
+    #lessonContent {
+        background-color: #EEEEEE;
+        overflow-y: scroll;
+        height: 820px
+    }
+
+    myVideo {
+        width: 80%;
+        height: 700px;
+        margin-left: 10%;
+    }
+</style>
+
+<!-- Navbar Start -->
+@{
+    string? username = Context.Session.GetString("username");
+    string? role = Context.Session.GetString("role");
+    string? image = Context.Session.GetString("image");
+    string d_none1 = role == null || role == UserConst.ROLE_STUDENT ? "d-none" : "";
+    string d_none2 = role == null || role == UserConst.ROLE_STUDENT ? "" : "d-none";
+    string d_none3 = role != null && role == UserConst.ROLE_TEACHER ? "" : "d-none";
+}
+<nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
+    <a href="/Home" class="navbar-brand d-flex align-items-center px-4 px-lg-5">
+        <h2 class="m-0 text-info"><i class="fa fa-book me-3"></i>eLEARNING</h2>
+    </a>
+    <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+        <div class="navbar-nav ms-auto p-4 p-lg-0">
+            <a href="/Home" class="nav-item nav-link">Home</a>
+            <a href="/About" class="nav-item nav-link">About</a>
+            <a href="/ManagerCourse/Create" class="nav-item nav-link @d_none1">Create Course</a>
+            @if (role == null || role == UserConst.ROLE_STUDENT)
+            {
+                <a href="/Courses" class="nav-item nav-link">Courses</a>
+            }
+        </div>
+    </div>
+
+    @if (username == null)
+    {
+        <a href="/Login" class="btn btn-info py-4 px-lg-5 d-none d-lg-block text-white">Join Now<i class="fa fa-arrow-right ms-3"></i></a>
+    }
+    else
+    {
+        <div class="nav-item dropdown">
+            <a href="#" class="btn btn-info py-4 px-lg-5 text-white"><img src="@image" alt="Avatar" class="avatar">@username</a>
+            <div class="dropdown-menu fade-down m-0">
+                <a href="/Profile" class="dropdown-item">Profile</a>
+                <a href="/MyCourse" class="dropdown-item @d_none2">My Course</a>
+                <a href="/ManagerCourse" class="dropdown-item @d_none3">My Teaching Course</a>
+                <a href="/Logout" class="dropdown-item">Log Out <i class="bi bi-box-arrow-right"></i></a>
+            </div>
+        </div>
+    }
+</nav>
+<!-- Navbar End -->
+@{
+    List<Lesson> listLesson = (List<Lesson>)Model["listLesson"];
+    List<LessonPdf> listPDF = (List<LessonPdf>)Model["listPDF"];
+    List<LessonVideo> listVideo = (List<LessonVideo>)Model["listVideo"];
+    string Video = (string)Model["video"];
+    string pdf = (string)Model["PDF"];
+    string name = (string)Model["name"];
+    Guid LessonID = (Guid)Model["lID"];
+    Guid CourseID = (Guid)Model["CourseID"];
+}
+
+<div class="container-fluid">
+    <div class="row" style="border-right: 1px solid black">
+        <div id="lessonContent" class="col-md-3" style="background-color: #EEEEEE; border-right: 1px solid black">
+            <h3 style="margin-top: 1%; margin-bottom: 1%"><a href="/ManagerCourse" style="color: #06BBCC; text-decoration: none"> <i class="bi bi-arrow-left"></i> Back</a></h3>
+            <h3>COURSE CONTENT</h3>
+            <div class="teacher row">
+                <h5 style="color: red" id="error">@ViewData["error"]</h5>
+                <h5 style="color: green" id="success">@ViewData["success"]</h5>
+                <div class="col-md-4">
+                    <button class="btn btn-info" style="color: black" data-bs-toggle="collapse" data-bs-target="#addLesson" aria-expanded="false" aria-controls="addLesson"> <i class="bi bi-folder-plus"></i> lesson</button>
+                </div>
+                <form action="/ManagerLesson/Create" method="POST">
+                    <div class="card card-body collapse" id="addLesson" style="margin-top: 3%">
+                        <input type="text" name="LessonName" placeholder="Enter Lesson Name" required />
+                        <input type="submit" value="Submit" />
+                    </div>
+                </form>
+            </div>
+
+            <div>
+                @foreach (Lesson lesson in listLesson)
+                {
+                    <div class="list-group" style="margin: 15px 0">
+                        <div class="list-group-item list-group-item-info" style="background-color: #06BBCC">
+                            <div class="row">
+                                <div class="col-md-10">
+                                    <!--Control card have same target and false is close -->
+                                    <a style="background-color: #06BBCC; color: white; text-decoration: none; cursor: pointer" data-bs-toggle="collapse" data-bs-target="#collapseExample@(lesson.LessonNo)" aria-expanded="false" aria-controls="CollapseExample@(lesson.LessonNo)">
+                                        <i class="bi bi-plus-circle-fill" style="margin-right: 3%"></i>@lesson.LessonNo. @lesson.LessonName
+                                    </a>
+                                </div>
+                                <div class="col-md-2 teacher">
+                                    <a style="float: right;" href="/ManagerLesson/Delete/@lesson.LessonId">
+                                        <i onclick="return confirm('Are you sure you want to delete lesson: @lesson.LessonName')" style="color:red" class="bi bi-x"></i>
+                                    </a>
+                                    <a style="float: right; margin-right: 2%" role="button" data-bs-toggle="collapse" data-bs-target="#updateLesson@(lesson.LessonId)" aria-expanded="false" aria-controls="updateLesson@(lesson.LessonId)"><i class="bi bi-pencil" style="color: green;"></i></a>
+                                </div>
+                            </div>
+
+                            <!--Form update Lesson -->
+                            <form action="/ManagerLesson/Update/@lesson.LessonId" method="POST">
+                                <input type="hidden" name="LessonNo" value="@lesson.LessonNo" />
+                                <div class="card card-body collapse" id="updateLesson@(lesson.LessonId)" style="margin-top: 1%">
+                                    Lesson Name:<input type="text" name="LessonName" required value="@lesson.LessonName" />
+                                    <input type="submit" value="Submit" />
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    @if (lesson.LessonId == LessonID)
+                    {
+                        <div class="list-group collapse multi-collapse show" id="collapseExample@(lesson.LessonNo)">
+                            <div class="teacher">
+                                <div class="row" style="margin-bottom: 2%">
+                                    <div class="col-md-4"><button style="background-color: #f0fbfc; border-radius: 10%" data-bs-toggle="collapse" data-bs-target="#addVideo@(lesson.LessonNo)" aria-expanded="false" aria-controls="addVideo@(lesson.LessonNo)">Add Video</button></div>
+                                    <div class="col-md-4"><button style="background-color: #f0fbfc; border-radius: 10%" data-bs-toggle="collapse" data-bs-target="#addPDF@(lesson.LessonNo)" aria-expanded="false" aria-controls="addPDF@(lesson.LessonNo)">Add PDF</button></div>
+                                    <div class="col-md-3">
+                                        <a class="btn btn-info" role="button" style="text-decoration: none; color: black" href="/ManagerQuiz/Index/@lesson.LessonId"><i class="bi bi-eye"></i> Quiz</a>
+                                    </div>
+                                </div>
+
+                                <!--form add video-->
+                                <form action="/ManagerVideo/Create" method="POST">
+                                    <input type="hidden" name="LessonId" value="@lesson.LessonId" />
+                                    <div class="card card-body collapse" id="addVideo@(lesson.LessonNo)" style="margin-top: 1%">
+                                        <input type="text" name="VideoName" required value="" placeholder="Enter Video Name" />
+                                        <input type="file" name="FileVideo" required multiple accept=".mp4">
+                                        <input type="submit" value="Submit" />
+                                    </div>
+                                </form>
+
+                                <!--form add pdf-->
+                                <form action="/ManagerPDF/Create" method="POST">
+                                    <input type="hidden" name="LessonId" value="@lesson.LessonId" />
+                                    <div class="card card-body collapse" id="addPDF@(lesson.LessonNo)" style="margin-top: 1%">
+                                        <input type="text" name="Pdfname" required value="" placeholder="Enter PDF Name" />
+                                        <input type="file" id="file-uploader" required name="FilePdf" accept=".pdf" multiple>
+                                        <input type="submit" value="Submit" />
+                                    </div>
+                                </form>
+                            </div>
+
+                            @foreach (LessonVideo video in listVideo)
+                            {
+                                if (lesson.LessonId == video.LessonId)
+                                {
+                                    <div class="list-group-item list-group-item-action">
+                                        <div class="row">
+                                            <div class="col-md-10">
+                                                <a href="/ManagerLesson/Index/@CourseID?LessonID=@video.LessonId&name=@video.VideoName&video=@video.FileVideo" style="text-decoration: none; color: black">
+                                                    <i class="bi bi-play-circle" style="color: red; margin-right: 2%"></i>@video.VideoName
+                                                </a>
+                                            </div>
+                                            <div class="col-md-2 teacher">
+                                                <a style="float: right;" href="/ManagerVideo/Delete/@video.VideoId"><i onclick="return confirm('Are you sure you want to delete Video: @video.VideoName')" class="bi bi-x" style="color: red"></i></a>
+                                                <a style="float: right; margin-right: 2%" role="button" data-bs-toggle="collapse" data-bs-target="#updateVideo@(video.VideoId)" aria-expanded="false" aria-controls="updateVideo@(video.VideoId)"><i class="bi bi-pencil" style="color: green;"></i></a>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <form action="/ManagerVideo/Update/@video.VideoId" method="POST">
+                                        <input type="hidden" name="LessonId" value="@lesson.LessonId" />
+                                        <div class="card card-body collapse" id="updateVideo@(video.VideoId)" style="margin-top: 1%">
+                                            Name:<input type="text" name="VideoName" value="@video.VideoName" required />
+                                            New File Video:<input type="file" name="FileVideo" accept=".mp4" multiple />
+                                            <input type="submit" value="Submit" />
+                                        </div>
+                                    </form>
+                                }
+                            }
+
+                            @foreach (LessonPdf PDF in listPDF)
+                            {
+                                if (lesson.LessonId == PDF.LessonId)
+                                {
+                                    <div class="list-group-item list-group-item-action">
+                                        <div class="row">
+                                            <div class="col-md-10">
+                                                <a href="/ManagerLesson/Index/@CourseID?LessonID=@PDF.LessonId&name=@PDF.Pdfname&PDF=@PDF.FilePdf" style="text-decoration: none; color: black">
+                                                    <i class="bi bi-book" style="color: green; margin-right: 2%"></i>@PDF.Pdfname
+                                                </a>
+                                            </div>
+                                            <div class="col-md-2 teacher">
+                                                <a style="float: right;" href="/ManagerPDF/Delete/@PDF.Pdfid"><i onclick="return confirm('Are you sure you want to delete pdf @PDF.Pdfname')" class="bi bi-x" style="color: red"></i></a>
+                                                <a style="float: right; margin-right: 2%" href="/ManagerPDF/Update/@PDF.Pdfid" data-bs-toggle="collapse" data-bs-target="#updateVideo@(PDF.Pdfid)" aria-expanded="false" aria-controls="updateVideo@(PDF.Pdfid)"><i class="bi bi-pencil" style="color: green;"></i></a>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <form action="/ManagerPDF/Update/@PDF.Pdfid" method="POST">
+                                        <input type="hidden" name="LessonId" value="@lesson.LessonId" />
+                                        <div class="card card-body collapse" id="updateVideo@(PDF.Pdfid)" style="margin-top: 1%">
+                                            Name:<input type="text" name="Pdfname" value="@PDF.Pdfname" required />
+                                            New File PDF:<input type="file" name="FilePdf" accept=".pdf" multiple />
+                                            <input type="submit" value="Submit" />
+                                        </div>
+                                    </form>
+                                }
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <!-- -->
+                        <div class="list-group collapse multi-collapse" id="collapseExample@(lesson.LessonNo)">
+                            <div class="teacher">
+                                <div class="row" style="margin-bottom: 2%">
+                                    <div class="col-md-4"><button style="background-color: #f0fbfc; border-radius: 10%" data-bs-toggle="collapse" data-bs-target="#addVideo@(lesson.LessonNo)" aria-expanded="false" aria-controls="addVideo@(lesson.LessonNo)">Add Video</button></div>
+                                    <div class="col-md-4"><button style="background-color: #f0fbfc; border-radius: 10%" data-bs-toggle="collapse" data-bs-target="#addPDF@(lesson.LessonNo)" aria-expanded="false" aria-controls="addPDF@(lesson.LessonNo)">Add PDF</button></div>
+                                    <div class="col-md-3">
+                                        <a class="btn btn-info" role="button" style="text-decoration: none; color: black" href="/ManagerQuiz?LessonID=@lesson.LessonId"><i class="bi bi-eye"></i>Quiz</a>
+                                    </div>
+                                </div>
+
+                                <!--form add video-->
+                                <form action="/ManagerVideo/Create" method="POST">
+                                    <input type="hidden" name="LessonId" value="@lesson.LessonId" />
+                                    <div class="card card-body collapse" id="addVideo@(lesson.LessonNo)" style="margin-top: 1%">
+                                        <input type="text" name="VideoName" required value="" placeholder="Enter Video Name" />
+                                        <input type="file" name="FileVideo" required multiple accept=".mp4">
+                                        <input type="submit" value="Submit" />
+                                    </div>
+                                </form>
+
+                                <!--form add pdf-->
+                                <form action="/ManagerPDF/Create" method="POST">
+                                    <input type="hidden" name="LessonId" value="@lesson.LessonId" />
+                                    <div class="card card-body collapse" id="addPDF@(lesson.LessonNo)" style="margin-top: 1%">
+                                        <input type="text" name="Pdfname" required value="" placeholder="Enter PDF Name" />
+                                        <input type="file" id="file-uploader" required name="FilePdf" accept=".pdf" multiple>
+                                        <input type="submit" value="Submit" />
+                                    </div>
+                                </form>
+                            </div>
+
+                            @foreach (LessonVideo video in listVideo)
+                            {
+                                if (lesson.LessonId == video.LessonId)
+                                {
+                                    <div class="list-group-item list-group-item-action">
+                                        <div class="row">
+                                            <div class="col-md-10">
+                                                <a href="/ManagerLesson/Index/@CourseID?LessonID=@video.LessonId&name=@video.VideoName&video=@video.FileVideo" style="text-decoration: none; color: black">
+                                                    <i class="bi bi-play-circle" style="color: red; margin-right: 2%"></i>@video.VideoName
+                                                </a>
+                                            </div>
+                                            <div class="col-md-2 teacher">
+                                                <a style="float: right;" href="/ManagerVideo/Delete/@video.VideoId"><i onclick="return confirm('Are you sure you want to delete Video: @video.VideoName')" class="bi bi-x" style="color: red"></i></a>
+                                                <a style="float: right; margin-right: 2%" role="button" data-bs-toggle="collapse" data-bs-target="#updateVideo@(video.VideoId)" aria-expanded="false" aria-controls="updateVideo@(video.VideoId)"><i class="bi bi-pencil" style="color: green;"></i></a>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <form action="/ManagerVideo/Update/@video.VideoId" method="POST">
+                                        <input type="hidden" name="LessonId" value="@lesson.LessonId" />
+                                        <div class="card card-body collapse" id="updateVideo@(video.VideoId)" style="margin-top: 1%">
+                                            Name:<input type="text" name="VideoName" value="@video.VideoName" required />
+                                            New File Video:<input type="file" name="FileVideo" accept=".mp4" multiple />
+                                            <input type="submit" value="Submit" />
+                                        </div>
+                                    </form>
+                                }
+                            }
+
+                            @foreach (LessonPdf PDF in listPDF)
+                            {
+                                if (lesson.LessonId == PDF.LessonId)
+                                {
+                                    <div class="list-group-item list-group-item-action">
+                                        <div class="row">
+                                            <div class="col-md-10">
+                                                <a href="/ManagerLesson/Index/@CourseID?LessonID=@PDF.LessonId&name=@PDF.Pdfname&PDF=@PDF.FilePdf" style="text-decoration: none; color: black">
+                                                    <i class="bi bi-book" style="color: green; margin-right: 2%"></i>@PDF.Pdfname
+                                                </a>
+                                            </div>
+                                            <div class="col-md-2 teacher">
+                                                <a style="float: right;" href="/ManagerPDF/Delete/@PDF.Pdfid"><i onclick="return confirm('Are you sure you want to delete pdf @PDF.Pdfname')" class="bi bi-x" style="color: red"></i></a>
+                                                <a style="float: right; margin-right: 2%" href="/ManagerPDF/Update/@(PDF.Pdfid)" data-bs-toggle="collapse" data-bs-target="#updateVideo@(PDF.Pdfid)" aria-expanded="false" aria-controls="updateVideo@(PDF.Pdfid)"><i class="bi bi-pencil" style="color: green;"></i></a>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <form action="/ManagerPDF/Update/@PDF.Pdfid" method="POST">
+                                        <input type="hidden" name="LessonId" value="@lesson.LessonId" />
+                                        <div class="card card-body collapse" id="updateVideo@(PDF.Pdfid)" style="margin-top: 1%">
+                                            Name:<input type="text" name="Pdfname" value="@PDF.Pdfname" required />
+                                            New File PDF:<input type="file" name="FilePdf" accept=".pdf" multiple />
+                                            <input type="submit" value="Submit" />
+                                        </div>
+                                    </form>
+                                }
+                            }
+
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+
+        <div class="col-md-9" style="background-color: #f0fbfc">
+            <h3 style="text-align: center; margin-top: 2%">Learning: @name</h3>
+            @if (pdf.Length > 0)
+            {
+                <div class="mx-5">
+                    <embed id="myPDF" src="~/PDF/@pdf" width="98%" height="750" type="application/pdf" alt="sorry">
+                </div>
+            }
+
+            @if (Video.Length > 0)
+            {
+                <video id="myVideo" controls autoplay>
+                    <source src="~/Video/@Video" type="video/mp4">
+                </video>
+            }
+        </div>
+    </div>
+</div>

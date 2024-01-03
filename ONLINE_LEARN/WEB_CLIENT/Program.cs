@@ -1,6 +1,4 @@
 using WEB_CLIENT.Model;
-using WEB_CLIENT.Services.IService;
-using WEB_CLIENT.Services.Service;
 
 namespace WEB_CLIENT
 {

@@ -5,7 +5,6 @@ using DataAccess.Entity;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using WEB_CLIENT.Services;
-using WEB_CLIENT.Services.IService;
 
 namespace WEB_CLIENT.Controllers
 {
@@ -58,7 +57,7 @@ namespace WEB_CLIENT.Controllers
             };
             // add cookie
             Response.Cookies.Append("UserID", response.Data.Id.ToString(), option);
-            if(response.Data.RoleName == UserConst.ROLE_ADMIN)
+            if (response.Data.RoleName == UserConst.ROLE_ADMIN)
             {
                 return Redirect("/Admin");
             }
