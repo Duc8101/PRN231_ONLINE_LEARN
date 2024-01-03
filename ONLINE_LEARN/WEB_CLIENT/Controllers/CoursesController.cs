@@ -2,7 +2,7 @@
 using DataAccess.DTO;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
-using WEB_CLIENT.Services.Service;
+using WEB_CLIENT.Services;
 
 namespace WEB_CLIENT.Controllers
 {

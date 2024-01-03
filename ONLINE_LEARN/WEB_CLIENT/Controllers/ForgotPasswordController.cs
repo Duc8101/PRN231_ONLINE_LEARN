@@ -1,8 +1,8 @@
 ﻿using DataAccess.DTO;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using WEB_CLIENT.Services;
 using WEB_CLIENT.Services.IService;
-using WEB_CLIENT.Services.Service;
 
 namespace WEB_CLIENT.Controllers
 {
