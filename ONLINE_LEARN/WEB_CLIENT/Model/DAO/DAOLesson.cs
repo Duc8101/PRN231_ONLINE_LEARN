@@ -14,5 +14,16 @@ namespace WEB_CLIENT.Model.DAO
         {
             return await context.Lessons.SingleOrDefaultAsync(l => l.IsDeleted == false && l.LessonId == LessonID && l.Course.IsDeleted == false);
         }
+
+        public async Task<bool> isExist(string LessonName, Guid CourseID)
+        {
+            return await context.Lessons.AnyAsync(l => l.LessonName == LessonName.Trim() && l.CourseId == CourseID && l.IsDeleted == false);
+        }
+
+        public async Task CreateLesson(Lesson lesson)
+        {
+            await context.Lessons.AddAsync(lesson);
+            await context.SaveChangesAsync();
+        }
     }
 }

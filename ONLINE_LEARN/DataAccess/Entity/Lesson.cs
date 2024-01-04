@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using DataAccess.Const;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DataAccess.Entity
 {
@@ -21,7 +17,7 @@ namespace DataAccess.Entity
         [Key]
         [Column("LessonID")]
         public Guid LessonId { get; set; }
-        [MaxLength(200)]
+        [MaxLength(LessonConst.MAX_LENGTH_LESSON_NAME)]
         public string LessonName { get; set; } = null!;
         [ForeignKey("Course")]
         [Column("CourseID")]

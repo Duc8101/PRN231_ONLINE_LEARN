@@ -89,6 +89,7 @@
                 <form action="/ManagerLesson/Create" method="POST">
                     <div class="card card-body collapse" id="addLesson" style="margin-top: 3%">
                         <input type="text" name="LessonName" placeholder="Enter Lesson Name" required />
+                        <input type="hidden" name="CourseID" value="@CourseID" />
                         <input type="submit" value="Submit" />
                     </div>
                 </form>
