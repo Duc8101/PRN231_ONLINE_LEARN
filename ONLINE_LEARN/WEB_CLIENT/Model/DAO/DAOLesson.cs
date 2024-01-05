@@ -25,5 +25,16 @@ namespace WEB_CLIENT.Model.DAO
             await context.Lessons.AddAsync(lesson);
             await context.SaveChangesAsync();
         }
+
+        public async Task<bool> isExist(string LessonName, Guid CourseID, Guid LessonID)
+        {
+            return await context.Lessons.AnyAsync(l => l.LessonName == LessonName.Trim() && l.CourseId == CourseID && l.IsDeleted == false && l.LessonId != LessonID);
+        }
+
+        public async Task UpdateLesson(Lesson lesson)
+        {
+            context.Lessons.Update(lesson);
+            await context.SaveChangesAsync();
+        }
     }
 }

@@ -108,7 +108,7 @@
                                     </a>
                                 </div>
                                 <div class="col-md-2 teacher">
-                                    <a style="float: right;" href="/ManagerLesson/Delete/@lesson.LessonId">
+                                    <a style="float: right;" href="/ManagerLesson/Delete/@lesson.LessonId?CourseID=@CourseID">
                                         <i onclick="return confirm('Are you sure you want to delete lesson: @lesson.LessonName')" style="color:red" class="bi bi-x"></i>
                                     </a>
                                     <a style="float: right; margin-right: 2%" role="button" data-bs-toggle="collapse" data-bs-target="#updateLesson@(lesson.LessonId)" aria-expanded="false" aria-controls="updateLesson@(lesson.LessonId)"><i class="bi bi-pencil" style="color: green;"></i></a>
@@ -116,10 +116,10 @@
                             </div>
 
                             <!--Form update Lesson -->
-                            <form action="/ManagerLesson/Update/@lesson.LessonId" method="POST">
-                                <input type="hidden" name="LessonNo" value="@lesson.LessonNo" />
+                            <form action="/ManagerLesson/Update/@lesson.LessonId" method="post">
                                 <div class="card card-body collapse" id="updateLesson@(lesson.LessonId)" style="margin-top: 1%">
                                     Lesson Name:<input type="text" name="LessonName" required value="@lesson.LessonName" />
+                                    <input type="hidden" name="CourseID" value="@CourseID" />
                                     <input type="submit" value="Submit" />
                                 </div>
                             </form>

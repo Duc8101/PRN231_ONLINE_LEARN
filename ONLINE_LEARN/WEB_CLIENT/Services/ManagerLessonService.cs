@@ -93,5 +93,44 @@ namespace WEB_CLIENT.Services
                 return new ResponseDTO<Dictionary<string, object>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
+        public async Task<ResponseDTO<Dictionary<string, object>?>> Update(Guid LessonID, string? LessonName, Guid CourseID, Guid CreatorID)
+        {
+            try
+            {
+                ResponseDTO<Dictionary<string, object>?> response = await Index(CourseID, CreatorID, null, null, null, null);
+                if (response.Data == null)
+                {
+                    return new ResponseDTO<Dictionary<string, object>?>(null, response.Message, response.Code);
+                }
+                if (LessonName == null)
+                {
+                    return new ResponseDTO<Dictionary<string, object>?>(response.Data, "You have to input lesson name", (int)HttpStatusCode.Conflict);
+                }
+                if (LessonName.Trim().Length > LessonConst.MAX_LENGTH_LESSON_NAME)
+                {
+                    return new ResponseDTO<Dictionary<string, object>?>(response.Data, "Lesson name max " + LessonConst.MAX_LENGTH_LESSON_NAME + " characters", (int)HttpStatusCode.Conflict);
+                }
+                Lesson? lesson = await daoLesson.getLesson(LessonID);
+                if (lesson == null || lesson.CourseId != CourseID)
+                {
+                    return new ResponseDTO<Dictionary<string, object>?>(null, "Not found lesson", (int) HttpStatusCode.NotFound);
+                }
+                if (await daoLesson.isExist(LessonName.Trim(), CourseID, LessonID))
+                {
+                    return new ResponseDTO<Dictionary<string, object>?>(response.Data, "Lesson existed", (int)HttpStatusCode.Conflict);
+                }
+                lesson.LessonName = LessonName.Trim();
+                lesson.UpdateAt = DateTime.Now;
+                await daoLesson.UpdateLesson(lesson);
+                List<Lesson> list = await daoLesson.getList(CourseID);
+                response.Data["listLesson"] = list;
+                return new ResponseDTO<Dictionary<string, object>?>(response.Data, "Update successful");
+            }
+            catch (Exception ex)
+            {
+                return new ResponseDTO<Dictionary<string, object>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+            }
+        }
+
     }
 }
