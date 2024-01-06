@@ -15,14 +15,14 @@ namespace WEB_CLIENT.Controllers
             if (role == UserConst.ROLE_TEACHER)
             {
                 ViewData["ViewLesson"] = true;
-                if (id == null)
-                {
-                    return Redirect("/ManagerCourse");
-                }
                 string? TeacherID = getUserID();
                 if (TeacherID == null)
                 {
                     return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, "Not found ID. Please check login information", (int)HttpStatusCode.NotFound));
+                }
+                if (id == null)
+                {
+                    return Redirect("/ManagerCourse");
                 }
                 ResponseDTO<Dictionary<string, object>?> result = await service.Index(id.Value, Guid.Parse(TeacherID), video, name, PDF, LessonID);
                 if (result.Data == null)
@@ -93,6 +93,32 @@ namespace WEB_CLIENT.Controllers
                 {
                     ViewData["success"] = result.Message;
                 }
+                return View("/Views/ManagerLesson/Index.cshtml", result.Data);
+            }
+            return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, "You are not allowed to access this page", (int)HttpStatusCode.Forbidden));
+        }
+
+        public async Task<ActionResult> Delete(Guid? id, Guid? CourseID)
+        {
+            string? role = getRole();
+            if (role == UserConst.ROLE_TEACHER)
+            {
+                ViewData["ViewLesson"] = true;
+                string? TeacherID = getUserID();
+                if (TeacherID == null)
+                {
+                    return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, "Not found ID. Please check login information", (int)HttpStatusCode.NotFound));
+                }
+                if (id == null || CourseID == null)
+                {
+                    return Redirect("/ManagerCourse");
+                }
+                ResponseDTO<Dictionary<string, object>?> result = await service.Delete(id.Value, CourseID.Value, Guid.Parse(TeacherID));
+                if (result.Data == null)
+                {
+                    return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, result.Message, result.Code));
+                }
+                ViewData["success"] = result.Message;
                 return View("/Views/ManagerLesson/Index.cshtml", result.Data);
             }
             return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, "You are not allowed to access this page", (int)HttpStatusCode.Forbidden));

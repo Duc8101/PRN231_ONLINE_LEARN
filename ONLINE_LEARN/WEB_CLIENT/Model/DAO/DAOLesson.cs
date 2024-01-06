@@ -36,5 +36,11 @@ namespace WEB_CLIENT.Model.DAO
             context.Lessons.Update(lesson);
             await context.SaveChangesAsync();
         }
+
+        public async Task DeleteLesson(Lesson lesson)
+        {
+            lesson.IsDeleted = true;
+            await UpdateLesson(lesson);
+        }
     }
 }

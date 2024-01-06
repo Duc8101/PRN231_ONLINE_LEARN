@@ -131,6 +131,40 @@ namespace WEB_CLIENT.Services
                 return new ResponseDTO<Dictionary<string, object>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
+        public async Task<ResponseDTO<Dictionary<string, object>?>> Delete(Guid LessonID, Guid CourseID, Guid CreatorID)
+        {
+            try
+            {
+                ResponseDTO<Dictionary<string, object>?> response = await Index(CourseID, CreatorID, null, null, null, null);
+                if (response.Data == null)
+                {
+                    return new ResponseDTO<Dictionary<string, object>?>(null, response.Message, response.Code);
+                }
+                Lesson? lesson = await daoLesson.getLesson(LessonID);
+                if (lesson == null || lesson.CourseId != CourseID)
+                {
+                    return new ResponseDTO<Dictionary<string, object>?>(null, "Not found lesson", (int)HttpStatusCode.NotFound);
+                }
+                List<Lesson> list = await daoLesson.getList(CourseID);
+                foreach (Lesson less in list)
+                {
+                    if(less.LessonNo > lesson.LessonNo)
+                    {
+                        less.LessonNo--;
+                        less.UpdateAt = DateTime.Now;
+                        await daoLesson.UpdateLesson(less);
+                    }
+                }
+                await daoLesson.DeleteLesson(lesson);
+                list = await daoLesson.getList(CourseID);
+                response.Data["listLesson"] = list;
+                return new ResponseDTO<Dictionary<string, object>?>(response.Data, "Delete successful");
+            }
+            catch (Exception ex)
+            {
+                return new ResponseDTO<Dictionary<string, object>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+            }
+        }
 
     }
 }
