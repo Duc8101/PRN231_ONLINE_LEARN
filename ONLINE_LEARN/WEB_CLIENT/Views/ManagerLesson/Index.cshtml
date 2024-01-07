@@ -141,6 +141,7 @@
                                 <!--form add video-->
                                 <form action="/ManagerVideo/Create" method="POST">
                                     <input type="hidden" name="LessonId" value="@lesson.LessonId" />
+                                    <input type="hidden" name="CourseID" value="@CourseID" />
                                     <div class="card card-body collapse" id="addVideo@(lesson.LessonNo)" style="margin-top: 1%">
                                         <input type="text" name="VideoName" required value="" placeholder="Enter Video Name" />
                                         <input type="file" name="FileVideo" required multiple accept=".mp4">
@@ -234,6 +235,7 @@
                                 <!--form add video-->
                                 <form action="/ManagerVideo/Create" method="POST">
                                     <input type="hidden" name="LessonId" value="@lesson.LessonId" />
+                                    <input type="hidden" name="CourseID" value="@CourseID" />
                                     <div class="card card-body collapse" id="addVideo@(lesson.LessonNo)" style="margin-top: 1%">
                                         <input type="text" name="VideoName" required value="" placeholder="Enter Video Name" />
                                         <input type="file" name="FileVideo" required multiple accept=".mp4">

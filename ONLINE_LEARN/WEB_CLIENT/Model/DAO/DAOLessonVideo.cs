@@ -15,5 +15,11 @@ namespace WEB_CLIENT.Model.DAO
             return await context.LessonVideos.Where(v => v.IsDeleted == false && v.Lesson.IsDeleted == false && v.Lesson.LessonNo == 1
             && v.Lesson.CourseId == CourseID).FirstOrDefaultAsync();
         }
+
+        public async Task CreateVideo(LessonVideo video)
+        {
+            await context.LessonVideos.AddAsync(video);
+            await context.SaveChangesAsync();
+        }
     }
 }
