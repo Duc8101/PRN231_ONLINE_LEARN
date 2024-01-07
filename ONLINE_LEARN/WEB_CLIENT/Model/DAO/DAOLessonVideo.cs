@@ -21,5 +21,22 @@ namespace WEB_CLIENT.Model.DAO
             await context.LessonVideos.AddAsync(video);
             await context.SaveChangesAsync();
         }
+
+        public async Task<LessonVideo?> getVideo(int VideoID, Guid LessonID)
+        {
+            return await context.LessonVideos.SingleOrDefaultAsync(v => v.VideoId == VideoID && v.IsDeleted == false && v.LessonId == LessonID);
+        }
+
+        public async Task UpdateVideo(LessonVideo video)
+        {
+            context.LessonVideos.Update(video);
+            await context.SaveChangesAsync();
+        }
+
+        public async Task DeleteVideo(LessonVideo video)
+        {
+            video.IsDeleted = true;
+            await UpdateVideo(video);
+        }
     }
 }

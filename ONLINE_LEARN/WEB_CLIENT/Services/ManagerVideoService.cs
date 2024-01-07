@@ -50,7 +50,6 @@ namespace WEB_CLIENT.Services
                 return new ResponseDTO<Dictionary<string, object>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
-
         public async Task<ResponseDTO<Dictionary<string, object>?>> Create(LessonVideo create, Guid CourseID, Guid CreatorID)
         {
             try
@@ -77,6 +76,74 @@ namespace WEB_CLIENT.Services
                 List<LessonVideo> listVideo = await daoVideo.getList();
                 result.Data["listVideo"] = listVideo;
                 return new ResponseDTO<Dictionary<string, object>?>(result.Data, "Video " + create.VideoName + " was added successfully!");
+            }
+            catch (Exception ex)
+            {
+                return new ResponseDTO<Dictionary<string, object>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+            }
+        }
+        public async Task<ResponseDTO<Dictionary<string, object>?>> Update(int VideoID, LessonVideo obj, Guid CourseID, Guid CreatorID)
+        {
+            try
+            {
+                ResponseDTO<Dictionary<string, object>?> result = await getResult(CourseID, CreatorID);
+                if (result.Data == null)
+                {
+                    return new ResponseDTO<Dictionary<string, object>?>(null, result.Message, result.Code);
+                }
+                Lesson? lesson = await daoLesson.getLesson(obj.LessonId);
+                if (lesson == null || lesson.CourseId != CourseID)
+                {
+                    return new ResponseDTO<Dictionary<string, object>?>(null, "Not found lesson", (int)HttpStatusCode.NotFound);
+                }
+                LessonVideo? video = await daoVideo.getVideo(VideoID, obj.LessonId);
+                if(video == null)
+                {
+                    return new ResponseDTO<Dictionary<string, object>?>(null, "Not found video", (int)HttpStatusCode.NotFound);
+                }
+                if (obj.VideoName == null || obj.VideoName.Trim().Length == 0)
+                {
+                    return new ResponseDTO<Dictionary<string, object>?>(result.Data, "You have to input video name", (int)HttpStatusCode.Conflict);
+                }
+                video.VideoName = obj.VideoName.Trim();
+                if(obj.FileVideo != null && obj.FileVideo.Length > 0)
+                {
+                    video.FileVideo = obj.FileVideo;
+                }
+                video.UpdateAt = DateTime.Now;
+                await daoVideo.UpdateVideo(video);
+                List<LessonVideo> listVideo = await daoVideo.getList();
+                result.Data["listVideo"] = listVideo;
+                return new ResponseDTO<Dictionary<string, object>?>(result.Data, "Update successful");
+            }
+            catch (Exception ex)
+            {
+                return new ResponseDTO<Dictionary<string, object>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+            }
+        }
+        public async Task<ResponseDTO<Dictionary<string, object>?>> Delete(int VideoID, Guid LessonID, Guid CourseID, Guid CreatorID)
+        {
+            try
+            {
+                ResponseDTO<Dictionary<string, object>?> result = await getResult(CourseID, CreatorID);
+                if (result.Data == null)
+                {
+                    return new ResponseDTO<Dictionary<string, object>?>(null, result.Message, result.Code);
+                }
+                Lesson? lesson = await daoLesson.getLesson(LessonID);
+                if (lesson == null || lesson.CourseId != CourseID)
+                {
+                    return new ResponseDTO<Dictionary<string, object>?>(null, "Not found lesson", (int)HttpStatusCode.NotFound);
+                }
+                LessonVideo? video = await daoVideo.getVideo(VideoID, LessonID);
+                if (video == null)
+                {
+                    return new ResponseDTO<Dictionary<string, object>?>(null, "Not found video", (int)HttpStatusCode.NotFound);
+                }
+                await daoVideo.DeleteVideo(video);
+                List<LessonVideo> listVideo = await daoVideo.getList();
+                result.Data["listVideo"] = listVideo;
+                return new ResponseDTO<Dictionary<string, object>?>(result.Data, "Delete successful");
             }
             catch (Exception ex)
             {

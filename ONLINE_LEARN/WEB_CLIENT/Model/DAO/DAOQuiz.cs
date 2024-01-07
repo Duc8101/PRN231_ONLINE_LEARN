@@ -13,5 +13,10 @@ namespace WEB_CLIENT.Model.DAO
         {
             return await context.Quizzes.Where(q => q.IsDeleted == false && q.LessonId == LessonID).ToListAsync();
         }
+
+        public async Task<Quiz?> getQuiz(Guid QuestionID, Guid LessonID)
+        {
+            return await context.Quizzes.SingleOrDefaultAsync(q => q.QuestionId == QuestionID && q.IsDeleted == false && q.LessonId == LessonID);
+        }
     }
 }
