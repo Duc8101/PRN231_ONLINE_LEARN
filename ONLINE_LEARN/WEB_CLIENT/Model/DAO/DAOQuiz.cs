@@ -18,5 +18,23 @@ namespace WEB_CLIENT.Model.DAO
         {
             return await context.Quizzes.SingleOrDefaultAsync(q => q.QuestionId == QuestionID && q.IsDeleted == false && q.LessonId == LessonID);
         }
+
+        public async Task CreateQuiz(Quiz quiz)
+        {
+            await context.Quizzes.AddAsync(quiz);
+            await context.SaveChangesAsync();
+        }
+
+        public async Task UpdateQuiz(Quiz quiz)
+        {
+            context.Quizzes.Update(quiz);
+            await context.SaveChangesAsync();
+        }
+
+        public async Task DeleteQuiz(Quiz quiz)
+        {
+            quiz.IsDeleted = true;
+            await UpdateQuiz(quiz);
+        }
     }
 }
