@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using DataAccess.Const;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DataAccess.Entity
@@ -17,13 +18,13 @@ namespace DataAccess.Entity
         public Guid Id { get; set; }
         public string FullName { get; set; } = null!;
         [Column("phone")]
-        [MaxLength(10)]
+        [MaxLength(UserConst.PHONE_LENGTH)]
         public string? Phone { get; set; }
         [Column("image")]
         public string Image { get; set; } = null!;
 
         [Column("address")]
-        [MaxLength(100)]
+        [MaxLength(UserConst.MAX_ADDRESS_LENGTH)]
         public string? Address { get; set; }
         [Column("email")]
         [MaxLength(200)]
@@ -32,7 +33,7 @@ namespace DataAccess.Entity
         [MaxLength(30)]
         public string Gender { get; set; } = null!;
         [Column("username")]
-        [MaxLength(50)]
+        [MaxLength(UserConst.MAX_LENGTH_USERNAME)]
         public string Username { get; set; } = null!;
         [Column("password")]
         public string Password { get; set; } = null!;

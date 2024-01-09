@@ -23,12 +23,12 @@ namespace WEB_CLIENT.Controllers
             {
                 if (response.Code == (int)HttpStatusCode.Conflict)
                 {
-                    ViewData["message"] = response.Message;
+                    ViewData["error"] = response.Message;
                     return View();
                 }
                 return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, response.Message, response.Code));
             }
-            ViewData["mess"] = response.Message;
+            ViewData["success"] = response.Message;
             return View();
         }
     }

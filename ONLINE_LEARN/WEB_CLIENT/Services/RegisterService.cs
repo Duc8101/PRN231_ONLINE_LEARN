@@ -25,6 +25,7 @@ namespace WEB_CLIENT.Services
                 // send email
                 await UserUtil.sendEmail("Welcome to E-Learning", body, user.Email);
                 user.Id = Guid.NewGuid();
+                user.FullName = user.FullName.Trim();
                 user.Image = UserConst.AVATAR;
                 user.Address = user.Address == null || user.Address.Trim().Length == 0 ? null : user.Address.Trim();
                 user.Password = hashPw;

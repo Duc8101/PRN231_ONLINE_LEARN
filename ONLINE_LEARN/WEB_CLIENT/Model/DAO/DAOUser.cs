@@ -51,5 +51,15 @@ namespace WEB_CLIENT.Model.DAO
             context.Users.Update(user);
             await context.SaveChangesAsync();
         }
+
+        public async Task<List<User>> getList(string? name)
+        {
+            IQueryable<User> query = context.Users.Where(u => u.IsDeleted == false && u.RoleName != UserConst.ROLE_ADMIN);
+            if(name != null && name.Trim().Length > 0)
+            {
+                query = query.Where(u => u.Username.ToLower().Contains(name.ToLower().Trim()));
+            }
+            return await query.ToListAsync();
+        }
     }
 }
