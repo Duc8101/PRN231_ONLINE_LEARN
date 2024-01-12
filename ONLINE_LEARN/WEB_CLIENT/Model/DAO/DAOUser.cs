@@ -19,7 +19,7 @@ namespace WEB_CLIENT.Model.DAO
         public async Task<User?> getUser(LoginDTO DTO)
         {
             User? user = await context.Users.SingleOrDefaultAsync(u => u.Username == DTO.Username && u.IsDeleted == false);
-            if (user == null || string.Compare(user.Password, UserUtil.HashPassword(DTO.Password), false) != 0)
+            if (user == null || DTO.Password == null || string.Compare(user.Password, UserUtil.HashPassword(DTO.Password), false) != 0)
             {
                 return null;
             }
