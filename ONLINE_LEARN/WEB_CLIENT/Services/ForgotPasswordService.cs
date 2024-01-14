@@ -23,6 +23,9 @@ namespace WEB_CLIENT.Services
                 string hashPw = UserUtil.HashPassword(newPw);
                 // send email
                 await UserUtil.sendEmail("Welcome to E-Learning", body, user.Email);
+                user.Password = hashPw;
+                user.UpdateAt = DateTime.Now;
+                await dao.UpdateUser(user);
                 return new ResponseDTO<bool>(true, "Password changed successful. Please check your email");
             }
             catch (Exception ex)
