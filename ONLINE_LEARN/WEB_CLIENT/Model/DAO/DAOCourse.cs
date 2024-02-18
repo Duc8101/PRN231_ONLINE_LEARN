@@ -4,12 +4,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace WEB_CLIENT.Model.DAO
 {
-    public class DAOCourse : BaseDAO
+    public class DAOCourse : MyDbContext
     {
         private IQueryable<Course> getQuery(int? CategoryID, string? properties, string? flow,  Guid? CreatorID)
         {
-            IQueryable<Course> query = context.Courses.Include(c => c.Creator).Where(c => c.IsDeleted == false);
-            if(CategoryID != null)
+            IQueryable<Course> query = Courses.Include(c => c.Creator).Where(c => c.IsDeleted == false);
+            if(CategoryID.HasValue)
             {
                 query = query.Where(c => c.CategoryId == CategoryID);
             }
@@ -28,7 +28,7 @@ namespace WEB_CLIENT.Model.DAO
                 }
             }
 
-            if(CreatorID != null)
+            if(CreatorID.HasValue)
             {
                 query = query.Where(c => c.CreatorId == CreatorID);
             }
@@ -47,29 +47,29 @@ namespace WEB_CLIENT.Model.DAO
         }
         public async Task<Course?> getCourse(Guid CourseID)
         {
-            return await context.Courses.Include(c => c.Creator).SingleOrDefaultAsync(c => c.CourseId == CourseID && c.IsDeleted == false);
+            return await Courses.Include(c => c.Creator).SingleOrDefaultAsync(c => c.CourseId == CourseID && c.IsDeleted == false);
         }
         public async Task<bool> isExist(string CourseName, int CategoryID)
         {
-            return await context.Courses.AnyAsync(c => c.CourseName == CourseName.Trim() && c.CategoryId == CategoryID && c.IsDeleted == false);
+            return await Courses.AnyAsync(c => c.CourseName == CourseName.Trim() && c.CategoryId == CategoryID && c.IsDeleted == false);
         }
         public async Task CreateCourse(Course course)
         {
-            await context.Courses.AddAsync(course);
-            await context.SaveChangesAsync();
+            await Courses.AddAsync(course);
+            await SaveChangesAsync();
         }
         public async Task<Course?> getCourse(Guid CourseID, Guid CreatorID)
         {
-            return await context.Courses.Include(c => c.Creator).SingleOrDefaultAsync(c => c.CourseId == CourseID && c.IsDeleted == false && c.CreatorId == CreatorID);
+            return await Courses.Include(c => c.Creator).SingleOrDefaultAsync(c => c.CourseId == CourseID && c.IsDeleted == false && c.CreatorId == CreatorID);
         }
         public async Task<bool> isExist(string CourseName, int CategoryID, Guid CourseID)
         {
-            return await context.Courses.AnyAsync(c => c.CourseName == CourseName.Trim() && c.CategoryId == CategoryID && c.IsDeleted == false && c.CourseId != CourseID);
+            return await Courses.AnyAsync(c => c.CourseName == CourseName.Trim() && c.CategoryId == CategoryID && c.IsDeleted == false && c.CourseId != CourseID);
         }
         public async Task UpdateCourse(Course course)
         {
-            context.Courses.Update(course);
-            await context.SaveChangesAsync();
+            Courses.Update(course);
+            await SaveChangesAsync();
         }
         public async Task DeleteCourse(Course course)
         {

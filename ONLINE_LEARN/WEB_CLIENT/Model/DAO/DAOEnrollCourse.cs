@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace WEB_CLIENT.Model.DAO
 {
-    public class DAOEnrollCourse : BaseDAO
+    public class DAOEnrollCourse : MyDbContext
     {
         private IQueryable<EnrollCourse> getQuery(Guid StudentID)
         {
-            IQueryable<EnrollCourse> query = context.EnrollCourses.Include(e => e.Course).ThenInclude(e => e.Creator)
+            IQueryable<EnrollCourse> query = EnrollCourses.Include(e => e.Course).ThenInclude(e => e.Creator)
                 .Where(e => e.StudentId == StudentID && e.Course.IsDeleted == false);
             return query;
         }
@@ -32,12 +32,12 @@ namespace WEB_CLIENT.Model.DAO
         }
         public async Task<bool> isExist(Guid CourseID, Guid StudentID)
         {
-            return await context.EnrollCourses.AnyAsync(e => e.CourseId == CourseID && e.StudentId == StudentID);
+            return await EnrollCourses.AnyAsync(e => e.CourseId == CourseID && e.StudentId == StudentID);
         }
         public async Task CreateEnrollCourse(EnrollCourse enroll)
         {
-            await context.EnrollCourses.AddAsync(enroll);
-            await context.SaveChangesAsync();
+            await EnrollCourses.AddAsync(enroll);
+            await SaveChangesAsync();
         }
     }
 }

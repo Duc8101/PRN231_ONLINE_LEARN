@@ -3,32 +3,32 @@ using Microsoft.EntityFrameworkCore;
 
 namespace WEB_CLIENT.Model.DAO
 {
-    public class DAOQuiz : BaseDAO
+    public class DAOQuiz : MyDbContext
     {
         public async Task<List<Guid>> getListLesson()
         {
-            return await context.Quizzes.Where(q => q.IsDeleted == false).Select(q => q.LessonId).Distinct().ToListAsync();
+            return await Quizzes.Where(q => q.IsDeleted == false).Select(q => q.LessonId).Distinct().ToListAsync();
         }
         public async Task<List<Quiz>> getList(Guid LessonID)
         {
-            return await context.Quizzes.Where(q => q.IsDeleted == false && q.LessonId == LessonID).ToListAsync();
+            return await Quizzes.Where(q => q.IsDeleted == false && q.LessonId == LessonID).ToListAsync();
         }
 
         public async Task<Quiz?> getQuiz(Guid QuestionID, Guid LessonID)
         {
-            return await context.Quizzes.SingleOrDefaultAsync(q => q.QuestionId == QuestionID && q.IsDeleted == false && q.LessonId == LessonID);
+            return await Quizzes.SingleOrDefaultAsync(q => q.QuestionId == QuestionID && q.IsDeleted == false && q.LessonId == LessonID);
         }
 
         public async Task CreateQuiz(Quiz quiz)
         {
-            await context.Quizzes.AddAsync(quiz);
-            await context.SaveChangesAsync();
+            await Quizzes.AddAsync(quiz);
+            await SaveChangesAsync();
         }
 
         public async Task UpdateQuiz(Quiz quiz)
         {
-            context.Quizzes.Update(quiz);
-            await context.SaveChangesAsync();
+            Quizzes.Update(quiz);
+            await SaveChangesAsync();
         }
 
         public async Task DeleteQuiz(Quiz quiz)

@@ -3,23 +3,21 @@ using Microsoft.EntityFrameworkCore;
 
 namespace WEB_CLIENT.Model.DAO
 {
-    public class DAOResult : BaseDAO
+    public class DAOResult : MyDbContext
     {
         public async Task<Result?> getResult(Guid LessonID, Guid StudentID)
         {
-            return await context.Results.SingleOrDefaultAsync(r => r.LessonId == LessonID && r.StudentId == StudentID);
+            return await Results.SingleOrDefaultAsync(r => r.LessonId == LessonID && r.StudentId == StudentID);
         }
-
         public async Task CreateResult(Result result)
         {
-            await context.Results.AddAsync(result);
-            await context.SaveChangesAsync();
+            await Results.AddAsync(result);
+            await SaveChangesAsync();
         }
-
         public async Task UpdateResult(Result result)
         {
-            context.Results.Update(result);
-            await context.SaveChangesAsync();
+            Results.Update(result);
+            await SaveChangesAsync();
         }
     }
 }
