@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using DataAccess.Const;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DataAccess.Entity
@@ -9,10 +10,10 @@ namespace DataAccess.Entity
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("VideoID")]
         public int VideoId { get; set; }
-        [MaxLength(200)]
+        [MaxLength(LessonVideoConst.MAX_LENGTH_LESSON_VIDEO_NAME)]
         public string VideoName { get; set; } = null!;
         public string FileVideo { get; set; } = null!;
-        [ForeignKey("Lesson")]
+
         [Column("LessonID")]
         public Guid LessonId { get; set; }
         public virtual Lesson Lesson { get; set; } = null!;

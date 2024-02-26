@@ -1,0 +1,66 @@
+﻿@using DataAccess.Entity;
+@model Dictionary<string, object>
+<!-- Spinner Start -->
+<div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+    <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+        <span class="sr-only">Loading...</span>
+    </div>
+</div>
+<!-- Spinner End -->
+
+@{
+    List<User> list = (List<User>) Model["list"];
+    string name = (string) Model["name"];
+    int STT = 1;
+}
+<nav class="navbar navbar-dark bg-primary">
+    <div class="container-fluid">
+        <a class="navbar-brand"><i class="bi bi-person-circle"></i> WELCOME TO ADMIN</a>
+        <form class="d-flex" action="/Admin">
+            <input class="form-control me-2" type="text" placeholder="Search" aria-label="Search" name="name" value="@name" required>
+            <button class="btn btn-outline-success" type="submit">Search</button>
+        </form>
+    </div>
+</nav>
+
+<section style="margin-top: 50px">
+    <div class="row vh-100">
+        <div class="col-lg-3">
+            <ul class="list-group">
+                <li class="list-group-item list-group-item-info"><a href="/Admin">User Management</a></li>
+                <li class="list-group-item list-group-item-info"><a href="/Admin/Create">Create Teacher</a></li>
+            </ul>
+            <br>
+            <a href="/Logout" class="btn btn-lg btn-primary position-fixed bottom-0 start-0 ">Logout <i class="bi bi-box-arrow-right"></i></a>
+        </div>
+
+        <div class="col-lg-9">
+            <table class="table table-info">
+                <thead>
+                    <tr>
+                        <th scope="col">STT</th>
+                        <th scope="col">Username</th>
+                        <th scope="col">RoleName</th>
+                        <th scope="col">View Detail</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach(User user in list)
+                    {
+                        <tr>
+                            <td>@STT</td>
+                            <td>@user.Username</td>
+                            <td>@user.RoleName</td>
+                            <td><a href="/Admin/Detail/@user.Id">View</a></td>
+                        </tr>
+                        STT++;
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<!-- Back to Top -->
+<a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>

@@ -1,0 +1,232 @@
+﻿@using DataAccess.Const;
+@using DataAccess.DTO;
+@using DataAccess.Entity;
+@model PagedResultDTO<Course>
+<!-- Spinner Start -->
+<div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+    <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+        <span class="sr-only">Loading...</span>
+    </div>
+</div>
+<!-- Spinner End -->
+<!-- Navbar Start -->
+@{
+    string? username = Context.Session.GetString("username");
+    string? role = Context.Session.GetString("role");
+    string? image = Context.Session.GetString("image");
+    string d_none1 = role == null || role == UserConst.ROLE_STUDENT ? "d-none" : "";
+    string d_none2 = role == null || role == UserConst.ROLE_STUDENT ? "" : "d-none";
+    string d_none3 = role != null && role == UserConst.ROLE_TEACHER ? "" : "d-none";
+}
+<nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
+    <a href="/Home" class="navbar-brand d-flex align-items-center px-4 px-lg-5">
+        <h2 class="m-0 text-info"><i class="fa fa-book me-3"></i>eLEARNING</h2>
+    </a>
+    <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+        <div class="navbar-nav ms-auto p-4 p-lg-0">
+            <a href="/Home" class="nav-item nav-link">Home</a>
+            <a href="/About" class="nav-item nav-link">About</a>
+            <a href="/ManagerCourse/Create" class="nav-item nav-link @d_none1">Create Course</a>
+            @if (role == null || role == UserConst.ROLE_STUDENT)
+            {
+                <a href="/Courses" class="nav-item nav-link">Courses</a>
+            }
+        </div>
+    </div>
+
+    @if (username == null)
+    {
+        <a href="/Login" class="btn btn-info py-4 px-lg-5 d-none d-lg-block text-white">Join Now<i class="fa fa-arrow-right ms-3"></i></a>
+    }
+    else
+    {
+        <div class="nav-item dropdown">
+            <a href="#" class="btn btn-info py-4 px-lg-5 text-white"><img src="@image" alt="Avatar" class="avatar">@username</a>
+            <div class="dropdown-menu fade-down m-0">
+                <a href="/Profile" class="dropdown-item">Profile</a>
+                <a href="/MyCourse" class="dropdown-item @d_none2">My Course</a>
+                <a href="/ManagerCourse" class="dropdown-item @d_none3">My Teaching Course</a>
+                <a href="/Logout" class="dropdown-item">Log Out <i class="bi bi-box-arrow-right"></i></a>
+            </div>
+        </div>
+    }
+</nav>
+<!-- Navbar End -->
+
+<!--Courses Start-->
+@if (ViewData["message"] != null)
+{
+    <script>
+        window.onload = function () {
+            alert("@ViewData["message"]");
+        };
+    </script>
+}
+
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="row g-4 justify-content-center">
+            @foreach (Course course in Model.Results)
+            {
+                <div class="col-lg-4 col-md-6 wow fadeInDown" data-wow-delay="0.3s">
+                    <div class="course-item bg-light fw-medium">
+                        <div class="position-relative overflow-hidden">
+                            <div style="height: 240px">
+                                <img class="img-fluid w-100" src="@course.Image" alt="">
+                            </div>
+                        </div>
+
+                        <div class="text-center align-items-center p-2">
+                            <div class="fs-5 ">@(course.CourseName.Length <= 24 ? course.CourseName : course.CourseName.Substring(0, 24) + "...")</div>
+                        </div>
+
+                        <div class="container-fluid">
+                            <div class=" text-center mt-1 row">
+                                <div class="col-4 bg-primary border">
+                                    <a href="/ManagerLesson/Index/@course.CourseId" class="btn btn-primary">View Lesson</a>
+                                </div>
+
+                                <div class="col-4 bg-primary border">
+                                    <a href="/ManagerCourse/Update/@course.CourseId" class="text-light">Update Course</a>
+                                </div>
+
+                                <div class="col-4 bg-primary border">
+                                    <a href="/ManagerCourse/Delete/@course.CourseId" class="text-light"
+                                       onclick="return confirm('Are you sure you want to delete this course :\n@(course.CourseName)')">Delete Course</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            @if (Model.NumberPage > 1)
+            {
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item @(Model.PageSelected == 1 ? "disabled" : "")"><a class="page-link" href="@Model.PRE_URL">Previous</a></li>
+                        @for (int i = 1; i <= Model.NumberPage; i++)
+                        {
+                            string pageURL = "/ManagerCourse?page=" + i;
+                            <li class="page-item"><a class="page-link" href="@pageURL">@i</a></li>
+                        }
+                        <li class="page-item @(Model.PageSelected == Model.NumberPage ? "disabled" : "")"><a class="page-link" href="@Model.NEXT_URL">Next</a></li>
+                    </ul>
+                </nav>
+            }
+
+        </div>
+    </div>
+</div>
+
+<!--Courses End-->
+<!-- Footer Start -->
+@if (Model.Results.Count == 0)
+{
+    <section style="margin-top:21.5%">
+        <div class="container-fluid bg-dark text-light footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">
+            <div class="container py-5">
+                <div class="row g-5">
+                    <div class="col-lg-4 col-md-6">
+                        <h4 class="text-white mb-3">Quick Link</h4>
+                        <a class="btn btn-link" href="/About">About Us</a>
+                        <a class="btn btn-link" href="#">Contact Us</a>
+                        <a class="btn btn-link" href="/FAQ">FAQs & Help</a>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <h4 class="text-white mb-3">Contact</h4>
+                        <p class="mb-2"><i class="fa fa-map-marker-alt me-3"></i>FPT University</p>
+                        <p class="mb-2"><i class="fa fa-phone-alt me-3"></i>0984 739 845</p>
+                        <p class="mb-2"><i class="fa fa-envelope me-3"></i>eLearning@gmail.com</p>
+                        <div class="d-flex pt-2">
+                            <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-twitter"></i></a>
+                            <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-facebook-f"></i></a>
+                            <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-youtube"></i></a>
+                            <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-linkedin-in"></i></a>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <h4 class="text-white mb-3">Gallery</h4>
+                        <div class="row g-2 pt-2">
+                            <div class="col-4">
+                                <img class="img-fluid bg-light p-1" src="~/img/course-1.jpg" alt="">
+                            </div>
+                            <div class="col-4">
+                                <img class="img-fluid bg-light p-1" src="~/img/course-2.jpg" alt="">
+                            </div>
+                            <div class="col-4">
+                                <img class="img-fluid bg-light p-1" src="~/img/course-3.jpg" alt="">
+                            </div>
+                            <div class="col-4">
+                                <img class="img-fluid bg-light p-1" src="~/img/course-2.jpg" alt="">
+                            </div>
+                            <div class="col-4">
+                                <img class="img-fluid bg-light p-1" src="~/img/course-3.jpg" alt="">
+                            </div>
+                            <div class="col-4">
+                                <img class="img-fluid bg-light p-1" src="~/img/course-1.jpg" alt="">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+}
+else
+{
+    <div class="container-fluid bg-dark text-light footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">
+        <div class="container py-5">
+            <div class="row g-5">
+                <div class="col-lg-4 col-md-6">
+                    <h4 class="text-white mb-3">Quick Link</h4>
+                    <a class="btn btn-link" href="/About">About Us</a>
+                    <a class="btn btn-link" href="#">Contact Us</a>
+                    <a class="btn btn-link" href="/FAQ">FAQs & Help</a>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <h4 class="text-white mb-3">Contact</h4>
+                    <p class="mb-2"><i class="fa fa-map-marker-alt me-3"></i>FPT University</p>
+                    <p class="mb-2"><i class="fa fa-phone-alt me-3"></i>0984 739 845</p>
+                    <p class="mb-2"><i class="fa fa-envelope me-3"></i>eLearning@gmail.com</p>
+                    <div class="d-flex pt-2">
+                        <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-twitter"></i></a>
+                        <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-facebook-f"></i></a>
+                        <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-youtube"></i></a>
+                        <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <h4 class="text-white mb-3">Gallery</h4>
+                    <div class="row g-2 pt-2">
+                        <div class="col-4">
+                            <img class="img-fluid bg-light p-1" src="~/img/course-1.jpg" alt="">
+                        </div>
+                        <div class="col-4">
+                            <img class="img-fluid bg-light p-1" src="~/img/course-2.jpg" alt="">
+                        </div>
+                        <div class="col-4">
+                            <img class="img-fluid bg-light p-1" src="~/img/course-3.jpg" alt="">
+                        </div>
+                        <div class="col-4">
+                            <img class="img-fluid bg-light p-1" src="~/img/course-2.jpg" alt="">
+                        </div>
+                        <div class="col-4">
+                            <img class="img-fluid bg-light p-1" src="~/img/course-3.jpg" alt="">
+                        </div>
+                        <div class="col-4">
+                            <img class="img-fluid bg-light p-1" src="~/img/course-1.jpg" alt="">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<!-- Footer End -->
+<!-- Back to Top -->
+<a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>

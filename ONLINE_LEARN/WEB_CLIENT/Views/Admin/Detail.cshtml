@@ -1,0 +1,77 @@
+﻿@using DataAccess.Const;
+@using DataAccess.Entity;
+@model Dictionary<string, object>
+<!-- Spinner Start -->
+<div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+    <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+        <span class="sr-only">Loading...</span>
+    </div>
+</div>
+<!-- Spinner End -->
+
+<nav class="navbar navbar-dark bg-primary">
+    <div class="container-fluid">
+        <a class="navbar-brand"><i class="bi bi-person-circle"></i> WELCOME TO ADMIN</a>
+        <form class="d-flex" action="/Admin">
+            <input class="form-control me-2" type="text" placeholder="Search" aria-label="Search" name="name" required>
+            <button class="btn btn-outline-success" type="submit">Search</button>
+        </form>
+    </div>
+</nav>
+
+@{
+    User user = (User)Model["user"];
+    List<string> list = (List<string>) Model["list"];
+}
+<section style="margin-top: 50px">
+    <div class="row vh-100">
+        <div class="col-lg-3">
+            <ul class="list-group">
+                <li class="list-group-item list-group-item-info"><a href="/Admin">User Management</a></li>
+                <li class="list-group-item list-group-item-info"><a href="/Admin/Create">Create Teacher</a></li>
+            </ul>
+            <br>
+            <a href="/Logout" class="btn btn-lg btn-primary position-fixed bottom-0 start-0 ">Logout <i class="bi bi-box-arrow-right"></i></a>
+        </div>
+
+        <div class="col-lg-9">
+            <div class="row">
+                <div class="col-md-4">
+                    <button class="btn btn-outline-success" id="username">@user.Username</button>
+                </div>
+                <div class="col-md-4">
+                    <img src="@user.Image" alt="" width="250" height="250" id="image"><br>
+                </div>
+            </div>
+
+            <div class="col-md-12 border-right">
+                <div class="row mt-2">
+                    <div class="col-md-6"><label class="labels">FullName</label><input type="text" class="form-control" placeholder="Full Name" id="FullName" value="@user.FullName" name="FullName" readonly required></div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-12">
+                        <label class="labels">Email</label>
+                        <input type="email" class="form-control" placeholder="Email" id="email" name="email" value="@user.Email" readonly required>
+                    </div>
+                    <div class="col-md-12"><label class="labels">Phone</label><input type="text" class="form-control" value="@user.Phone" placeholder="Phone" id="phone" name="phone" readonly></div>
+                    <div class="col-md-12">
+                        <label class="labels">Gender</label>
+                        <select name="gender" class="form-control" id="gender" disabled>
+                            @foreach (string gender in list)
+                            {
+                                if(gender == user.Gender)
+                                {
+                                    <option value="@gender" selected>@gender</option>
+                                }
+                                else
+                                {
+                                    <option value="@gender">@gender</option>
+                                }     
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

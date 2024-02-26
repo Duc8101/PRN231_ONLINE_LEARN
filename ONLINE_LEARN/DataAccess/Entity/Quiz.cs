@@ -11,7 +11,7 @@ namespace DataAccess.Entity
         public Guid QuestionId { get; set; }
         [Column("Question")]
         public string Question { get; set; } = null!;
-        [ForeignKey("Lesson")]
+
         [Column("LessonID")]
         public Guid LessonId { get; set; }
         public string Answer1 { get; set; } = null!;

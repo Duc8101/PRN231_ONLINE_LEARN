@@ -19,7 +19,7 @@ namespace DataAccess.Entity
         public string Image { get; set; } = null!;
         [Column("CategoryID")]
         public int CategoryId { get; set; }
-        [ForeignKey("User")]
+
         [Column("CreatorID")]
         public Guid CreatorId { get; set; }
         [Column("description")]

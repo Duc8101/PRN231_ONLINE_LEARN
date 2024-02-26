@@ -1,0 +1,151 @@
+﻿@using DataAccess.Const;
+@using DataAccess.Entity;
+@using DataAccess.Model.DAO;
+@model Dictionary<string,object>
+<!-- Spinner Start -->
+<div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+    <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+        <span class="sr-only">Loading...</span>
+    </div>
+</div>
+<!-- Spinner End -->
+<!-- Navbar Start -->
+@{
+    string? username = Context.Session.GetString("username");
+    string? role = Context.Session.GetString("role");
+    string? image = Context.Session.GetString("image");
+    string d_none1 = role == null || role == UserConst.ROLE_STUDENT ? "d-none" : "";
+    string d_none2 = role == null || role == UserConst.ROLE_STUDENT ? "" : "d-none";
+    string d_none3 = role != null && role == UserConst.ROLE_TEACHER ? "" : "d-none";
+}
+<nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
+    <a href="/Home" class="navbar-brand d-flex align-items-center px-4 px-lg-5">
+        <h2 class="m-0 text-info"><i class="fa fa-book me-3"></i>eLEARNING</h2>
+    </a>
+    <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+        <div class="navbar-nav ms-auto p-4 p-lg-0">
+            <a href="/Home" class="nav-item nav-link">Home</a>
+            <a href="/About" class="nav-item nav-link">About</a>
+            <a href="/ManagerCourse/Create" class="nav-item nav-link @d_none1">Create Course</a>
+            @if (role == null || role == UserConst.ROLE_STUDENT)
+            {
+                <a href="/Courses" class="nav-item nav-link">Courses</a>
+            }
+        </div>
+    </div>
+
+    @if (username == null)
+    {
+        <a href="/Login" class="btn btn-info py-4 px-lg-5 d-none d-lg-block text-white">Join Now<i class="fa fa-arrow-right ms-3"></i></a>
+    }
+    else
+    {
+        <div class="nav-item dropdown">
+            <a href="#" class="btn btn-info py-4 px-lg-5 text-white"><img src="@image" alt="Avatar" class="avatar">@username</a>
+            <div class="dropdown-menu fade-down m-0">
+                <a href="/Profile" class="dropdown-item">Profile</a>
+                <a href="/MyCourse" class="dropdown-item @d_none2">My Course</a>
+                <a href="/ManagerCourse" class="dropdown-item @d_none3">My Teaching Course</a>
+                <a href="/Logout" class="dropdown-item">Log Out <i class="bi bi-box-arrow-right"></i></a>
+            </div>
+        </div>
+    }
+</nav>
+<!-- Navbar End -->
+<!--Detail Start -->
+@{
+    Course course = (Course) Model["course"];
+    List<Lesson> list = (List<Lesson>) Model["list"];
+    //DAOLesson daoLesson = new DAOLesson();
+    DAOEnrollCourse daoEnroll = new DAOEnrollCourse();
+}
+
+<div class="container-fluid py-5 wow fadeInDown row" data-wow-delay="0.1s">
+    <div class="border col-4">
+        <div class="row g-4 justify-content-center">
+            @{
+                string? UserID = Context.Session.GetString("UserID");
+                bool isExist = false;
+            }
+            <div class="col-12 wow fadeInDown" data-wow-delay="0.1s">
+                <div class="course-item bg-light">
+                    <div class="position-relative overflow-hidden">
+                        <div style="height: 240px">
+                            <img style="width: 100%" class="img-fluid" src="@course.Image" alt="">
+                        </div>
+                        <div class="w-100 d-flex justify-content-center position-absolute bottom-0 start-0 mb-4">
+                            @if (UserID != null)
+                            {
+                                List<EnrollCourse> listEnroll = await daoEnroll.getList(Guid.Parse(UserID));
+                                foreach (EnrollCourse enroll in listEnroll)
+                                {
+                                    if (enroll.CourseId == course.CourseId)
+                                    {
+                                        isExist = true;
+                                        break;
+                                    }
+                                }
+                                // if exist student learn course and exist lesson in course
+                            }
+
+                            @if (isExist && list.Count > 0)
+                            {
+                                <a href="/Courses/LearnCourse/@course.CourseId" class="flex-shrink-0 btn btn-sm btn-primary px-3"
+                                   style="border-radius: 0 30px 30px 0;">Learn Course</a>
+                                // if not exist student learn course and exist lesson in course
+                            }
+                            else if (list.Count > 0)
+                            {
+                                <a href="/Courses/EnrollCourse/@course.CourseId" class="flex-shrink-0 btn btn-sm btn-primary px-3"
+                                   style="border-radius: 0 30px 30px 0;">Enroll Course</a>
+                            }
+                        </div>
+                    </div>
+                    <div class="text-center p-4 pb-0">
+                        <div class="mb-1">
+                        </div>
+                        <h5 class="mb-2">@course.CourseName</h5>
+
+                    </div>
+                    <div class="d-flex border-top">
+                        <small class="flex-fill text-center border py-2"><i class="fa fa-user-tie text-primary me-2"></i>@course.Creator.FullName</small>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="money-back text-center my-2">30-Day Money-Back Guarantee</div>
+    </div>
+
+
+    <div class="col-8 row">
+        <div class="border row align-items-center ">
+            <b style="font-size: 20px">Course Content Description:</b>
+            <p>@course.Description</p>
+        </div>
+        <div class="border row">
+            <div class="my-2">
+                <ol class="list-group list-group-numbered">
+                    @foreach (Lesson lesson in list)
+                    {
+                        <li class="list-group-item list-group-item-action d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">@lesson.LessonName</div>
+                            </div>
+                        </li>
+                    }
+
+                    @if (list.Count == 0)
+                    {
+                        <h1 class="mb-4 justify-content-center text-primary"><i class="bi bi-exclamation-triangle display-1 text-primary"></i>This Course Is Under Development Process And Don't Have Any Courses Yet</h1>
+                    }
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Detail End -->

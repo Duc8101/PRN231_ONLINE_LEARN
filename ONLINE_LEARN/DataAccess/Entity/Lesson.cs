@@ -19,7 +19,7 @@ namespace DataAccess.Entity
         public Guid LessonId { get; set; }
         [MaxLength(LessonConst.MAX_LENGTH_LESSON_NAME)]
         public string LessonName { get; set; } = null!;
-        [ForeignKey("Course")]
+
         [Column("CourseID")]
         public Guid CourseId { get; set; }
         public int LessonNo { get; set; }

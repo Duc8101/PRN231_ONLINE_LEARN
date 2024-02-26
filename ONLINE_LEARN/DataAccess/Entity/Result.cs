@@ -5,10 +5,8 @@ namespace DataAccess.Entity
     [Table("Result")]
     public partial class Result : CommonEntity
     {
-        [ForeignKey("Lesson")]
         [Column("LessonID")]
         public Guid LessonId { get; set; }
-        [ForeignKey("User")]
         [Column("StudentID")]
         public Guid StudentId { get; set; }
         [Column("score")]

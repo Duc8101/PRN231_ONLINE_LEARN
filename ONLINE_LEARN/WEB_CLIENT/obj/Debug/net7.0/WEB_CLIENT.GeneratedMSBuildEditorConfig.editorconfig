@@ -1,0 +1,137 @@
+is_global = true
+build_property.TargetFramework = net7.0
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = true
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = 
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property.RootNamespace = WEB_CLIENT
+build_property.RootNamespace = WEB_CLIENT
+build_property.ProjectDir = D:\GitHub\PRN231_ONLINE_LEARN\ONLINE_LEARN\WEB_CLIENT\
+build_property.RazorLangVersion = 7.0
+build_property.SupportLocalizedComponentNames = 
+build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+build_property.MSBuildProjectDirectory = D:\GitHub\PRN231_ONLINE_LEARN\ONLINE_LEARN\WEB_CLIENT
+build_property._RazorSourceGeneratorDebug = 
+
+[D:/GitHub/PRN231_ONLINE_LEARN/ONLINE_LEARN/WEB_CLIENT/Views/About/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWJvdXRcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GitHub/PRN231_ONLINE_LEARN/ONLINE_LEARN/WEB_CLIENT/Views/Admin/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cQ3JlYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GitHub/PRN231_ONLINE_LEARN/ONLINE_LEARN/WEB_CLIENT/Views/Admin/Detail.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cRGV0YWlsLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GitHub/PRN231_ONLINE_LEARN/ONLINE_LEARN/WEB_CLIENT/Views/Admin/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GitHub/PRN231_ONLINE_LEARN/ONLINE_LEARN/WEB_CLIENT/Views/ChangePassword/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2hhbmdlUGFzc3dvcmRcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GitHub/PRN231_ONLINE_LEARN/ONLINE_LEARN/WEB_CLIENT/Views/Courses/Detail.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ291cnNlc1xEZXRhaWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GitHub/PRN231_ONLINE_LEARN/ONLINE_LEARN/WEB_CLIENT/Views/Courses/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ291cnNlc1xJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GitHub/PRN231_ONLINE_LEARN/ONLINE_LEARN/WEB_CLIENT/Views/Courses/LearnCourse.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ291cnNlc1xMZWFybkNvdXJzZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GitHub/PRN231_ONLINE_LEARN/ONLINE_LEARN/WEB_CLIENT/Views/FAQ/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRkFRXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GitHub/PRN231_ONLINE_LEARN/ONLINE_LEARN/WEB_CLIENT/Views/ForgotPassword/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRm9yZ290UGFzc3dvcmRcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GitHub/PRN231_ONLINE_LEARN/ONLINE_LEARN/WEB_CLIENT/Views/Home/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GitHub/PRN231_ONLINE_LEARN/ONLINE_LEARN/WEB_CLIENT/Views/Login/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTG9naW5cSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GitHub/PRN231_ONLINE_LEARN/ONLINE_LEARN/WEB_CLIENT/Views/ManagerCourse/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFuYWdlckNvdXJzZVxDcmVhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GitHub/PRN231_ONLINE_LEARN/ONLINE_LEARN/WEB_CLIENT/Views/ManagerCourse/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFuYWdlckNvdXJzZVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GitHub/PRN231_ONLINE_LEARN/ONLINE_LEARN/WEB_CLIENT/Views/ManagerCourse/Update.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFuYWdlckNvdXJzZVxVcGRhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GitHub/PRN231_ONLINE_LEARN/ONLINE_LEARN/WEB_CLIENT/Views/ManagerLesson/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFuYWdlckxlc3NvblxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GitHub/PRN231_ONLINE_LEARN/ONLINE_LEARN/WEB_CLIENT/Views/ManagerQuiz/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFuYWdlclF1aXpcQ3JlYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GitHub/PRN231_ONLINE_LEARN/ONLINE_LEARN/WEB_CLIENT/Views/ManagerQuiz/Detail.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFuYWdlclF1aXpcRGV0YWlsLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GitHub/PRN231_ONLINE_LEARN/ONLINE_LEARN/WEB_CLIENT/Views/ManagerQuiz/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFuYWdlclF1aXpcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GitHub/PRN231_ONLINE_LEARN/ONLINE_LEARN/WEB_CLIENT/Views/ManagerQuiz/Update.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFuYWdlclF1aXpcVXBkYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GitHub/PRN231_ONLINE_LEARN/ONLINE_LEARN/WEB_CLIENT/Views/MyCourse/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTXlDb3Vyc2VcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GitHub/PRN231_ONLINE_LEARN/ONLINE_LEARN/WEB_CLIENT/Views/Profile/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZmlsZVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GitHub/PRN231_ONLINE_LEARN/ONLINE_LEARN/WEB_CLIENT/Views/Register/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVnaXN0ZXJcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GitHub/PRN231_ONLINE_LEARN/ONLINE_LEARN/WEB_CLIENT/Views/Shared/Error.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GitHub/PRN231_ONLINE_LEARN/ONLINE_LEARN/WEB_CLIENT/Views/Shared/_ValidationScriptsPartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GitHub/PRN231_ONLINE_LEARN/ONLINE_LEARN/WEB_CLIENT/Views/TakeQuiz/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGFrZVF1aXpcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GitHub/PRN231_ONLINE_LEARN/ONLINE_LEARN/WEB_CLIENT/Views/TakeQuiz/Result.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGFrZVF1aXpcUmVzdWx0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GitHub/PRN231_ONLINE_LEARN/ONLINE_LEARN/WEB_CLIENT/Views/_ViewImports.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GitHub/PRN231_ONLINE_LEARN/ONLINE_LEARN/WEB_CLIENT/Views/_ViewStart.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GitHub/PRN231_ONLINE_LEARN/ONLINE_LEARN/WEB_CLIENT/Views/Shared/_Layout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = b-25s1iq0ykg

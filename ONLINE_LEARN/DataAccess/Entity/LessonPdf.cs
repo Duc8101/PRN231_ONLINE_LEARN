@@ -13,7 +13,7 @@ namespace DataAccess.Entity
         public string Pdfname { get; set; } = null!;
         [Column("FilePDF")]
         public string FilePdf { get; set; } = null!;
-        [ForeignKey("Lesson")]
+
         [Column("LessonID")]
         public Guid LessonId { get; set; }
         public virtual Lesson Lesson { get; set; } = null!;

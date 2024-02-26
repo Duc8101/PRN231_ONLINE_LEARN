@@ -1,0 +1,308 @@
+﻿@using DataAccess.Const;
+@using DataAccess.DTO;
+@using DataAccess.Entity;
+@using DataAccess.Model.DAO;
+@model Dictionary<string,object>
+<!-- Spinner Start -->
+<div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+    <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+        <span class="sr-only">Loading...</span>
+    </div>
+</div>
+<!-- Spinner End -->
+<!-- Navbar Start -->
+@{
+    string? username = Context.Session.GetString("username");
+    string? role = Context.Session.GetString("role");
+    string? image = Context.Session.GetString("image");
+    string d_none1 = role == null || role == UserConst.ROLE_STUDENT ? "d-none" : "";
+    string d_none2 = role == null || role == UserConst.ROLE_STUDENT ? "" : "d-none";
+    string d_none3 = role != null && role == UserConst.ROLE_TEACHER ? "" : "d-none";
+}
+<nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
+    <a href="/Home" class="navbar-brand d-flex align-items-center px-4 px-lg-5">
+        <h2 class="m-0 text-info"><i class="fa fa-book me-3"></i>eLEARNING</h2>
+    </a>
+    <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+        <div class="navbar-nav ms-auto p-4 p-lg-0">
+            <a href="/Home" class="nav-item nav-link">Home</a>
+            <a href="/About" class="nav-item nav-link">About</a>
+            <a href="/ManagerCourse/Create" class="nav-item nav-link @d_none1">Create Course</a>
+            @if (role == null || role == UserConst.ROLE_STUDENT)
+            {
+                <a href="/Courses" class="nav-item nav-link">Courses</a>
+            }
+        </div>
+    </div>
+
+    @if (username == null)
+    {
+        <a href="/Login" class="btn btn-info py-4 px-lg-5 d-none d-lg-block text-white">Join Now<i class="fa fa-arrow-right ms-3"></i></a>
+    }
+    else
+    {
+        <div class="nav-item dropdown">
+            <a href="#" class="btn btn-info py-4 px-lg-5 text-white"><img src="@image" alt="Avatar" class="avatar">@username</a>
+            <div class="dropdown-menu fade-down m-0">
+                <a href="/Profile" class="dropdown-item">Profile</a>
+                <a href="/MyCourse" class="dropdown-item @d_none2">My Course</a>
+                <a href="/ManagerCourse" class="dropdown-item @d_none3">My Teaching Course</a>
+                <a href="/Logout" class="dropdown-item">Log Out <i class="bi bi-box-arrow-right"></i></a>
+            </div>
+        </div>
+    }
+</nav>
+<!-- Navbar End -->
+
+@if (ViewData["enroll"] != null)
+{
+    <script>
+        window.onload = function () {
+            alert("@ViewData["enroll"]");
+        };
+    </script>
+}
+
+@{
+    PagedResultDTO<Course> result = (PagedResultDTO<Course>) Model["result"];
+    int CategoryID = (int)Model["CategoryID"];
+    string flow = (string) Model["flow"];
+    string properties = (string) Model["properties"];
+    List<Category> listCategory = (List<Category>) Model["list"];
+}
+
+<!-- Courses Start -->
+<div class="container-xxl py-4">
+    <div class="container">
+        <div class="text-center wow fadeInDown" data-wow-delay="0.1s">
+            <h4 class="section-title bg-white text-center text-primary px-3">Courses</h4>
+        </div>
+        <div class="row">
+            <div class="col-2 border">
+                <div class="list-group mt-2">
+                    <a class="py-3 list-group-item list-group-item-action @(CategoryID == 0 ? "active" : "")" href="/Courses">ALL</a>
+                    @foreach (Category category in listCategory)
+                    {
+                        <a class="py-3 list-group-item list-group-item-action @(category.Id == CategoryID ? "active" : "")" href="/Courses?CategoryID=@category.Id">@category.Name</a>
+                    }
+                </div>
+            </div>
+
+            <div class="border col-10">
+                <form action="Courses" class=" my-3 wow fadeInDown row fs-5 fw-bolder" data-wow-delay="0.2s">
+                    @if (CategoryID != 0)
+                    {
+                        <input type="hidden" name="CategoryID" value="@CategoryID">
+                    }
+                    <div class="border col-2 text-center py-2 ms-2 fs-5 fw-bolder">Sort By : </div>
+                    <select name="properties" class="form-select form-select-md col-3 mx-1 py-2 fs-5 fw-bolder" aria-label=".form-select-lg example" style="width: 15%">
+                        <option value="CourseName">Title</option>
+                    </select>
+
+                    <select name="flow" class="form-select form-select-md col-3 mx-1 py-2 fs-5 fw-bolder" aria-label=".form-select-lg example" style="width: 15%">
+                        @if (flow.Length == 0 || flow != "asc" || flow != "desc")
+                        {
+                            <option value="asc">Ascending</option>
+                            <option value="desc">Descending</option>
+                        }
+                        else if (flow == "asc")
+                        {
+                            <option value="asc" selected>Ascending</option>
+                            <option value="desc">Descending</option>
+                        }
+                        else if (flow == "desc")
+                        {
+                            <option value="asc">Ascending</option>
+                            <option value="desc" selected>Descending</option>
+                        }
+                    </select>
+                    <input class="mx-2 btn btn-primary border border-primary col-1 py-2 fs-5 fw-bolder" type="submit" value="Sort">
+                </form>
+
+                <div class="row g-4 justify-content-center">
+                    @{
+                        string? UserID = Context.Session.GetString("UserID");
+                        DAOLesson daoLesson = new DAOLesson();
+                        DAOEnrollCourse daoEnroll = new DAOEnrollCourse();
+                    }
+                    @foreach (Course course in result.Results)
+                    {
+                        bool isExist = false;
+                        List<Lesson> listLesson = await daoLesson.getList(course.CourseId);
+                        <div class="col-lg-4 col-md-6 wow fadeInDown" data-wow-delay="0.1s">
+                            <div class="course-item bg-light">
+                                <div class="position-relative overflow-hidden">
+                                    <div style="height: 240px">
+                                        <img class="img-fluid w-100" src="@course.Image" alt="">
+                                    </div>
+                                    @if(role == null || role == UserConst.ROLE_STUDENT)
+                                    {
+                                        <div class="w-100 d-flex justify-content-center position-absolute bottom-0 start-0 mb-4">
+                                            <a href="/Courses/Detail/@course.CourseId" class="flex-shrink-0 btn btn-sm btn-primary px-3 border-end"
+                                               style="border-radius: 30px @(listLesson.Count == 0 ? "" : "0 0") 30px;">
+                                                Read More
+                                            </a>
+                                            @if (UserID != null)
+                                            {
+                                                List<EnrollCourse> listEnroll = await daoEnroll.getList(Guid.Parse(UserID));
+                                                foreach (EnrollCourse enroll in listEnroll)
+                                                {
+                                                    if (enroll.CourseId == course.CourseId)
+                                                    {
+                                                        isExist = true;
+                                                        break;
+                                                    }
+                                                }
+                                                // if exist student learn course and exist lesson in course
+                                            }
+                                            @if (isExist && listLesson.Count > 0)
+                                            {
+                                                <a href="/Courses/LearnCourse/@course.CourseId" class="flex-shrink-0 btn btn-sm btn-primary px-3"
+                                                   style="border-radius: 0 30px 30px 0;">Learn Course</a>
+                                                // if not exist student learn course and exist lesson in course
+                                            }
+                                            else if (listLesson.Count > 0)
+                                            {
+                                                <a href="/Courses/EnrollCourse/@course.CourseId" class="flex-shrink-0 btn btn-sm btn-primary px-3"
+                                                   style="border-radius: 0 30px 30px 0;">Enroll Course</a>
+                                            }
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="col-4 bg-primary border">
+                                            <form action="/ManagerLesson">
+                                                <input type="hidden" name="CourseID" value="@course.CourseId">
+                                                <input type="submit" value="View Lesson" class="btn btn-primary">
+                                            </form>
+                                        </div>
+
+                                        <div class="col-4 bg-primary border">
+                                            <a href="/ManagerCourse/Edit/@course.CourseId" class="text-light">Update Course</a>
+                                        </div>
+
+                                        <div class="col-4 bg-primary border">
+                                            <a href="/ManagerCourse/Delete/@course.CourseId" class="text-light"
+                                               onclick="return confirm('Are you sure you want to delete this course :\n@(course.CourseName)')">Delete Course</a>
+                                        </div>                         
+                                    }
+                                </div>
+
+                                <div class="text-center p-4 pb-0">
+                                    <div class="mb-1">
+                                    </div>
+
+                                    <h5 class="mb-2">@(course.CourseName.Length <= 24 ? course.CourseName : course.CourseName.Substring(0, 24) + "...")</h5>
+                                </div>
+
+
+                                <div class="d-flex border-top">
+                                    <small class="flex-fill text-center border-end py-2"><i class="fa fa-user-tie text-primary me-2"></i>@course.Creator.FullName</small>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                    @if (result.NumberPage > 1)
+                    {
+                        <nav aria-label="Page navigation example">
+                            <ul class="pagination justify-content-center">
+                                <li class="page-item @(result.PageSelected == 1 ? "disabled" : "")"><a class="page-link" href="@result.PRE_URL">Previous</a></li>
+                                @for (int i = 1; i <= result.NumberPage; i++)
+                                {
+                                    string pageURL;
+                                    // if not sort
+                                    if (properties.Length == 0 && flow.Length == 0)
+                                    {
+                                        // if not choose category
+                                        if (CategoryID == 0)
+                                        {
+                                            pageURL = "/Courses" + "?page=" + i;
+                                        }
+                                        else
+                                        {
+                                            pageURL = "/Courses" + "?CategoryID=" + CategoryID + "&page=" + i;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        // if not choose category
+                                        if (CategoryID == 0)
+                                        {
+                                            pageURL = "/Courses" + "?properties=" + properties + "&flow=" + flow + "&page=" + i;
+                                        }
+                                        else
+                                        {
+                                            pageURL = "/Courses" + "?CategoryID=" + CategoryID + "&properties=" + properties + "&flow=" + flow + "&page=" + i;
+                                        }
+                                    }
+                                    <li class="page-item"><a class="page-link" href="@pageURL">@i</a></li>
+                                }
+                                <li class="page-item @(result.PageSelected == result.NumberPage ? "disabled" : "")"><a class="page-link" href="@result.NEXT_URL">Next</a></li>
+                            </ul>
+                        </nav>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Courses End -->
+
+<!-- Footer Start -->
+<div class="container-fluid bg-dark text-light footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">
+    <div class="container py-5">
+        <div class="row g-5">
+            <div class="col-lg-4 col-md-6">
+                <h4 class="text-white mb-3">Quick Link</h4>
+                <a class="btn btn-link" href="/About">About Us</a>
+                <a class="btn btn-link" href="#">Contact Us</a>
+                <a class="btn btn-link" href="/FAQ">FAQs & Help</a>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <h4 class="text-white mb-3">Contact</h4>
+                <p class="mb-2"><i class="fa fa-map-marker-alt me-3"></i>FPT University</p>
+                <p class="mb-2"><i class="fa fa-phone-alt me-3"></i>0984 739 845</p>
+                <p class="mb-2"><i class="fa fa-envelope me-3"></i>eLearning@gmail.com</p>
+                <div class="d-flex pt-2">
+                    <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-twitter"></i></a>
+                    <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-facebook-f"></i></a>
+                    <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-youtube"></i></a>
+                    <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <h4 class="text-white mb-3">Gallery</h4>
+                <div class="row g-2 pt-2">
+                    <div class="col-4">
+                        <img class="img-fluid bg-light p-1" src="~/img/course-1.jpg" alt="">
+                    </div>
+                    <div class="col-4">
+                        <img class="img-fluid bg-light p-1" src="~/img/course-2.jpg" alt="">
+                    </div>
+                    <div class="col-4">
+                        <img class="img-fluid bg-light p-1" src="~/img/course-3.jpg" alt="">
+                    </div>
+                    <div class="col-4">
+                        <img class="img-fluid bg-light p-1" src="~/img/course-2.jpg" alt="">
+                    </div>
+                    <div class="col-4">
+                        <img class="img-fluid bg-light p-1" src="~/img/course-3.jpg" alt="">
+                    </div>
+                    <div class="col-4">
+                        <img class="img-fluid bg-light p-1" src="~/img/course-1.jpg" alt="">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Footer End -->
+
+<!-- Back to Top -->
+<a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+
