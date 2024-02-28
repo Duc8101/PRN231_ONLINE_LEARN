@@ -11,6 +11,11 @@ namespace WEB_CLIENT.Controllers
         private readonly ManagerLessonService service = new ManagerLessonService();
         public async Task<ActionResult> Index(Guid? id, string? video /* file video */, string? name /*video name or pdf name*/, string? PDF /*file PDF */, Guid? LessonID)
         {
+            // if session time out
+            if (isSessionTimeout())
+            {
+                return Redirect("/Logout");
+            }
             string? role = getRole();
             if (role == UserConst.ROLE_TEACHER)
             {
@@ -41,6 +46,11 @@ namespace WEB_CLIENT.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(string? LessonName, Guid CourseID)
         {
+            // if session time out
+            if (isSessionTimeout())
+            {
+                return Redirect("/Logout");
+            }
             string? role = getRole();
             if (role == UserConst.ROLE_TEACHER)
             {
@@ -71,6 +81,11 @@ namespace WEB_CLIENT.Controllers
         [HttpPost]
         public async Task<ActionResult> Update(Guid id, string? LessonName, Guid CourseID)
         {
+            // if session time out
+            if (isSessionTimeout())
+            {
+                return Redirect("/Logout");
+            }
             string? role = getRole();
             if (role == UserConst.ROLE_TEACHER)
             {
@@ -100,6 +115,11 @@ namespace WEB_CLIENT.Controllers
 
         public async Task<ActionResult> Delete(Guid? id, Guid? CourseID)
         {
+            // if session time out
+            if (isSessionTimeout())
+            {
+                return Redirect("/Logout");
+            }
             string? role = getRole();
             if (role == UserConst.ROLE_TEACHER)
             {

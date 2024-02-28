@@ -4,6 +4,7 @@ namespace WEB_CLIENT.Controllers
 {
     public class BaseController : Controller
     {
+        internal static Guid? IDLogin = null;
         internal string? getUserID()
         {
             return HttpContext.Session.GetString("UserID");
@@ -17,6 +18,12 @@ namespace WEB_CLIENT.Controllers
         internal string? getRole()
         {
             return HttpContext.Session.GetString("role");
+        }
+
+        internal bool isSessionTimeout()
+        {
+            string? role = getRole();
+            return IDLogin.HasValue && role == null;
         }
 
     }

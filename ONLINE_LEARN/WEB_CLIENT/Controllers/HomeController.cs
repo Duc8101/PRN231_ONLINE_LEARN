@@ -11,6 +11,11 @@ namespace WEB_CLIENT.Controllers
         private readonly HomeService service = new HomeService();
         public async Task<ActionResult> Index()
         {
+            // if session time out
+            if (isSessionTimeout())
+            {
+                return Redirect("/Logout");
+            }
             string? role = getRole();
             if (role == UserConst.ROLE_ADMIN)
             {

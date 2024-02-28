@@ -12,7 +12,12 @@ namespace WEB_CLIENT.Controllers
 
         public ActionResult Index()
         {
-            return View();
+            string? role = getRole();
+            if (role == null)
+            {
+                return View();
+            }
+            return Redirect("/Home");
         }
 
         [HttpPost]

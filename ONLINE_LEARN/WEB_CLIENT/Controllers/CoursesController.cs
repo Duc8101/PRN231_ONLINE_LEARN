@@ -11,6 +11,11 @@ namespace WEB_CLIENT.Controllers
         private readonly CoursesService service = new CoursesService();
         public async Task<ActionResult> Index(int? CategoryID, string? properties, string? flow, int? page)
         {
+            // if session time out
+            if (isSessionTimeout())
+            {
+                return Redirect("/Logout");
+            }
             string? role = getRole();
             if (role == null || role == UserConst.ROLE_STUDENT)
             {
@@ -26,6 +31,11 @@ namespace WEB_CLIENT.Controllers
         }
         public async Task<ActionResult> Detail(Guid? id)
         {
+            // if session time out
+            if (isSessionTimeout())
+            {
+                return Redirect("/Logout");
+            }
             string? role = getRole();
             if (role == null || role == UserConst.ROLE_STUDENT)
             {
@@ -44,6 +54,11 @@ namespace WEB_CLIENT.Controllers
         }
         public async Task<ActionResult> EnrollCourse(Guid? id)
         {
+            // if session time out
+            if (isSessionTimeout())
+            {
+                return Redirect("/Logout");
+            }
             string? role = getRole();
             if (role == null || role == UserConst.ROLE_STUDENT)
             {
@@ -72,6 +87,11 @@ namespace WEB_CLIENT.Controllers
         }
         public async Task<ActionResult> LearnCourse(Guid? id, string? video /* file video */, string? name /*video name or pdf name*/, string? PDF /*file PDF */, Guid? LessonID, int? VideoID, int? PDFID)
         {
+            // if session time out
+            if (isSessionTimeout())
+            {
+                return Redirect("/Logout");
+            }
             string? role = getRole();
             if (role == UserConst.ROLE_STUDENT)
             {

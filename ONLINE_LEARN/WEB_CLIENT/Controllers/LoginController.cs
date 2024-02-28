@@ -12,24 +12,23 @@ namespace WEB_CLIENT.Controllers
     {
         private readonly LoginService service = new LoginService();
 
-        public async Task<ActionResult> Index()
+        public ActionResult Index()
         {
-            string? UserID = Request.Cookies["UserID"];
-            // if not set cookie or cookie expired
-            if (UserID == null)
+            string? role = getRole();
+            if (role == null)
             {
                 return View();
             }
-            ResponseDTO<User?> response = await service.Index(Guid.Parse(UserID));
-            // if get user failed
-            if (response.Data == null)
-            {
-                return Redirect("/Logout");
-            }
-            HttpContext.Session.SetString("UserID", UserID);
-            HttpContext.Session.SetString("username", response.Data.Username);
-            HttpContext.Session.SetString("role", response.Data.RoleName);
-            HttpContext.Session.SetString("image", response.Data.Image);
+            /*            ResponseDTO<User?> response = await service.Index(Guid.Parse(UserID));
+                        // if get user failed
+                        if (response.Data == null)
+                        {
+                            return Redirect("/Logout");
+                        }
+                        HttpContext.Session.SetString("UserID", UserID);
+                        HttpContext.Session.SetString("username", response.Data.Username);
+                        HttpContext.Session.SetString("role", response.Data.RoleName);
+                        HttpContext.Session.SetString("image", response.Data.Image);*/
             return Redirect("/Home");
         }
 
@@ -51,12 +50,13 @@ namespace WEB_CLIENT.Controllers
             HttpContext.Session.SetString("username", response.Data.Username);
             HttpContext.Session.SetString("role", response.Data.RoleName);
             HttpContext.Session.SetString("image", response.Data.Image);
-            CookieOptions option = new CookieOptions()
+            IDLogin = response.Data.Id;
+           /* CookieOptions option = new CookieOptions()
             {
                 Expires = DateTime.Now.AddDays(1)
             };
             // add cookie
-            Response.Cookies.Append("UserID", response.Data.Id.ToString(), option);
+            Response.Cookies.Append("UserID", response.Data.Id.ToString(), option);*/
             if (response.Data.RoleName == UserConst.ROLE_ADMIN)
             {
                 return Redirect("/Admin");

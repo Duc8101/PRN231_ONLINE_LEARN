@@ -13,6 +13,11 @@ namespace WEB_CLIENT.Controllers
 
         public async Task<ActionResult> Index()
         {
+            // if session time out
+            if (isSessionTimeout())
+            {
+                return Redirect("/Logout");
+            }
             string? role = getRole();
             if (role == null || role == UserConst.ROLE_ADMIN)
             {

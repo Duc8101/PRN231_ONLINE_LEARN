@@ -13,6 +13,11 @@ namespace WEB_CLIENT.Controllers
 
         public async Task<ActionResult> Index(int? page)
         {
+            // if session time out
+            if (isSessionTimeout())
+            {
+                return Redirect("/Logout");
+            }
             string? role = getRole();
             if (role != UserConst.ROLE_STUDENT)
             {

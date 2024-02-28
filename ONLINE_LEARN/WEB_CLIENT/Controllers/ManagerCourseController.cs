@@ -13,6 +13,11 @@ namespace WEB_CLIENT.Controllers
 
         public async Task<ActionResult> Index(int? page)
         {
+            // if session time out
+            if (isSessionTimeout())
+            {
+                return Redirect("/Logout");
+            }
             string? role = getRole();
             if(role == UserConst.ROLE_TEACHER)
             {
@@ -32,6 +37,11 @@ namespace WEB_CLIENT.Controllers
         }
         public async Task<ActionResult> Create()
         {
+            // if session time out
+            if (isSessionTimeout())
+            {
+                return Redirect("/Logout");
+            }
             string? role = getRole();
             if (role == UserConst.ROLE_TEACHER)
             {
@@ -48,6 +58,11 @@ namespace WEB_CLIENT.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(Course course)
         {
+            // if session time out
+            if (isSessionTimeout())
+            {
+                return Redirect("/Logout");
+            }
             string? role = getRole();
             if (role == UserConst.ROLE_TEACHER)
             {
@@ -75,6 +90,11 @@ namespace WEB_CLIENT.Controllers
         }
         public async Task<ActionResult> Update(Guid? id)
         {
+            // if session time out
+            if (isSessionTimeout())
+            {
+                return Redirect("/Logout");
+            }
             string? role = getRole();
             if (role == UserConst.ROLE_TEACHER)
             {
@@ -104,6 +124,11 @@ namespace WEB_CLIENT.Controllers
         [HttpPost]
         public async Task<ActionResult> Update(Guid id, Course course)
         {
+            // if session time out
+            if (isSessionTimeout())
+            {
+                return Redirect("/Logout");
+            }
             string? role = getRole();
             if (role == UserConst.ROLE_TEACHER)
             {
@@ -127,6 +152,11 @@ namespace WEB_CLIENT.Controllers
 
         public async Task<ActionResult> Delete(Guid? id)
         {
+            // if session time out
+            if (isSessionTimeout())
+            {
+                return Redirect("/Logout");
+            }
             string? role = getRole();
             if (role == UserConst.ROLE_TEACHER)
             {

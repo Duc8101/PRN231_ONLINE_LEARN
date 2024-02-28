@@ -13,6 +13,11 @@ namespace WEB_CLIENT.Controllers
 
         public async Task<ActionResult> Index(Guid? id /*LessonID*/)
         {
+            // if session time out
+            if (isSessionTimeout())
+            {
+                return Redirect("/Logout");
+            }
             string? role = getRole();
             if (role != null && role == UserConst.ROLE_STUDENT)
             {
@@ -38,6 +43,11 @@ namespace WEB_CLIENT.Controllers
         [HttpPost]
         public async Task<ActionResult> Index(Guid id /*LessonID*/, string? button, int? answer, int timeOut, int minutes, int question_no, int seconds)
         {
+            // if session time out
+            if (isSessionTimeout())
+            {
+                return Redirect("/Logout");
+            }
             string? role = getRole();
             if (role != null && role == UserConst.ROLE_STUDENT)
             {

@@ -12,6 +12,11 @@ namespace WEB_CLIENT.Controllers
         private readonly AdminService service = new AdminService();
         public async Task<ActionResult> Index(string? name)
         {
+            // if session time out
+            if (isSessionTimeout())
+            {
+                return Redirect("/Logout");
+            }
             string? role = getRole();
             if (role == UserConst.ROLE_ADMIN)
             {
