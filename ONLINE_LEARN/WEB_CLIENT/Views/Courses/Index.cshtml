@@ -1,7 +1,6 @@
 ﻿@using DataAccess.Const;
 @using DataAccess.DTO;
 @using DataAccess.Entity;
-@using DataAccess.Model.DAO;
 @model Dictionary<string,object>
 <!-- Spinner Start -->
 <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
@@ -127,7 +126,6 @@
                 <div class="row g-4 justify-content-center">
                     @{
                         string? UserID = Context.Session.GetString("UserID");
-                        DAOEnrollCourse daoEnroll = new DAOEnrollCourse();
                     }
                     @for (int i = 0; i < result.Results.Count; i++)
                     {

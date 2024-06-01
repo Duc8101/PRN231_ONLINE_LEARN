@@ -17,11 +17,6 @@ namespace DataAccess.Model.DAO
             return await _context.Set<T>().AnyAsync(predicate);  
         }
 
-        public async Task<int> Count()
-        {
-            return await _context.Set<T>().CountAsync();
-        }
-
         public async Task Create(T entity)
         {
             await _context.Set<T>().AddAsync(entity);
