@@ -3,13 +3,17 @@ using DataAccess.DTO;
 using DataAccess.Entity;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
-using WEB_CLIENT.Services;
+using WEB_CLIENT.Services.IService;
 
 namespace WEB_CLIENT.Controllers
 {
     public class ManagerQuizController : BaseController
     {
-        private readonly ManagerQuizService service = new ManagerQuizService();
+        private readonly IManagerQuizService _service;
+        public ManagerQuizController(IManagerQuizService service)
+        {
+            _service = service;
+        }
         public async Task<ActionResult> Index(Guid? LessonID, Guid? CourseID)
         {
             // if session time out
@@ -29,7 +33,7 @@ namespace WEB_CLIENT.Controllers
                 {
                     return Redirect("/ManagerCourse");
                 }
-                ResponseDTO<Dictionary<string, object>?> response = await service.Index(LessonID.Value, CourseID.Value, Guid.Parse(TeacherID));
+                ResponseDTO<Dictionary<string, object>?> response = await _service.Index(LessonID.Value, CourseID.Value, Guid.Parse(TeacherID));
                 if (response.Data == null)
                 {
                     if (response.Code == (int)HttpStatusCode.NotFound)
@@ -61,7 +65,7 @@ namespace WEB_CLIENT.Controllers
                 {
                     return Redirect("/ManagerCourse");
                 }
-                ResponseDTO<Dictionary<string, object>?> response = await service.Detail(id.Value, LessonID.Value, CourseID.Value, Guid.Parse(TeacherID));
+                ResponseDTO<Dictionary<string, object>?> response = await _service.Detail(id.Value, LessonID.Value, CourseID.Value, Guid.Parse(TeacherID));
                 if (response.Data == null)
                 {
                     if (response.Code == (int)HttpStatusCode.NotFound)
@@ -93,7 +97,7 @@ namespace WEB_CLIENT.Controllers
                 {
                     return Redirect("/ManagerCourse");
                 }
-                ResponseDTO<Dictionary<string, Guid>?> response = await service.Create(LessonID.Value, CourseID.Value, Guid.Parse(TeacherID));
+                ResponseDTO<Dictionary<string, Guid>?> response = await _service.Create(LessonID.Value, CourseID.Value, Guid.Parse(TeacherID));
                 if (response.Data == null)
                 {
                     if (response.Code == (int)HttpStatusCode.NotFound)
@@ -123,7 +127,7 @@ namespace WEB_CLIENT.Controllers
                 {
                     return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, "Not found ID. Please check login information", (int)HttpStatusCode.NotFound));
                 }
-                ResponseDTO<Dictionary<string, Guid>?> response = await service.Create(create, LessonID, CourseID, Guid.Parse(TeacherID));
+                ResponseDTO<Dictionary<string, Guid>?> response = await _service.Create(create, LessonID, CourseID, Guid.Parse(TeacherID));
                 if (response.Data == null)
                 {
                     return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, response.Message, response.Code));
@@ -161,7 +165,7 @@ namespace WEB_CLIENT.Controllers
                 {
                     return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, "Not found ID. Please check login information", (int)HttpStatusCode.NotFound));
                 }
-                ResponseDTO<Dictionary<string, object>?> response = await service.Update(id, obj, LessonID, CourseID, Guid.Parse(TeacherID));
+                ResponseDTO<Dictionary<string, object>?> response = await _service.Update(id, obj, LessonID, CourseID, Guid.Parse(TeacherID));
                 if (response.Data == null)
                 {
                     return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, response.Message, response.Code));
@@ -197,7 +201,7 @@ namespace WEB_CLIENT.Controllers
                 {
                     return Redirect("/ManagerCourse");
                 }
-                ResponseDTO<Dictionary<string, object>?> response = await service.Delete(id.Value, LessonID.Value, CourseID.Value, Guid.Parse(TeacherID));
+                ResponseDTO<Dictionary<string, object>?> response = await _service.Delete(id.Value, LessonID.Value, CourseID.Value, Guid.Parse(TeacherID));
                 if (response.Data == null)
                 {
                     if (response.Code == (int)HttpStatusCode.NotFound)

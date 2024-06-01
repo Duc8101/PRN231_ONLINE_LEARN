@@ -59,8 +59,7 @@
 @{
     Course course = (Course) Model["course"];
     List<Lesson> list = (List<Lesson>) Model["list"];
-    //DAOLesson daoLesson = new DAOLesson();
-    DAOEnrollCourse daoEnroll = new DAOEnrollCourse();
+    List<EnrollCourse>? listEnroll = (List<EnrollCourse>?)Model["listEnroll"];
 }
 
 <div class="container-fluid py-5 wow fadeInDown row" data-wow-delay="0.1s">
@@ -77,9 +76,8 @@
                             <img style="width: 100%" class="img-fluid" src="@course.Image" alt="">
                         </div>
                         <div class="w-100 d-flex justify-content-center position-absolute bottom-0 start-0 mb-4">
-                            @if (UserID != null)
+                            @if (listEnroll != null)
                             {
-                                List<EnrollCourse> listEnroll = await daoEnroll.getList(Guid.Parse(UserID));
                                 foreach (EnrollCourse enroll in listEnroll)
                                 {
                                     if (enroll.CourseId == course.CourseId)

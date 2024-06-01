@@ -3,13 +3,17 @@ using DataAccess.DTO;
 using DataAccess.Entity;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
-using WEB_CLIENT.Services;
+using WEB_CLIENT.Services.IService;
 
 namespace WEB_CLIENT.Controllers
 {
     public class ManagerVideoController : BaseController
     {
-        private readonly ManagerVideoService service = new ManagerVideoService();
+        private readonly IManagerVideoService _service;
+        public ManagerVideoController(IManagerVideoService service)
+        {
+            _service = service;
+        }
         [HttpPost]
         public async Task<ActionResult> Create(LessonVideo create, Guid CourseID)
         {
@@ -27,7 +31,7 @@ namespace WEB_CLIENT.Controllers
                 {
                     return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, "Not found ID. Please check login information", (int)HttpStatusCode.NotFound));
                 }
-                ResponseDTO<Dictionary<string, object>?> result = await service.Create(create, CourseID, Guid.Parse(TeacherID));
+                ResponseDTO<Dictionary<string, object>?> result = await _service.Create(create, CourseID, Guid.Parse(TeacherID));
                 if (result.Data == null)
                 {
                     return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, result.Message, result.Code));
@@ -62,7 +66,7 @@ namespace WEB_CLIENT.Controllers
                 {
                     return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, "Not found ID. Please check login information", (int)HttpStatusCode.NotFound));
                 }
-                ResponseDTO<Dictionary<string, object>?> result = await service.Update(id, obj, CourseID, Guid.Parse(TeacherID));
+                ResponseDTO<Dictionary<string, object>?> result = await _service.Update(id, obj, CourseID, Guid.Parse(TeacherID));
                 if (result.Data == null)
                 {
                     return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, result.Message, result.Code));
@@ -100,7 +104,7 @@ namespace WEB_CLIENT.Controllers
                 {
                     return Redirect("/ManagerCourse");
                 }
-                ResponseDTO<Dictionary<string, object>?> result = await service.Delete(id.Value, LessonID.Value, CourseID.Value, Guid.Parse(TeacherID));
+                ResponseDTO<Dictionary<string, object>?> result = await _service.Delete(id.Value, LessonID.Value, CourseID.Value, Guid.Parse(TeacherID));
                 if (result.Data == null)
                 {
                     return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, result.Message, result.Code));

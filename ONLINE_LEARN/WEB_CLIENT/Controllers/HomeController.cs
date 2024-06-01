@@ -2,13 +2,17 @@
 using DataAccess.DTO;
 using DataAccess.Entity;
 using Microsoft.AspNetCore.Mvc;
-using WEB_CLIENT.Services;
+using WEB_CLIENT.Services.IService;
 
 namespace WEB_CLIENT.Controllers
 {
     public class HomeController : BaseController
     {
-        private readonly HomeService service = new HomeService();
+        private readonly IHomeService _service;
+        public HomeController(IHomeService service)
+        {
+            _service = service;
+        }
         public async Task<ActionResult> Index()
         {
             // if session time out
@@ -22,7 +26,7 @@ namespace WEB_CLIENT.Controllers
                 return Redirect("/Admin");
             }
             // get top 4 teacher
-            ResponseDTO<List<User>?> response = await service.Index();
+            ResponseDTO<List<User>?> response = await _service.Index();
             // if get list failed
             if (response.Data == null)
             {

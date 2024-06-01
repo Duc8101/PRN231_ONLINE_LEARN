@@ -1,13 +1,18 @@
 ﻿using DataAccess.DTO;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
-using WEB_CLIENT.Services;
+using WEB_CLIENT.Services.IService;
 
 namespace WEB_CLIENT.Controllers
 {
     public class ForgotPasswordController : BaseController
     {
-        private readonly ForgotPasswordService service = new ForgotPasswordService();
+        private readonly IForgotPasswordService _service;
+
+        public ForgotPasswordController(IForgotPasswordService service)
+        {
+            _service = service;
+        }
 
         public ActionResult Index()
         {
@@ -22,7 +27,7 @@ namespace WEB_CLIENT.Controllers
         [HttpPost]
         public async Task<ActionResult> Index(string email)
         {
-            ResponseDTO<bool> response = await service.Index(email);
+            ResponseDTO<bool> response = await _service.Index(email);
             if (response.Data == false)
             {
                 if (response.Code == (int)HttpStatusCode.NotFound)

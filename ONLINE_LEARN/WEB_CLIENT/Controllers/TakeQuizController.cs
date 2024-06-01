@@ -3,13 +3,18 @@ using DataAccess.DTO;
 using DataAccess.Entity;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
-using WEB_CLIENT.Services;
+using WEB_CLIENT.Services.IService;
 
 namespace WEB_CLIENT.Controllers
 {
     public class TakeQuizController : BaseController
     {
-        private readonly TakeQuizService service = new TakeQuizService();
+        private readonly ITakeQuizService _service;
+
+        public TakeQuizController(ITakeQuizService service)
+        {
+            _service = service;
+        }
 
         public async Task<ActionResult> Index(Guid? id /*LessonID*/)
         {
@@ -30,7 +35,7 @@ namespace WEB_CLIENT.Controllers
                 {
                     return Redirect("/MyCourse");
                 }
-                ResponseDTO<Dictionary<string, object?>?> response = await service.Index(id.Value, Guid.Parse(StudentID));
+                ResponseDTO<Dictionary<string, object?>?> response = await _service.Index(id.Value, Guid.Parse(StudentID));
                 if (response.Data == null)
                 {
                     return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, response.Message, response.Code));
@@ -60,7 +65,7 @@ namespace WEB_CLIENT.Controllers
                 // if finish exam
                 if ((button != null && button.Equals("Finish")) || timeOut == 1)
                 {
-                    ResponseDTO<List<Quiz>?> response = await service.Finish(id);
+                    ResponseDTO<List<Quiz>?> response = await _service.Finish(id);
                     if (response.Data == null)
                     {
                         return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, response.Message, response.Code));
@@ -80,14 +85,14 @@ namespace WEB_CLIENT.Controllers
                     }
                     float FinalScore = (float)score / response.Data.Count * 10;
                     string status = FinalScore >= 5.0 ? ResultConst.STATUS_PASSED : ResultConst.STATUS_NOT_PASSED;
-                    ResponseDTO<Result?> responseDTO = await service.Finish(id, Guid.Parse(StudentID), FinalScore, status);
+                    ResponseDTO<Result?> responseDTO = await _service.Finish(id, Guid.Parse(StudentID), FinalScore, status);
                     if (responseDTO.Data == null)
                     {
                         return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, response.Message, response.Code));
                     }
                     return View("/Views/TakeQuiz/Result.cshtml", responseDTO.Data);
                 }
-                ResponseDTO<Dictionary<string, object?>?> responseDic = await service.Index(id, Guid.Parse(StudentID), button, minutes, question_no, seconds);
+                ResponseDTO<Dictionary<string, object?>?> responseDic = await _service.Index(id, Guid.Parse(StudentID), button, minutes, question_no, seconds);
                 if (responseDic.Data == null)
                 {
                     return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, responseDic.Message, responseDic.Code));

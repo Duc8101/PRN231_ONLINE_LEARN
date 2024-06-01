@@ -2,13 +2,17 @@
 using DataAccess.DTO;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
-using WEB_CLIENT.Services;
+using WEB_CLIENT.Services.IService;
 
 namespace WEB_CLIENT.Controllers
 {
     public class CoursesController : BaseController
     {
-        private readonly CoursesService service = new CoursesService();
+        private readonly ICoursesService _service;
+        public CoursesController(ICoursesService service)
+        {
+            _service = service;
+        }
         public async Task<ActionResult> Index(int? CategoryID, string? properties, string? flow, int? page)
         {
             // if session time out
@@ -19,7 +23,8 @@ namespace WEB_CLIENT.Controllers
             string? role = getRole();
             if (role == null || role == UserConst.ROLE_STUDENT)
             {
-                ResponseDTO<Dictionary<string, object>?> result = await service.Index(CategoryID, properties, flow, page);
+                string? userId = getUserID();
+                ResponseDTO<Dictionary<string, object?>?> result = await _service.Index(CategoryID, properties, flow, page, userId);
                 // if get result failed
                 if (result.Data == null)
                 {
@@ -37,13 +42,14 @@ namespace WEB_CLIENT.Controllers
                 return Redirect("/Logout");
             }
             string? role = getRole();
+            string? userId = getUserID();
             if (role == null || role == UserConst.ROLE_STUDENT)
             {
                 if (id == null)
                 {
                     return Redirect("/Courses");
                 }
-                ResponseDTO<Dictionary<string, object>?> response = await service.Detail(id.Value);
+                ResponseDTO<Dictionary<string, object?>?> response = await _service.Detail(id.Value, userId);
                 if (response.Data == null)
                 {
                     return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, response.Message, response.Code));
@@ -75,7 +81,7 @@ namespace WEB_CLIENT.Controllers
                 {
                     return Redirect("/Courses");
                 }
-                ResponseDTO<Dictionary<string, object>?> result = await service.EnrollCourse(id.Value, Guid.Parse(StudentID));
+                ResponseDTO<Dictionary<string, object?>?> result = await _service.EnrollCourse(id.Value, Guid.Parse(StudentID));
                 if (result.Data == null)
                 {
                     return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, result.Message, result.Code));
@@ -105,7 +111,7 @@ namespace WEB_CLIENT.Controllers
                 {
                     return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, "Not found ID. Please check login information", (int)HttpStatusCode.NotFound));
                 }
-                ResponseDTO<Dictionary<string, object>?> result = await service.LearnCourse(id.Value, Guid.Parse(StudentID), video, name, PDF, LessonID, VideoID, PDFID);
+                ResponseDTO<Dictionary<string, object>?> result = await _service.LearnCourse(id.Value, Guid.Parse(StudentID), video, name, PDF, LessonID, VideoID, PDFID);
                 if (result.Data == null)
                 {
                     if (result.Code == (int)HttpStatusCode.InternalServerError)

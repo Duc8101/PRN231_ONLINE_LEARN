@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "Cfo5mTbchk2elxQt5aUpxQwy3eZAEFRxDYtUEmkMmQBD6REL8qnv228tUVhCnfGvADY7tmRysn97n3byr0sxDA==",
+  "dgSpecHash": "/zO9dyXcTgVdWkYPUbIHNS6nVHnHwMIsIEG70BKBusubEZCwu1he7dhgsZcCgzlxCX73kO6n9bDMYFr9FDlXVg==",
   "success": true,
   "projectFilePath": "D:\\GitHub\\PRN231_ONLINE_LEARN\\ONLINE_LEARN\\DataAccess\\DataAccess.csproj",
   "expectedPackageFiles": [
@@ -74,9 +74,9 @@
     "C:\\Users\\Admin\\.nuget\\packages\\system.text.json\\7.0.0\\system.text.json.7.0.0.nupkg.sha512",
     "C:\\Users\\Admin\\.nuget\\packages\\system.threading.tasks.extensions\\4.5.4\\system.threading.tasks.extensions.4.5.4.nupkg.sha512",
     "C:\\Users\\Admin\\.nuget\\packages\\system.windows.extensions\\6.0.0\\system.windows.extensions.6.0.0.nupkg.sha512",
-    "C:\\Users\\Admin\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\7.0.16\\microsoft.windowsdesktop.app.ref.7.0.16.nupkg.sha512",
-    "C:\\Users\\Admin\\.nuget\\packages\\microsoft.netcore.app.ref\\7.0.16\\microsoft.netcore.app.ref.7.0.16.nupkg.sha512",
-    "C:\\Users\\Admin\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\7.0.16\\microsoft.aspnetcore.app.ref.7.0.16.nupkg.sha512"
+    "C:\\Users\\Admin\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\7.0.18\\microsoft.windowsdesktop.app.ref.7.0.18.nupkg.sha512",
+    "C:\\Users\\Admin\\.nuget\\packages\\microsoft.netcore.app.ref\\7.0.18\\microsoft.netcore.app.ref.7.0.18.nupkg.sha512",
+    "C:\\Users\\Admin\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\7.0.18\\microsoft.aspnetcore.app.ref.7.0.18.nupkg.sha512"
   ],
   "logs": []
 }

@@ -4,13 +4,18 @@ using DataAccess.DTO.UserDTO;
 using DataAccess.Entity;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
-using WEB_CLIENT.Services;
+using WEB_CLIENT.Services.IService;
 
 namespace WEB_CLIENT.Controllers
 {
     public class LoginController : BaseController
     {
-        private readonly LoginService service = new LoginService();
+        private readonly ILoginService _service;
+
+        public LoginController(ILoginService service)
+        {
+            _service = service;
+        }
 
         public ActionResult Index()
         {
@@ -35,7 +40,7 @@ namespace WEB_CLIENT.Controllers
         [HttpPost]
         public async Task<ActionResult> Index(LoginDTO DTO)
         {
-            ResponseDTO<User?> response = await service.Index(DTO);
+            ResponseDTO<User?> response = await _service.Index(DTO);
             // if get user failed
             if (response.Data == null)
             {
@@ -51,12 +56,12 @@ namespace WEB_CLIENT.Controllers
             HttpContext.Session.SetString("role", response.Data.RoleName);
             HttpContext.Session.SetString("image", response.Data.Image);
             IDLogin = response.Data.Id;
-           /* CookieOptions option = new CookieOptions()
-            {
-                Expires = DateTime.Now.AddDays(1)
-            };
-            // add cookie
-            Response.Cookies.Append("UserID", response.Data.Id.ToString(), option);*/
+            /* CookieOptions option = new CookieOptions()
+             {
+                 Expires = DateTime.Now.AddDays(1)
+             };
+             // add cookie
+             Response.Cookies.Append("UserID", response.Data.Id.ToString(), option);*/
             if (response.Data.RoleName == UserConst.ROLE_ADMIN)
             {
                 return Redirect("/Admin");

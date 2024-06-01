@@ -3,13 +3,18 @@ using DataAccess.DTO;
 using DataAccess.DTO.UserDTO;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
-using WEB_CLIENT.Services;
+using WEB_CLIENT.Services.IService;
 
 namespace WEB_CLIENT.Controllers
 {
     public class ProfileController : BaseController
     {
-        private readonly ProfileService service = new ProfileService();
+        private readonly IProfileService _service;
+
+        public ProfileController(IProfileService service)
+        {
+            _service = service;
+        }
 
         public async Task<ActionResult> Index()
         {
@@ -28,7 +33,7 @@ namespace WEB_CLIENT.Controllers
             {
                 return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, "Not found id. Please check login information", (int)HttpStatusCode.NotFound));
             }
-            ResponseDTO<Dictionary<string, object>?> response = await service.Index(Guid.Parse(UserID));
+            ResponseDTO<Dictionary<string, object>?> response = await _service.Index(Guid.Parse(UserID));
             // if get result failed
             if (response.Data == null)
             {
@@ -50,7 +55,7 @@ namespace WEB_CLIENT.Controllers
             {
                 return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, "Not found id. Please check login information", (int)HttpStatusCode.NotFound));
             }
-            ResponseDTO<Dictionary<string, object>?> response = await service.Index(Guid.Parse(UserID), DTO, valueImg);
+            ResponseDTO<Dictionary<string, object>?> response = await _service.Index(Guid.Parse(UserID), DTO, valueImg);
             // if get data failed
             if (response.Data == null)
             {

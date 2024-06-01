@@ -3,13 +3,19 @@ using DataAccess.DTO;
 using DataAccess.Entity;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
-using WEB_CLIENT.Services;
+using WEB_CLIENT.Services.IService;
+using WEB_CLIENT.Services.Service;
 
 namespace WEB_CLIENT.Controllers
 {
     public class ManagerCourseController : BaseController
     {
-        private readonly ManagerCourseService service = new ManagerCourseService();
+        private readonly IManagerCourseService _service;
+
+        public ManagerCourseController(IManagerCourseService service)
+        {
+            _service = service;
+        }
 
         public async Task<ActionResult> Index(int? page)
         {
@@ -26,7 +32,7 @@ namespace WEB_CLIENT.Controllers
                 {
                     return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, "Not found ID. Please check login information", (int)HttpStatusCode.NotFound));
                 }
-                ResponseDTO<PagedResultDTO<Course>?> response = await service.Index(page, Guid.Parse(TeacherID));
+                ResponseDTO<PagedResultDTO<Course>?> response = await _service.Index(page, Guid.Parse(TeacherID));
                 if(response.Data == null)
                 {
                     return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, response.Message, response.Code));
@@ -45,7 +51,7 @@ namespace WEB_CLIENT.Controllers
             string? role = getRole();
             if (role == UserConst.ROLE_TEACHER)
             {
-                ResponseDTO<List<Category>?> response = await service.Create();
+                ResponseDTO<List<Category>?> response = await _service.Create();
                 if (response.Data == null)
                 {
                     return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, response.Message, response.Code));
@@ -71,7 +77,7 @@ namespace WEB_CLIENT.Controllers
                 {
                     return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, "Not found ID. Please check login information", (int)HttpStatusCode.NotFound));
                 }
-                ResponseDTO<List<Category>?> response = await service.Create(course, Guid.Parse(TeacherID));
+                ResponseDTO<List<Category>?> response = await _service.Create(course, Guid.Parse(TeacherID));
                 if (response.Data == null)
                 {
                     return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, response.Message, response.Code));
@@ -107,7 +113,7 @@ namespace WEB_CLIENT.Controllers
                 {
                     return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, "Not found ID. Please check login information", (int)HttpStatusCode.NotFound));
                 }
-                ResponseDTO<Dictionary<string, object>?> response = await service.Update(id.Value, Guid.Parse(TeacherID));
+                ResponseDTO<Dictionary<string, object>?> response = await _service.Update(id.Value, Guid.Parse(TeacherID));
                 if (response.Data == null)
                 {
                     if(response.Code == (int) HttpStatusCode.NotFound)
@@ -132,7 +138,7 @@ namespace WEB_CLIENT.Controllers
             string? role = getRole();
             if (role == UserConst.ROLE_TEACHER)
             {
-                ResponseDTO<Dictionary<string, object>?> response = await service.Update(id, course);
+                ResponseDTO<Dictionary<string, object>?> response = await _service.Update(id, course);
                 if (response.Data == null)
                 {
                     return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, response.Message, response.Code));
@@ -169,7 +175,7 @@ namespace WEB_CLIENT.Controllers
                 {
                     return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, "Not found ID. Please check login information", (int)HttpStatusCode.NotFound));
                 }
-                ResponseDTO<PagedResultDTO<Course>?> response = await service.Delete(id.Value, Guid.Parse(TeacherID));
+                ResponseDTO<PagedResultDTO<Course>?> response = await _service.Delete(id.Value, Guid.Parse(TeacherID));
                 if (response.Data == null)
                 {
                     if(response.Code == (int)HttpStatusCode.NotFound)

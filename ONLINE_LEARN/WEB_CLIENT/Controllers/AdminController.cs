@@ -3,13 +3,19 @@ using DataAccess.DTO;
 using DataAccess.Entity;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
-using WEB_CLIENT.Services;
+using WEB_CLIENT.Services.IService;
 
 namespace WEB_CLIENT.Controllers
 {
     public class AdminController : BaseController
     {
-        private readonly AdminService service = new AdminService();
+        private readonly IAdminService _service;
+
+        public AdminController(IAdminService service)
+        {
+            _service = service;
+        }
+
         public async Task<ActionResult> Index(string? name)
         {
             // if session time out
@@ -20,7 +26,7 @@ namespace WEB_CLIENT.Controllers
             string? role = getRole();
             if (role == UserConst.ROLE_ADMIN)
             {
-                ResponseDTO<Dictionary<string, object>?> response = await service.Index(name);
+                ResponseDTO<Dictionary<string, object>?> response = await _service.Index(name);
                 if (response.Data == null)
                 {
                     return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, response.Message, response.Code));
@@ -39,7 +45,7 @@ namespace WEB_CLIENT.Controllers
                 {
                     return Redirect("/Admin");
                 }
-                ResponseDTO<Dictionary<string, object>?> response = await service.Detail(id.Value);
+                ResponseDTO<Dictionary<string, object>?> response = await _service.Detail(id.Value);
                 if (response.Data == null)
                 {
                     if (response.Code == (int)HttpStatusCode.NotFound)
@@ -57,7 +63,7 @@ namespace WEB_CLIENT.Controllers
             string? role = getRole();
             if (role == UserConst.ROLE_ADMIN)
             {
-                List<string> list = service.Create();
+                List<string> list = _service.Create();
                 return View(list);
             }
             return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, "You are not allowed to access this page", (int)HttpStatusCode.Forbidden));
@@ -69,7 +75,7 @@ namespace WEB_CLIENT.Controllers
             string? role = getRole();
             if (role == UserConst.ROLE_ADMIN)
             {
-                ResponseDTO<List<string>?> response = await service.Create(user);
+                ResponseDTO<List<string>?> response = await _service.Create(user);
                 if (response.Data == null)
                 {
                     return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, response.Message, response.Code));

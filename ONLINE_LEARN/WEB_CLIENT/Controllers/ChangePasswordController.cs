@@ -3,13 +3,18 @@ using DataAccess.DTO;
 using DataAccess.DTO.UserDTO;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
-using WEB_CLIENT.Services;
+using WEB_CLIENT.Services.IService;
 
 namespace WEB_CLIENT.Controllers
 {
     public class ChangePasswordController : BaseController
     {
-        private readonly ChangePasswordService service = new ChangePasswordService();
+        private readonly IChangePasswordService _service;
+
+        public ChangePasswordController(IChangePasswordService service)
+        {
+            _service = service;
+        }
 
         public ActionResult Index()
         {
@@ -40,7 +45,7 @@ namespace WEB_CLIENT.Controllers
             {
                 return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, "Not found username. Please check login information", (int)HttpStatusCode.NotFound));
             }
-            ResponseDTO<bool> response = await service.Index(username, DTO);
+            ResponseDTO<bool> response = await _service.Index(username, DTO);
             if (response.Data == false)
             {
                 if (response.Code == (int)HttpStatusCode.Conflict)

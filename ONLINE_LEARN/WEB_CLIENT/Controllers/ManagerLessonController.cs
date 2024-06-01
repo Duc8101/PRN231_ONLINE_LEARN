@@ -2,13 +2,18 @@
 using DataAccess.DTO;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
-using WEB_CLIENT.Services;
+using WEB_CLIENT.Services.IService;
 
 namespace WEB_CLIENT.Controllers
 {
     public class ManagerLessonController : BaseController
     {
-        private readonly ManagerLessonService service = new ManagerLessonService();
+        private readonly IManagerLessonService _service;
+
+        public ManagerLessonController(IManagerLessonService service)
+        {
+            _service = service;
+        }
         public async Task<ActionResult> Index(Guid? id, string? video /* file video */, string? name /*video name or pdf name*/, string? PDF /*file PDF */, Guid? LessonID)
         {
             // if session time out
@@ -29,7 +34,7 @@ namespace WEB_CLIENT.Controllers
                 {
                     return Redirect("/ManagerCourse");
                 }
-                ResponseDTO<Dictionary<string, object>?> result = await service.Index(id.Value, Guid.Parse(TeacherID), video, name, PDF, LessonID);
+                ResponseDTO<Dictionary<string, object>?> result = await _service.Index(id.Value, Guid.Parse(TeacherID), video, name, PDF, LessonID);
                 if (result.Data == null)
                 {
                     if (result.Code == (int)HttpStatusCode.InternalServerError)
@@ -60,7 +65,7 @@ namespace WEB_CLIENT.Controllers
                 {
                     return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, "Not found ID. Please check login information", (int)HttpStatusCode.NotFound));
                 }
-                ResponseDTO<Dictionary<string, object>?> result = await service.Create(LessonName, CourseID, Guid.Parse(TeacherID));
+                ResponseDTO<Dictionary<string, object>?> result = await _service.Create(LessonName, CourseID, Guid.Parse(TeacherID));
                 if (result.Data == null)
                 {
                     return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, result.Message, result.Code));
@@ -95,7 +100,7 @@ namespace WEB_CLIENT.Controllers
                 {
                     return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, "Not found ID. Please check login information", (int)HttpStatusCode.NotFound));
                 }
-                ResponseDTO<Dictionary<string, object>?> result = await service.Update(id, LessonName, CourseID, Guid.Parse(TeacherID));
+                ResponseDTO<Dictionary<string, object>?> result = await _service.Update(id, LessonName, CourseID, Guid.Parse(TeacherID));
                 if (result.Data == null)
                 {
                     return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, result.Message, result.Code));
@@ -133,7 +138,7 @@ namespace WEB_CLIENT.Controllers
                 {
                     return Redirect("/ManagerCourse");
                 }
-                ResponseDTO<Dictionary<string, object>?> result = await service.Delete(id.Value, CourseID.Value, Guid.Parse(TeacherID));
+                ResponseDTO<Dictionary<string, object>?> result = await _service.Delete(id.Value, CourseID.Value, Guid.Parse(TeacherID));
                 if (result.Data == null)
                 {
                     return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, result.Message, result.Code));

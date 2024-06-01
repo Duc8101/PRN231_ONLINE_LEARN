@@ -2,13 +2,18 @@
 using DataAccess.Entity;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
-using WEB_CLIENT.Services;
+using WEB_CLIENT.Services.IService;
 
 namespace WEB_CLIENT.Controllers
 {
     public class RegisterController : BaseController
     {
-        private readonly RegisterService service = new RegisterService();
+        private readonly IRegisterService _service;
+
+        public RegisterController(IRegisterService service)
+        {
+            _service = service;
+        }
 
         public ActionResult Index()
         {
@@ -23,7 +28,7 @@ namespace WEB_CLIENT.Controllers
         [HttpPost]
         public async Task<ActionResult> Index(User user)
         {
-            ResponseDTO<bool> response = await service.Index(user);
+            ResponseDTO<bool> response = await _service.Index(user);
             if (response.Data == false)
             {
                 if (response.Code == (int)HttpStatusCode.Conflict)
