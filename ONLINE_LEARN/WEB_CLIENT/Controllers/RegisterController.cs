@@ -36,7 +36,7 @@ namespace WEB_CLIENT.Controllers
                     ViewData["error"] = response.Message;
                     return View();
                 }
-                return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, response.Message, response.Code));
+                return View("/Views/Error/500.cshtml", new ResponseDTO<object?>(null, response.Message, response.Code));
             }
             ViewData["success"] = response.Message;
             return View();

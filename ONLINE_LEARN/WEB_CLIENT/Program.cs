@@ -2,6 +2,7 @@ using DataAccess.Model;
 using DataAccess.Model.DAO;
 using DataAccess.Model.IDAO;
 using Microsoft.EntityFrameworkCore;
+using WEB_CLIENT.Providers;
 using WEB_CLIENT.Services.IService;
 using WEB_CLIENT.Services.Service;
 
@@ -14,9 +15,7 @@ namespace WEB_CLIENT
             var builder = WebApplication.CreateBuilder(args);
             // Add services to the container.
             builder.Services.AddControllersWithViews();
-            builder.Services.AddSession(options =>
-            options.IdleTimeout = new TimeSpan(3, 0, 0)
-           );
+            builder.Services.AddSession();
             // -------------------------register dbcontext----------------------------
             string? connection = builder.Configuration.GetConnectionString("DefaultConnection");
             builder.Services.AddDbContext<MyDbContext>(options =>
@@ -39,8 +38,9 @@ namespace WEB_CLIENT
             builder.Services.AddScoped<IProfileService, ProfileService>();
             builder.Services.AddScoped<IRegisterService, RegisterService>();
             builder.Services.AddScoped<ITakeQuizService, TakeQuizService>();
+            builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             var app = builder.Build();
-
+            StaticServiceProvider.Provider = app.Services;
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
@@ -50,9 +50,7 @@ namespace WEB_CLIENT
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
             app.UseRouting();
-
             app.UseAuthorization();
             app.UseAuthentication();
             app.UseSession();

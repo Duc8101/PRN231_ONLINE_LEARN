@@ -3,10 +3,13 @@ using DataAccess.DTO;
 using DataAccess.DTO.UserDTO;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using WEB_CLIENT.Attributes;
 using WEB_CLIENT.Services.IService;
 
 namespace WEB_CLIENT.Controllers
 {
+    [Role(UserConst.ROLE_STUDENT, UserConst.ROLE_TEACHER)]
+    [Authorize]
     public class ChangePasswordController : BaseController
     {
         private readonly IChangePasswordService _service;
@@ -18,32 +21,27 @@ namespace WEB_CLIENT.Controllers
 
         public ActionResult Index()
         {
-            // if session time out
+            /*// if session time out
             if (isSessionTimeout())
             {
                 return Redirect("/Logout");
-            }
-            string? role = getRole();
-            if (role == null || role == UserConst.ROLE_ADMIN)
-            {
-                return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, "You are not allowed to access this page", (int)HttpStatusCode.Forbidden));
-            }
+            }*/
             return View();
         }
 
         [HttpPost]
         public async Task<ActionResult> Index(ChangePasswordDTO DTO)
         {
-            // if session time out
+            /*// if session time out
             if (isSessionTimeout())
             {
                 return Redirect("/Logout");
-            }
+            }*/
             string? username = getUsername();
             // if not found username
             if (username == null)
             {
-                return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, "Not found username. Please check login information", (int)HttpStatusCode.NotFound));
+                return View("/Views/Error/404.cshtml", new ResponseDTO<object?>(null, "Not found username. Please check login information"));
             }
             ResponseDTO<bool> response = await _service.Index(username, DTO);
             if (response.Data == false)
@@ -53,7 +51,7 @@ namespace WEB_CLIENT.Controllers
                     ViewData["error"] = response.Message;
                     return View();
                 }
-                return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, response.Message, response.Code));
+                return View("/Views/Error/500.cshtml", new ResponseDTO<object?>(null, response.Message));
             }
             ViewData["success"] = response.Message;
             return View();

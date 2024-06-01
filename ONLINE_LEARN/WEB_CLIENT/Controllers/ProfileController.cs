@@ -3,10 +3,13 @@ using DataAccess.DTO;
 using DataAccess.DTO.UserDTO;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using WEB_CLIENT.Attributes;
 using WEB_CLIENT.Services.IService;
 
 namespace WEB_CLIENT.Controllers
 {
+    [Role(UserConst.ROLE_STUDENT, UserConst.ROLE_TEACHER)]
+    [Authorize]
     public class ProfileController : BaseController
     {
         private readonly IProfileService _service;
@@ -18,26 +21,21 @@ namespace WEB_CLIENT.Controllers
 
         public async Task<ActionResult> Index()
         {
-            // if session time out
-            if (isSessionTimeout())
-            {
-                return Redirect("/Logout");
-            }
-            string? role = getRole();
-            if (role == null || role == UserConst.ROLE_ADMIN)
-            {
-                return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, "You are not allowed to access this page", (int)HttpStatusCode.Forbidden));
-            }
+            /*            // if session time out
+                        if (isSessionTimeout())
+                        {
+                            return Redirect("/Logout");
+                        }*/
             string? UserID = getUserID();
             if (UserID == null)
             {
-                return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, "Not found id. Please check login information", (int)HttpStatusCode.NotFound));
+                return View("/Views/Error/404.cshtml", new ResponseDTO<object?>(null, "Not found id. Please check login information", (int)HttpStatusCode.NotFound));
             }
             ResponseDTO<Dictionary<string, object>?> response = await _service.Index(Guid.Parse(UserID));
             // if get result failed
             if (response.Data == null)
             {
-                return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, response.Message, response.Code));
+                return View("/Views/Error/" + response.Code + ".cshtml", new ResponseDTO<object?>(null, response.Message, response.Code));
             }
             return View(response.Data);
         }
@@ -45,21 +43,16 @@ namespace WEB_CLIENT.Controllers
         [HttpPost]
         public async Task<ActionResult> Index(ProfileDTO DTO, string valueImg)
         {
-            string? role = getRole();
-            if (role == null || role == UserConst.ROLE_ADMIN)
-            {
-                return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, "You are not allowed to access this page", (int)HttpStatusCode.Forbidden));
-            }
             string? UserID = getUserID();
             if (UserID == null)
             {
-                return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, "Not found id. Please check login information", (int)HttpStatusCode.NotFound));
+                return View("/Views/Error/404.cshtml", new ResponseDTO<object?>(null, "Not found id. Please check login information"));
             }
             ResponseDTO<Dictionary<string, object>?> response = await _service.Index(Guid.Parse(UserID), DTO, valueImg);
             // if get data failed
             if (response.Data == null)
             {
-                return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, response.Message, response.Code));
+                return View("/Views/Error/" + response.Code + ".cshtml", new ResponseDTO<object?>(null, response.Message, response.Code));
             }
             if (response.Code == (int)HttpStatusCode.Conflict)
             {

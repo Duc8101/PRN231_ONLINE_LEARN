@@ -30,6 +30,5 @@ namespace DataAccess.DTO
             Message = message;
             Code = (int) HttpStatusCode.OK;
         }
-
     }
 }

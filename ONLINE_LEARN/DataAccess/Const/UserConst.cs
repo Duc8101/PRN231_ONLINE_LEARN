@@ -5,6 +5,7 @@
         public const string ROLE_STUDENT = "Student";
         public const string ROLE_TEACHER = "Teacher";
         public const string ROLE_ADMIN = "Admin";
+        public const string ROLE_NONE = "";
         public const string GENDER_MALE = "Male";
         public const string GENDER_FEMALE = "Female";
         public const string GENDER_OTHER = "Other";
