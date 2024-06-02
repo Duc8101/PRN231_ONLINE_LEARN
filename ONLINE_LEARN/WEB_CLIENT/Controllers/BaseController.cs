@@ -20,11 +20,5 @@ namespace WEB_CLIENT.Controllers
             return HttpContext.Session.GetString("role");
         }
 
-        internal bool isSessionTimeout()
-        {
-            string? role = getRole();
-            return IDLogin.HasValue && role == null;
-        }
-
     }
 }

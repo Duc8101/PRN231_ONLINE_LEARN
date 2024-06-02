@@ -21,11 +21,6 @@ namespace WEB_CLIENT.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(LessonPdf create, Guid CourseID)
         {
-            /*            // if session time out
-                        if (isSessionTimeout())
-                        {
-                            return Redirect("/Logout");
-                        }*/
             ViewData["ViewLesson"] = true;
             string? TeacherID = getUserID();
             if (TeacherID == null)
@@ -52,11 +47,6 @@ namespace WEB_CLIENT.Controllers
         [HttpPost]
         public async Task<ActionResult> Update(int id, LessonPdf obj, Guid CourseID)
         {
-            /*           // if session time out
-                       if (isSessionTimeout())
-                       {
-                           return Redirect("/Logout");
-                       }*/
             ViewData["ViewLesson"] = true;
             string? TeacherID = getUserID();
             if (TeacherID == null)
@@ -81,11 +71,6 @@ namespace WEB_CLIENT.Controllers
 
         public async Task<ActionResult> Delete(int? id, Guid? LessonID, Guid? CourseID)
         {
-            /*          // if session time out
-                      if (isSessionTimeout())
-                      {
-                          return Redirect("/Logout");
-                      }*/
             ViewData["ViewLesson"] = true;
             string? TeacherID = getUserID();
             if (TeacherID == null)

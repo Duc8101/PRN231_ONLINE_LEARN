@@ -21,11 +21,6 @@ namespace WEB_CLIENT.Controllers
 
         public async Task<ActionResult> Index(int? page)
         {
-/*            // if session time out
-            if (isSessionTimeout())
-            {
-                return Redirect("/Logout");
-            }*/
             string? StudentID = getUserID();
             if (StudentID == null)
             {

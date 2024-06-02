@@ -19,11 +19,6 @@ namespace WEB_CLIENT.Controllers
         }
         public async Task<ActionResult> Index(Guid? id, string? video /* file video */, string? name /*video name or pdf name*/, string? PDF /*file PDF */, Guid? LessonID)
         {
-            /* // if session time out
-             if (isSessionTimeout())
-             {
-                 return Redirect("/Logout");
-             }*/
             ViewData["ViewLesson"] = true;
             string? TeacherID = getUserID();
             if (TeacherID == null)
@@ -48,11 +43,6 @@ namespace WEB_CLIENT.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(string? LessonName, Guid CourseID)
         {
-            /*            // if session time out
-                        if (isSessionTimeout())
-                        {
-                            return Redirect("/Logout");
-                        }*/
             ViewData["ViewLesson"] = true;
             string? TeacherID = getUserID();
             if (TeacherID == null)
@@ -62,7 +52,7 @@ namespace WEB_CLIENT.Controllers
             ResponseDTO<Dictionary<string, object>?> result = await _service.Create(LessonName, CourseID, Guid.Parse(TeacherID));
             if (result.Data == null)
             {
-                return View("/Views/Error/500.cshtml", new ResponseDTO<object?>(null, result.Message));
+                return View("/Views/Error/" + result.Code + ".cshtml", new ResponseDTO<object?>(null, result.Message));
             }
             if (result.Code == (int)HttpStatusCode.Conflict)
             {
@@ -107,11 +97,6 @@ namespace WEB_CLIENT.Controllers
 
         public async Task<ActionResult> Delete(Guid? id, Guid? CourseID)
         {
-            /*// if session time out
-            if (isSessionTimeout())
-            {
-                return Redirect("/Logout");
-            }*/
             ViewData["ViewLesson"] = true;
             string? TeacherID = getUserID();
             if (TeacherID == null)

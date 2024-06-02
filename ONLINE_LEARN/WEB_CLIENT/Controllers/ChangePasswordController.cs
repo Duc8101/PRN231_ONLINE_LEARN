@@ -21,22 +21,12 @@ namespace WEB_CLIENT.Controllers
 
         public ActionResult Index()
         {
-            /*// if session time out
-            if (isSessionTimeout())
-            {
-                return Redirect("/Logout");
-            }*/
             return View();
         }
 
         [HttpPost]
         public async Task<ActionResult> Index(ChangePasswordDTO DTO)
         {
-            /*// if session time out
-            if (isSessionTimeout())
-            {
-                return Redirect("/Logout");
-            }*/
             string? username = getUsername();
             // if not found username
             if (username == null)

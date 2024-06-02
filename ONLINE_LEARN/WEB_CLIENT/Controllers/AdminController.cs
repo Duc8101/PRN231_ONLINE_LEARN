@@ -21,11 +21,6 @@ namespace WEB_CLIENT.Controllers
 
         public async Task<ActionResult> Index(string? name)
         {
-/*            // if session time out
-            if (isSessionTimeout())
-            {
-                return Redirect("/Logout");
-            }*/
             ResponseDTO<Dictionary<string, object>?> response = await _service.Index(name);
             if (response.Data == null)
             {

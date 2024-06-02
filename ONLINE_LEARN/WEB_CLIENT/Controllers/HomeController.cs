@@ -15,11 +15,6 @@ namespace WEB_CLIENT.Controllers
         }
         public async Task<ActionResult> Index()
         {
-            /*// if session time out
-            if (isSessionTimeout())
-            {
-                return Redirect("/Logout");
-            }*/
             string? role = getRole();
             if (role == UserConst.ROLE_ADMIN)
             {
@@ -30,7 +25,7 @@ namespace WEB_CLIENT.Controllers
             // if get list failed
             if (response.Data == null)
             {
-                return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, response.Message, response.Code));
+                return View("/Views/Error/500.cshtml", new ResponseDTO<object?>(null, response.Message, response.Code));
             }
             return View(response.Data);
         }

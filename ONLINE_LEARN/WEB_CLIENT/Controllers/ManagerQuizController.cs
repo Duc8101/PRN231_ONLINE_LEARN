@@ -19,11 +19,6 @@ namespace WEB_CLIENT.Controllers
         }
         public async Task<ActionResult> Index(Guid? LessonID, Guid? CourseID)
         {
-            /* // if session time out
-             if (isSessionTimeout())
-             {
-                 return Redirect("/Logout");
-             }*/
             string? TeacherID = getUserID();
             if (TeacherID == null)
             {
@@ -46,11 +41,6 @@ namespace WEB_CLIENT.Controllers
         }
         public async Task<ActionResult> Detail(Guid? id, Guid? LessonID, Guid? CourseID)
         {
-            /*            // if session time out
-                        if (isSessionTimeout())
-                        {
-                            return Redirect("/Logout");
-                        }*/
             string? TeacherID = getUserID();
             if (TeacherID == null)
             {
@@ -73,11 +63,6 @@ namespace WEB_CLIENT.Controllers
         }
         public async Task<ActionResult> Create(Guid? LessonID, Guid? CourseID)
         {
-            /*            // if session time out
-                        if (isSessionTimeout())
-                        {
-                            return Redirect("/Logout");
-                        }*/
             string? TeacherID = getUserID();
             if (TeacherID == null)
             {
@@ -102,11 +87,6 @@ namespace WEB_CLIENT.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(Quiz create, Guid LessonID, Guid CourseID)
         {
-            /*            // if session time out
-                        if (isSessionTimeout())
-                        {
-                            return Redirect("/Logout");
-                        }*/
             string? TeacherID = getUserID();
             if (TeacherID == null)
             {
@@ -135,11 +115,6 @@ namespace WEB_CLIENT.Controllers
         [HttpPost]
         public async Task<ActionResult> Update(Guid id, Quiz obj, Guid LessonID, Guid CourseID)
         {
-            /*            // if session time out
-                        if (isSessionTimeout())
-                        {
-                            return Redirect("/Logout");
-                        }*/
             string? TeacherID = getUserID();
             if (TeacherID == null)
             {
@@ -162,11 +137,6 @@ namespace WEB_CLIENT.Controllers
         }
         public async Task<ActionResult> Delete(Guid? id, Guid? LessonID, Guid? CourseID)
         {
-            /*            // if session time out
-                        if (isSessionTimeout())
-                        {
-                            return Redirect("/Logout");
-                        }*/
             string? TeacherID = getUserID();
             if (TeacherID == null)
             {

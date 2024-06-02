@@ -21,11 +21,6 @@ namespace WEB_CLIENT.Controllers
 
         public async Task<ActionResult> Index(Guid? id /*LessonID*/)
         {
-            /*            // if session time out
-                        if (isSessionTimeout())
-                        {
-                            return Redirect("/Logout");
-                        }*/
             string? StudentID = getUserID();
             if (StudentID == null)
             {
@@ -46,11 +41,6 @@ namespace WEB_CLIENT.Controllers
         [HttpPost]
         public async Task<ActionResult> Index(Guid id /*LessonID*/, string? button, int? answer, int timeOut, int minutes, int question_no, int seconds)
         {
-            /*            // if session time out
-                        if (isSessionTimeout())
-                        {
-                            return Redirect("/Logout");
-                        }*/
             string? StudentID = getUserID();
             if (StudentID == null)
             {
