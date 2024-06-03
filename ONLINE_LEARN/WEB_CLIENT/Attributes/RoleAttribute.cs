@@ -7,7 +7,7 @@ namespace WEB_CLIENT.Attributes
 {
     public class RoleAttribute : Attribute, IActionFilter
     {
-        public string[] Role { get; set; }
+        private string[] Role { get; set; }
         public RoleAttribute(params string[] role)
         {
             Role = role;
