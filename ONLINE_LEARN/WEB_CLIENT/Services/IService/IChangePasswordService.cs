@@ -1,10 +1,10 @@
 ﻿using DataAccess.DTO.UserDTO;
-using DataAccess.DTO;
+using DataAccess.Base;
 
 namespace WEB_CLIENT.Services.IService
 {
     public interface IChangePasswordService
     {
-        Task<ResponseDTO<bool>> Index(string username, ChangePasswordDTO DTO);
+        Task<ResponseBase<bool>> Index(string username, ChangePasswordDTO DTO);
     }
 }

@@ -1,9 +1,9 @@
-﻿using DataAccess.DTO;
+﻿using DataAccess.Base;
 
 namespace WEB_CLIENT.Services.IService
 {
     public interface IForgotPasswordService
     {
-        Task<ResponseDTO<bool>> Index(string email);
+        Task<ResponseBase<bool>> Index(string email);
     }
 }

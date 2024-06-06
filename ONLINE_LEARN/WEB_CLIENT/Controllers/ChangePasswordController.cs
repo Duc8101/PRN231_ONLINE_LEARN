@@ -1,5 +1,5 @@
-﻿using DataAccess.Const;
-using DataAccess.DTO;
+﻿using DataAccess.Base;
+using DataAccess.Const;
 using DataAccess.DTO.UserDTO;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -31,9 +31,9 @@ namespace WEB_CLIENT.Controllers
             // if not found username
             if (username == null)
             {
-                return View("/Views/Error/404.cshtml", new ResponseDTO<object?>(null, "Not found username. Please check login information"));
+                return View("/Views/Error/404.cshtml", new ResponseBase<object?>(null, "Not found username. Please check login information"));
             }
-            ResponseDTO<bool> response = await _service.Index(username, DTO);
+            ResponseBase<bool> response = await _service.Index(username, DTO);
             if (response.Data == false)
             {
                 if (response.Code == (int)HttpStatusCode.Conflict)
@@ -41,7 +41,7 @@ namespace WEB_CLIENT.Controllers
                     ViewData["error"] = response.Message;
                     return View();
                 }
-                return View("/Views/Error/500.cshtml", new ResponseDTO<object?>(null, response.Message));
+                return View("/Views/Error/500.cshtml", new ResponseBase<object?>(null, response.Message));
             }
             ViewData["success"] = response.Message;
             return View();

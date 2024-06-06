@@ -1,4 +1,4 @@
-﻿using DataAccess.DTO;
+﻿using DataAccess.Base;
 using DataAccess.Entity;
 using DataAccess.Model.IDAO;
 using Microsoft.EntityFrameworkCore;
@@ -19,20 +19,20 @@ namespace WEB_CLIENT.Services.Service
             _daoResult = daoResult;
         }
 
-        public async Task<ResponseDTO<Dictionary<string, object?>?>> Index(Guid LessonID, Guid StudentID)
+        public async Task<ResponseBase<Dictionary<string, object?>?>> Index(Guid LessonID, Guid StudentID)
         {
             try
             {
                 Lesson? lesson = await _daoLesson.Get(l => l.IsDeleted == false && l.LessonId == LessonID && l.Course.IsDeleted == false);
                 if (lesson == null)
                 {
-                    return new ResponseDTO<Dictionary<string, object?>?>(null, "Not found lesson", (int)HttpStatusCode.NotFound);
+                    return new ResponseBase<Dictionary<string, object?>?>(null, "Not found lesson", (int)HttpStatusCode.NotFound);
                 }
                 List<Quiz> list = await _daoQuiz.FindAll(q => q.IsDeleted == false && q.LessonId == LessonID).ToListAsync();
                 Result? result = await _daoResult.Get(r => r.LessonId == LessonID && r.StudentId == StudentID);
                 if (list.Count == 0)
                 {
-                    return new ResponseDTO<Dictionary<string, object?>?>(null, "Not found quiz", (int)HttpStatusCode.NotFound);
+                    return new ResponseBase<Dictionary<string, object?>?>(null, "Not found quiz", (int)HttpStatusCode.NotFound);
                 }
                 Dictionary<string, object?> dic = new Dictionary<string, object?>();
                 dic["quiz"] = list[0];
@@ -42,38 +42,38 @@ namespace WEB_CLIENT.Services.Service
                 dic["question_no"] = 1;
                 dic["button"] = list.Count == 1 ? "Finish" : "Next";
                 dic["result"] = result;
-                return new ResponseDTO<Dictionary<string, object?>?>(dic, "");
+                return new ResponseBase<Dictionary<string, object?>?>(dic, "");
             }
             catch (Exception ex)
             {
-                return new ResponseDTO<Dictionary<string, object?>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseBase<Dictionary<string, object?>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
 
-        public async Task<ResponseDTO<List<Quiz>?>> Finish(Guid LessonID)
+        public async Task<ResponseBase<List<Quiz>?>> Finish(Guid LessonID)
         {
             try
             {
                 Lesson? lesson = await _daoLesson.Get(l => l.IsDeleted == false && l.LessonId == LessonID && l.Course.IsDeleted == false);
                 if (lesson == null)
                 {
-                    return new ResponseDTO<List<Quiz>?>(null, "Not found lesson", (int)HttpStatusCode.NotFound);
+                    return new ResponseBase<List<Quiz>?>(null, "Not found lesson", (int)HttpStatusCode.NotFound);
                 }
                 List<Quiz> list = await _daoQuiz.FindAll(q => q.IsDeleted == false && q.LessonId == LessonID).ToListAsync();
                 if (list.Count == 0)
                 {
-                    return new ResponseDTO<List<Quiz>?>(null, "Not found quiz", (int)HttpStatusCode.NotFound);
+                    return new ResponseBase<List<Quiz>?>(null, "Not found quiz", (int)HttpStatusCode.NotFound);
                 }
-                return new ResponseDTO<List<Quiz>?>(list, "");
+                return new ResponseBase<List<Quiz>?>(list, "");
             }
             catch (Exception ex)
             {
-                return new ResponseDTO<List<Quiz>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseBase<List<Quiz>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
 
         }
 
-        public async Task<ResponseDTO<Result?>> Finish(Guid LessonID, Guid StudentID, float score, string status)
+        public async Task<ResponseBase<Result?>> Finish(Guid LessonID, Guid StudentID, float score, string status)
         {
             try
             {
@@ -98,22 +98,22 @@ namespace WEB_CLIENT.Services.Service
                     await _daoResult.Update(result);
                 }
                 await _daoResult.Save();
-                return new ResponseDTO<Result?>(result, string.Empty);
+                return new ResponseBase<Result?>(result, string.Empty);
             }
             catch (Exception ex)
             {
-                return new ResponseDTO<Result?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseBase<Result?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
 
-        public async Task<ResponseDTO<Dictionary<string, object?>?>> Index(Guid LessonID, Guid StudentID, string? button, int minutes, int question_no, int seconds)
+        public async Task<ResponseBase<Dictionary<string, object?>?>> Index(Guid LessonID, Guid StudentID, string? button, int minutes, int question_no, int seconds)
         {
             try
             {
                 Lesson? lesson = await _daoLesson.Get(l => l.IsDeleted == false && l.LessonId == LessonID && l.Course.IsDeleted == false);
                 if (lesson == null)
                 {
-                    return new ResponseDTO<Dictionary<string, object?>?>(null, "Not found lesson", (int)HttpStatusCode.NotFound);
+                    return new ResponseBase<Dictionary<string, object?>?>(null, "Not found lesson", (int)HttpStatusCode.NotFound);
                 }
                 List<Quiz> list = await _daoQuiz.FindAll(q => q.IsDeleted == false && q.LessonId == LessonID).ToListAsync();
                 Result? result = await _daoResult.Get(r => r.LessonId == LessonID && r.StudentId == StudentID);
@@ -136,11 +136,11 @@ namespace WEB_CLIENT.Services.Service
                 dic["minutes"] = minutes;
                 dic["seconds"] = seconds;
                 dic["result"] = result;
-                return new ResponseDTO<Dictionary<string, object?>?>(dic, "");
+                return new ResponseBase<Dictionary<string, object?>?>(dic, "");
             }
             catch (Exception ex)
             {
-                return new ResponseDTO<Dictionary<string, object?>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseBase<Dictionary<string, object?>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
     }

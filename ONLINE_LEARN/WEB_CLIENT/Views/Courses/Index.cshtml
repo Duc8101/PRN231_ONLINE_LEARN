@@ -1,6 +1,6 @@
 ﻿@using DataAccess.Const;
-@using DataAccess.DTO;
 @using DataAccess.Entity;
+@using DataAccess.Pagination;
 @model Dictionary<string,object>
 <!-- Spinner Start -->
 <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
@@ -66,7 +66,7 @@
 }
 
 @{
-    PagedResultDTO<Course> result = (PagedResultDTO<Course>) Model["result"];
+    PagedResult<Course> result = (PagedResult<Course>) Model["result"];
     int CategoryID = (int)Model["CategoryID"];
     string flow = (string) Model["flow"];
     string properties = (string) Model["properties"];

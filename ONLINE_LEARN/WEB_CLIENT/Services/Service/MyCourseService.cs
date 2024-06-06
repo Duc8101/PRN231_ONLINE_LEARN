@@ -1,7 +1,8 @@
-﻿using DataAccess.Const;
-using DataAccess.DTO;
+﻿using DataAccess.Base;
+using DataAccess.Const;
 using DataAccess.Entity;
 using DataAccess.Model.IDAO;
+using DataAccess.Pagination;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
 using WEB_CLIENT.Services.IService;
@@ -15,7 +16,7 @@ namespace WEB_CLIENT.Services.Service
         {
             _daoEnroll = daoEnroll;
         }
-        public async Task<ResponseDTO<PagedResultDTO<Course>?>> Index(Guid StudentID, int page)
+        public async Task<ResponseBase<PagedResult<Course>?>> Index(Guid StudentID, int page)
         {
             try
             {
@@ -25,7 +26,7 @@ namespace WEB_CLIENT.Services.Service
                     .Take(PageSizeConst.MAX_COURSE_IN_PAGE).Select(e => e.Course).ToListAsync();
                 int count = await query.CountAsync();
                 int number = (int)Math.Ceiling((double)count / PageSizeConst.MAX_COURSE_IN_PAGE);
-                PagedResultDTO<Course> result = new PagedResultDTO<Course>()
+                PagedResult<Course> result = new PagedResult<Course>()
                 {
                     PageSelected = page,
                     Results = list,
@@ -33,11 +34,11 @@ namespace WEB_CLIENT.Services.Service
                     PRE_URL = "/MyCourse?page=" + (page - 1),
                     NEXT_URL = "/MyCourse?page=" + (page + 1),
                 };
-                return new ResponseDTO<PagedResultDTO<Course>?>(result, string.Empty);
+                return new ResponseBase<PagedResult<Course>?>(result, string.Empty);
             }
             catch (Exception ex)
             {
-                return new ResponseDTO<PagedResultDTO<Course>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseBase<PagedResult<Course>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
 
             }
         }

@@ -1,4 +1,4 @@
-﻿using DataAccess.DTO;
+﻿using DataAccess.Base;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using WEB_CLIENT.Services.IService;
@@ -27,7 +27,7 @@ namespace WEB_CLIENT.Controllers
         [HttpPost]
         public async Task<ActionResult> Index(string email)
         {
-            ResponseDTO<bool> response = await _service.Index(email);
+            ResponseBase<bool> response = await _service.Index(email);
             if (response.Data == false)
             {
                 if (response.Code == (int)HttpStatusCode.NotFound)
@@ -35,7 +35,7 @@ namespace WEB_CLIENT.Controllers
                     ViewData["error"] = response.Message;
                     return View();
                 }
-                return View("/Views/Error/500.cshtml", new ResponseDTO<object?>(null, response.Message));
+                return View("/Views/Error/500.cshtml", new ResponseBase<object?>(null, response.Message));
             }
             ViewData["success"] = response.Message;
             return View();

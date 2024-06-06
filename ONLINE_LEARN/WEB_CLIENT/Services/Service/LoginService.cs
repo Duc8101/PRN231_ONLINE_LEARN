@@ -1,4 +1,4 @@
-﻿using DataAccess.DTO;
+﻿using DataAccess.Base;
 using DataAccess.DTO.UserDTO;
 using DataAccess.Entity;
 using DataAccess.Model;
@@ -17,37 +17,37 @@ namespace WEB_CLIENT.Services.Service
             _daoUser = daoUser;
         }
 
-        public async Task<ResponseDTO<User?>> Index(Guid UserID)
+        public async Task<ResponseBase<User?>> Index(Guid UserID)
         {
             try
             {
                 User? user = await _daoUser.GetById(UserID);
                 if (user == null)
                 {
-                    return new ResponseDTO<User?>(null, "Not found user", (int)HttpStatusCode.NotFound);
+                    return new ResponseBase<User?>(null, "Not found user", (int)HttpStatusCode.NotFound);
                 }
-                return new ResponseDTO<User?>(user, string.Empty);
+                return new ResponseBase<User?>(user, string.Empty);
             }
             catch (Exception ex)
             {
-                return new ResponseDTO<User?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseBase<User?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
 
-        public async Task<ResponseDTO<User?>> Index(LoginDTO DTO)
+        public async Task<ResponseBase<User?>> Index(LoginDTO DTO)
         {
             try
             {
                 User? user = await _daoUser.Get(u => u.Username == DTO.Username && u.IsDeleted == false);
                 if (user == null || DTO.Password == null || string.Compare(user.Password, UserUtil.HashPassword(DTO.Password), false) != 0)
                 {
-                    return new ResponseDTO<User?>(null, "Username or password incorrect", (int)HttpStatusCode.Conflict);
+                    return new ResponseBase<User?>(null, "Username or password incorrect", (int)HttpStatusCode.Conflict);
                 }
-                return new ResponseDTO<User?>(user, string.Empty);
+                return new ResponseBase<User?>(user, string.Empty);
             }
             catch (Exception ex)
             {
-                return new ResponseDTO<User?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseBase<User?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
     }

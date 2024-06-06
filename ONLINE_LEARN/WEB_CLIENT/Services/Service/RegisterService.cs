@@ -1,5 +1,5 @@
-﻿using DataAccess.Const;
-using DataAccess.DTO;
+﻿using DataAccess.Base;
+using DataAccess.Const;
 using DataAccess.Entity;
 using DataAccess.Model;
 using DataAccess.Model.IDAO;
@@ -15,13 +15,13 @@ namespace WEB_CLIENT.Services.Service
         {
             _daoUser = daoUser;
         }
-        public async Task<ResponseDTO<bool>> Index(User user)
+        public async Task<ResponseBase<bool>> Index(User user)
         {
             try
             {
                 if (await _daoUser.Any(u => u.Username == user.Username || u.Email == user.Email.Trim()))
                 {
-                    return new ResponseDTO<bool>(false, "Username or email has existed", (int)HttpStatusCode.Conflict);
+                    return new ResponseBase<bool>(false, "Username or email has existed", (int)HttpStatusCode.Conflict);
                 }
                 string newPw = UserUtil.RandomPassword();
                 string hashPw = UserUtil.HashPassword(newPw);
@@ -40,11 +40,11 @@ namespace WEB_CLIENT.Services.Service
                 user.IsDeleted = false;
                 await _daoUser.Create(user);
                 await _daoUser.Save();
-                return new ResponseDTO<bool>(true, "Register successful");
+                return new ResponseBase<bool>(true, "Register successful");
             }
             catch (Exception ex)
             {
-                return new ResponseDTO<bool>(false, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseBase<bool>(false, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
     }

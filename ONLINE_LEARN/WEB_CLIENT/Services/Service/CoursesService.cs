@@ -1,7 +1,8 @@
-﻿using DataAccess.Const;
-using DataAccess.DTO;
+﻿using DataAccess.Base;
+using DataAccess.Const;
 using DataAccess.Entity;
 using DataAccess.Model.IDAO;
+using DataAccess.Pagination;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
 using WEB_CLIENT.Services.IService;
@@ -54,7 +55,7 @@ namespace WEB_CLIENT.Services.Service
             }
             return query;
         }
-        public async Task<ResponseDTO<Dictionary<string, object?>?>> Index(int? CategoryID, string? properties, string? flow, int? page, string? userId)
+        public async Task<ResponseBase<Dictionary<string, object?>?>> Index(int? CategoryID, string? properties, string? flow, int? page, string? userId)
         {
             int pageSelected = page == null ? 1 : page.Value;
             int prePage = pageSelected - 1;
@@ -99,7 +100,7 @@ namespace WEB_CLIENT.Services.Service
                 List<Category> listCategory = await _daoCategory.FindAll().ToListAsync();
                 int count = await query.CountAsync();
                 int numberPage = (int)Math.Ceiling((double)count / PageSizeConst.MAX_COURSE_IN_PAGE);
-                PagedResultDTO<Course> result = new PagedResultDTO<Course>()
+                PagedResult<Course> result = new PagedResult<Course>()
                 {
                     PageSelected = pageSelected,
                     Results = listCourse,
@@ -130,21 +131,21 @@ namespace WEB_CLIENT.Services.Service
                         .Include(e => e.Course).ThenInclude(e => e.Creator).ToListAsync();
                     dic["listEnroll"] = listEnroll;
                 }
-                return new ResponseDTO<Dictionary<string, object?>?>(dic, string.Empty);
+                return new ResponseBase<Dictionary<string, object?>?>(dic, string.Empty);
             }
             catch (Exception ex)
             {
-                return new ResponseDTO<Dictionary<string, object?>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseBase<Dictionary<string, object?>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
-        public async Task<ResponseDTO<Dictionary<string, object?>?>> Detail(Guid CourseID, string? userId)
+        public async Task<ResponseBase<Dictionary<string, object?>?>> Detail(Guid CourseID, string? userId)
         {
             try
             {
                 Course? course = await _daoCourse.FindAll(c => c.CourseId == CourseID).Include(c => c.Creator).FirstOrDefaultAsync();
                 if (course == null)
                 {
-                    return new ResponseDTO<Dictionary<string, object?>?>(null, "Not found course", (int)HttpStatusCode.NotFound);
+                    return new ResponseBase<Dictionary<string, object?>?>(null, "Not found course", (int)HttpStatusCode.NotFound);
                 }
                 List<Lesson> list = await _daoLesson.FindAll(l => l.IsDeleted == false && l.CourseId == CourseID)
                     .OrderBy(l => l.LessonNo).ToListAsync();
@@ -160,32 +161,32 @@ namespace WEB_CLIENT.Services.Service
                     dic["listEnroll"] = _daoEnroll.FindAll(e => e.StudentId == Guid.Parse(userId) && e.Course.IsDeleted == false)
                         .Include(e => e.Course).ThenInclude(e => e.Creator);
                 }
-                return new ResponseDTO<Dictionary<string, object?>?>(dic, string.Empty);
+                return new ResponseBase<Dictionary<string, object?>?>(dic, string.Empty);
             }
             catch (Exception ex)
             {
-                return new ResponseDTO<Dictionary<string, object?>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseBase<Dictionary<string, object?>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
-        public async Task<ResponseDTO<Dictionary<string, object?>?>> EnrollCourse(Guid CourseID, Guid UserID)
+        public async Task<ResponseBase<Dictionary<string, object?>?>> EnrollCourse(Guid CourseID, Guid UserID)
         {
             try
             {
                 Course? course = await _daoCourse.FindAll(c => c.CourseId == CourseID).Include(c => c.Creator).FirstOrDefaultAsync();
                 if (course == null)
                 {
-                    return new ResponseDTO<Dictionary<string, object?>?>(null, "Not found course", (int)HttpStatusCode.NotFound);
+                    return new ResponseBase<Dictionary<string, object?>?>(null, "Not found course", (int)HttpStatusCode.NotFound);
                 }
-                ResponseDTO<Dictionary<string, object?>?> result = await Index(null, null, null, null ,UserID.ToString());
+                ResponseBase<Dictionary<string, object?>?> result = await Index(null, null, null, null ,UserID.ToString());
                 // if get result failed
                 if (result.Data == null)
                 {
-                    return new ResponseDTO<Dictionary<string, object?>?>(null, result.Message, result.Code);
+                    return new ResponseBase<Dictionary<string, object?>?>(null, result.Message, result.Code);
                 }
                 // if already enroll course
                 if (await _daoEnroll.Any(e => e.CourseId == CourseID && e.StudentId == UserID))
                 {
-                    return new ResponseDTO<Dictionary<string, object?>?>(result.Data, "You have enrolled this course", (int)HttpStatusCode.Conflict);
+                    return new ResponseBase<Dictionary<string, object?>?>(result.Data, "You have enrolled this course", (int)HttpStatusCode.Conflict);
                 }
                 EnrollCourse enroll = new EnrollCourse()
                 {
@@ -197,21 +198,21 @@ namespace WEB_CLIENT.Services.Service
                 };
                 await _daoEnroll.Create(enroll);
                 await _daoEnroll.Save();
-                return new ResponseDTO<Dictionary<string, object?>?>(result.Data, "Enroll successful");
+                return new ResponseBase<Dictionary<string, object?>?>(result.Data, "Enroll successful");
             }
             catch (Exception ex)
             {
-                return new ResponseDTO<Dictionary<string, object?>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseBase<Dictionary<string, object?>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
-        public async Task<ResponseDTO<Dictionary<string, object>?>> LearnCourse(Guid CourseID, Guid UserID, string? video /* file video */, string? name /*video name or pdf name*/, string? PDF /*file PDF */, Guid? LessonID, int? VideoID, int? PDFID)
+        public async Task<ResponseBase<Dictionary<string, object>?>> LearnCourse(Guid CourseID, Guid UserID, string? video /* file video */, string? name /*video name or pdf name*/, string? PDF /*file PDF */, Guid? LessonID, int? VideoID, int? PDFID)
         {
             try
             {
                 Course? course = await _daoCourse.FindAll(c => c.CourseId == CourseID).Include(c => c.Creator).FirstOrDefaultAsync();
                 if (course == null)
                 {
-                    return new ResponseDTO<Dictionary<string, object>?>(null, "Not found course", (int)HttpStatusCode.NotFound);
+                    return new ResponseBase<Dictionary<string, object>?>(null, "Not found course", (int)HttpStatusCode.NotFound);
                 }
                 // if enroll course
                 if (await _daoEnroll.Any(e => e.CourseId == CourseID && e.StudentId == UserID))
@@ -245,13 +246,13 @@ namespace WEB_CLIENT.Services.Service
                     result["vID"] = VideoID == null ? 0 : VideoID;
                     result["lID"] = LessonID == null ? Guid.NewGuid() : LessonID;
                     result["pID"] = PDFID == null ? 0 : PDFID;
-                    return new ResponseDTO<Dictionary<string, object>?>(result, string.Empty);
+                    return new ResponseBase<Dictionary<string, object>?>(result, string.Empty);
                 }
-                return new ResponseDTO<Dictionary<string, object>?>(null, string.Empty, (int)HttpStatusCode.Conflict);
+                return new ResponseBase<Dictionary<string, object>?>(null, string.Empty, (int)HttpStatusCode.Conflict);
             }
             catch (Exception ex)
             {
-                return new ResponseDTO<Dictionary<string, object>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseBase<Dictionary<string, object>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
     }

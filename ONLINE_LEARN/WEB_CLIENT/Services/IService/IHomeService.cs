@@ -1,10 +1,10 @@
-﻿using DataAccess.DTO;
+﻿using DataAccess.Base;
 using DataAccess.Entity;
 
 namespace WEB_CLIENT.Services.IService
 {
     public interface IHomeService
     {
-        Task<ResponseDTO<List<User>?>> Index();
+        Task<ResponseBase<List<User>?>> Index();
     }
 }

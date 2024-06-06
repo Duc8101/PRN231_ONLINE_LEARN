@@ -1,5 +1,5 @@
-﻿using DataAccess.Const;
-using DataAccess.DTO;
+﻿using DataAccess.Base;
+using DataAccess.Const;
 using DataAccess.Entity;
 using DataAccess.Model.IDAO;
 using Microsoft.EntityFrameworkCore;
@@ -23,7 +23,7 @@ namespace WEB_CLIENT.Services.Service
             _daoVideo = daoVideo;
         }
 
-        public async Task<ResponseDTO<Dictionary<string, object>?>> Index(Guid CourseID, Guid CreatorID, string? video /* file video */, string? name /*video name or pdf name*/, string? PDF /*file PDF */, Guid? LessonID)
+        public async Task<ResponseBase<Dictionary<string, object>?>> Index(Guid CourseID, Guid CreatorID, string? video /* file video */, string? name /*video name or pdf name*/, string? PDF /*file PDF */, Guid? LessonID)
         {
             try
             {
@@ -31,7 +31,7 @@ namespace WEB_CLIENT.Services.Service
                     .Include(c => c.Creator).FirstOrDefaultAsync();
                 if (course == null)
                 {
-                    return new ResponseDTO<Dictionary<string, object>?>(null, "Not found course", (int)HttpStatusCode.NotFound);
+                    return new ResponseBase<Dictionary<string, object>?>(null, "Not found course", (int)HttpStatusCode.NotFound);
                 }
                 List<Lesson> listLesson = await _daoLesson.FindAll(l => l.IsDeleted == false && l.CourseId == CourseID)
                     .OrderBy(l => l.LessonNo).ToListAsync();
@@ -58,33 +58,33 @@ namespace WEB_CLIENT.Services.Service
                 result["name"] = name == null ? "" : name;
                 result["lID"] = LessonID == null ? Guid.NewGuid() : LessonID;
                 result["CourseID"] = CourseID;
-                return new ResponseDTO<Dictionary<string, object>?>(result, string.Empty);
+                return new ResponseBase<Dictionary<string, object>?>(result, string.Empty);
             }
             catch (Exception ex)
             {
-                return new ResponseDTO<Dictionary<string, object>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseBase<Dictionary<string, object>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
-        public async Task<ResponseDTO<Dictionary<string, object>?>> Create(string? LessonName, Guid CourseID, Guid CreatorID)
+        public async Task<ResponseBase<Dictionary<string, object>?>> Create(string? LessonName, Guid CourseID, Guid CreatorID)
         {
             try
             {
-                ResponseDTO<Dictionary<string, object>?> response = await Index(CourseID, CreatorID, null, null, null, null);
+                ResponseBase<Dictionary<string, object>?> response = await Index(CourseID, CreatorID, null, null, null, null);
                 if (response.Data == null)
                 {
-                    return new ResponseDTO<Dictionary<string, object>?>(null, response.Message, response.Code);
+                    return new ResponseBase<Dictionary<string, object>?>(null, response.Message, response.Code);
                 }
                 if (LessonName == null)
                 {
-                    return new ResponseDTO<Dictionary<string, object>?>(response.Data, "You have to input lesson name", (int)HttpStatusCode.Conflict);
+                    return new ResponseBase<Dictionary<string, object>?>(response.Data, "You have to input lesson name", (int)HttpStatusCode.Conflict);
                 }
                 if (LessonName.Trim().Length > LessonConst.MAX_LENGTH_LESSON_NAME)
                 {
-                    return new ResponseDTO<Dictionary<string, object>?>(response.Data, "Lesson name max " + LessonConst.MAX_LENGTH_LESSON_NAME + " characters", (int)HttpStatusCode.Conflict);
+                    return new ResponseBase<Dictionary<string, object>?>(response.Data, "Lesson name max " + LessonConst.MAX_LENGTH_LESSON_NAME + " characters", (int)HttpStatusCode.Conflict);
                 }
                 if (await _daoLesson.Any(l => l.LessonName == LessonName.Trim() && l.CourseId == CourseID && l.IsDeleted == false))
                 {
-                    return new ResponseDTO<Dictionary<string, object>?>(response.Data, "Lesson existed", (int)HttpStatusCode.Conflict);
+                    return new ResponseBase<Dictionary<string, object>?>(response.Data, "Lesson existed", (int)HttpStatusCode.Conflict);
                 }
                 List<Lesson> list = await _daoLesson.FindAll(l => l.IsDeleted == false && l.CourseId == CourseID)
                     .OrderBy(l => l.LessonNo).ToListAsync();
@@ -103,39 +103,39 @@ namespace WEB_CLIENT.Services.Service
                 list = await _daoLesson.FindAll(l => l.IsDeleted == false && l.CourseId == CourseID)
                     .OrderBy(l => l.LessonNo).ToListAsync();
                 response.Data["listLesson"] = list;
-                return new ResponseDTO<Dictionary<string, object>?>(response.Data, "Create successful");
+                return new ResponseBase<Dictionary<string, object>?>(response.Data, "Create successful");
             }
             catch (Exception ex)
             {
-                return new ResponseDTO<Dictionary<string, object>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseBase<Dictionary<string, object>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
-        public async Task<ResponseDTO<Dictionary<string, object>?>> Update(Guid LessonID, string? LessonName, Guid CourseID, Guid CreatorID)
+        public async Task<ResponseBase<Dictionary<string, object>?>> Update(Guid LessonID, string? LessonName, Guid CourseID, Guid CreatorID)
         {
             try
             {
-                ResponseDTO<Dictionary<string, object>?> response = await Index(CourseID, CreatorID, null, null, null, null);
+                ResponseBase<Dictionary<string, object>?> response = await Index(CourseID, CreatorID, null, null, null, null);
                 if (response.Data == null)
                 {
-                    return new ResponseDTO<Dictionary<string, object>?>(null, response.Message, response.Code);
+                    return new ResponseBase<Dictionary<string, object>?>(null, response.Message, response.Code);
                 }
                 if (LessonName == null)
                 {
-                    return new ResponseDTO<Dictionary<string, object>?>(response.Data, "You have to input lesson name", (int)HttpStatusCode.Conflict);
+                    return new ResponseBase<Dictionary<string, object>?>(response.Data, "You have to input lesson name", (int)HttpStatusCode.Conflict);
                 }
                 if (LessonName.Trim().Length > LessonConst.MAX_LENGTH_LESSON_NAME)
                 {
-                    return new ResponseDTO<Dictionary<string, object>?>(response.Data, "Lesson name max " + LessonConst.MAX_LENGTH_LESSON_NAME + " characters", (int)HttpStatusCode.Conflict);
+                    return new ResponseBase<Dictionary<string, object>?>(response.Data, "Lesson name max " + LessonConst.MAX_LENGTH_LESSON_NAME + " characters", (int)HttpStatusCode.Conflict);
                 }
                 Lesson? lesson = await _daoLesson.Get(l => l.IsDeleted == false && l.LessonId == LessonID
                 && l.Course.IsDeleted == false && l.CourseId == CourseID);
                 if (lesson == null)
                 {
-                    return new ResponseDTO<Dictionary<string, object>?>(null, "Not found lesson", (int)HttpStatusCode.NotFound);
+                    return new ResponseBase<Dictionary<string, object>?>(null, "Not found lesson", (int)HttpStatusCode.NotFound);
                 }
                 if (await _daoLesson.Any(l => l.LessonName == LessonName.Trim() && l.CourseId == CourseID && l.IsDeleted == false && l.LessonId != LessonID))
                 {
-                    return new ResponseDTO<Dictionary<string, object>?>(response.Data, "Lesson existed", (int)HttpStatusCode.Conflict);
+                    return new ResponseBase<Dictionary<string, object>?>(response.Data, "Lesson existed", (int)HttpStatusCode.Conflict);
                 }
                 lesson.LessonName = LessonName.Trim();
                 lesson.UpdateAt = DateTime.Now;
@@ -144,27 +144,27 @@ namespace WEB_CLIENT.Services.Service
                 List<Lesson> list = await _daoLesson.FindAll(l => l.IsDeleted == false && l.CourseId == CourseID)
                     .OrderBy(l => l.LessonNo).ToListAsync();
                 response.Data["listLesson"] = list;
-                return new ResponseDTO<Dictionary<string, object>?>(response.Data, "Update successful");
+                return new ResponseBase<Dictionary<string, object>?>(response.Data, "Update successful");
             }
             catch (Exception ex)
             {
-                return new ResponseDTO<Dictionary<string, object>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseBase<Dictionary<string, object>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
-        public async Task<ResponseDTO<Dictionary<string, object>?>> Delete(Guid LessonID, Guid CourseID, Guid CreatorID)
+        public async Task<ResponseBase<Dictionary<string, object>?>> Delete(Guid LessonID, Guid CourseID, Guid CreatorID)
         {
             try
             {
-                ResponseDTO<Dictionary<string, object>?> response = await Index(CourseID, CreatorID, null, null, null, null);
+                ResponseBase<Dictionary<string, object>?> response = await Index(CourseID, CreatorID, null, null, null, null);
                 if (response.Data == null)
                 {
-                    return new ResponseDTO<Dictionary<string, object>?>(null, response.Message, response.Code);
+                    return new ResponseBase<Dictionary<string, object>?>(null, response.Message, response.Code);
                 }
                 Lesson? lesson = await _daoLesson.Get(l => l.IsDeleted == false && l.LessonId == LessonID
                 && l.Course.IsDeleted == false && l.CourseId == CourseID);
                 if (lesson == null)
                 {
-                    return new ResponseDTO<Dictionary<string, object>?>(null, "Not found lesson", (int)HttpStatusCode.NotFound);
+                    return new ResponseBase<Dictionary<string, object>?>(null, "Not found lesson", (int)HttpStatusCode.NotFound);
                 }
                 List<Lesson> list = await _daoLesson.FindAll(l => l.IsDeleted == false && l.CourseId == CourseID)
                     .OrderBy(l => l.LessonNo).ToListAsync();
@@ -184,11 +184,11 @@ namespace WEB_CLIENT.Services.Service
                 list = await _daoLesson.FindAll(l => l.IsDeleted == false && l.CourseId == CourseID)
                     .OrderBy(l => l.LessonNo).ToListAsync();
                 response.Data["listLesson"] = list;
-                return new ResponseDTO<Dictionary<string, object>?>(response.Data, "Delete successful");
+                return new ResponseBase<Dictionary<string, object>?>(response.Data, "Delete successful");
             }
             catch (Exception ex)
             {
-                return new ResponseDTO<Dictionary<string, object>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseBase<Dictionary<string, object>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
 

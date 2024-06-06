@@ -1,4 +1,4 @@
-﻿using DataAccess.DTO;
+﻿using DataAccess.Base;
 using DataAccess.Entity;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -28,7 +28,7 @@ namespace WEB_CLIENT.Controllers
         [HttpPost]
         public async Task<ActionResult> Index(User user)
         {
-            ResponseDTO<bool> response = await _service.Index(user);
+            ResponseBase<bool> response = await _service.Index(user);
             if (response.Data == false)
             {
                 if (response.Code == (int)HttpStatusCode.Conflict)
@@ -36,7 +36,7 @@ namespace WEB_CLIENT.Controllers
                     ViewData["error"] = response.Message;
                     return View();
                 }
-                return View("/Views/Error/500.cshtml", new ResponseDTO<object?>(null, response.Message, response.Code));
+                return View("/Views/Error/500.cshtml", new ResponseBase<object?>(null, response.Message, response.Code));
             }
             ViewData["success"] = response.Message;
             return View();

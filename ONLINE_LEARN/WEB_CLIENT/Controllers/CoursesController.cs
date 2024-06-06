@@ -1,5 +1,5 @@
-﻿using DataAccess.Const;
-using DataAccess.DTO;
+﻿using DataAccess.Base;
+using DataAccess.Const;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using WEB_CLIENT.Attributes;
@@ -19,11 +19,11 @@ namespace WEB_CLIENT.Controllers
         public async Task<ActionResult> Index(int? CategoryID, string? properties, string? flow, int? page)
         {
             string? userId = getUserID();
-            ResponseDTO<Dictionary<string, object?>?> result = await _service.Index(CategoryID, properties, flow, page, userId);
+            ResponseBase<Dictionary<string, object?>?> result = await _service.Index(CategoryID, properties, flow, page, userId);
             // if get result failed
             if (result.Data == null)
             {
-                return View("/Views/Error/500.cshtml", new ResponseDTO<object?>(null, result.Message, result.Code));
+                return View("/Views/Error/500.cshtml", new ResponseBase<object?>(null, result.Message, result.Code));
             }
             return View(result.Data);
         }
@@ -35,10 +35,10 @@ namespace WEB_CLIENT.Controllers
             {
                 return Redirect("/Courses");
             }
-            ResponseDTO<Dictionary<string, object?>?> response = await _service.Detail(id.Value, userId);
+            ResponseBase<Dictionary<string, object?>?> response = await _service.Detail(id.Value, userId);
             if (response.Data == null)
             {
-                return View("/Views/Error/" + response.Code + ".cshtml", new ResponseDTO<object?>(null, response.Message, response.Code));
+                return View("/Views/Error/" + response.Code + ".cshtml", new ResponseBase<object?>(null, response.Message, response.Code));
             }
             return View(response.Data);
         }
@@ -53,16 +53,16 @@ namespace WEB_CLIENT.Controllers
             string? StudentID = getUserID();
             if (StudentID == null)
             {
-                return View("/Views/Error/404.cshtml", new ResponseDTO<object?>(null, "Not found ID. Please check login information"));
+                return View("/Views/Error/404.cshtml", new ResponseBase<object?>(null, "Not found ID. Please check login information"));
             }
             if (id == null)
             {
                 return Redirect("/Courses");
             }
-            ResponseDTO<Dictionary<string, object?>?> result = await _service.EnrollCourse(id.Value, Guid.Parse(StudentID));
+            ResponseBase<Dictionary<string, object?>?> result = await _service.EnrollCourse(id.Value, Guid.Parse(StudentID));
             if (result.Data == null)
             {
-                return View("/Views/Error/" + result.Code + ".cshtml", new ResponseDTO<object?>(null, result.Message, result.Code));
+                return View("/Views/Error/" + result.Code + ".cshtml", new ResponseBase<object?>(null, result.Message, result.Code));
             }
             ViewData["enroll"] = result.Message;
             return View("/Views/Courses/Index.cshtml", result.Data);
@@ -79,14 +79,14 @@ namespace WEB_CLIENT.Controllers
             string? StudentID = getUserID();
             if (StudentID == null)
             {
-                return View("/Views/Error/404.cshtml", new ResponseDTO<object?>(null, "Not found ID. Please check login information", (int)HttpStatusCode.NotFound));
+                return View("/Views/Error/404.cshtml", new ResponseBase<object?>(null, "Not found ID. Please check login information", (int)HttpStatusCode.NotFound));
             }
-            ResponseDTO<Dictionary<string, object>?> result = await _service.LearnCourse(id.Value, Guid.Parse(StudentID), video, name, PDF, LessonID, VideoID, PDFID);
+            ResponseBase<Dictionary<string, object>?> result = await _service.LearnCourse(id.Value, Guid.Parse(StudentID), video, name, PDF, LessonID, VideoID, PDFID);
             if (result.Data == null)
             {
                 if (result.Code == (int)HttpStatusCode.InternalServerError)
                 {
-                    return View("/Views/Error/500.cshtml", new ResponseDTO<object?>(null, result.Message, result.Code));
+                    return View("/Views/Error/500.cshtml", new ResponseBase<object?>(null, result.Message, result.Code));
                 }
                 return Redirect("/Courses");
             }

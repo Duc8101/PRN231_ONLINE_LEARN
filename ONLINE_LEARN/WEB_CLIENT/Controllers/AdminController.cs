@@ -1,5 +1,5 @@
-﻿using DataAccess.Const;
-using DataAccess.DTO;
+﻿using DataAccess.Base;
+using DataAccess.Const;
 using DataAccess.Entity;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -21,10 +21,10 @@ namespace WEB_CLIENT.Controllers
 
         public async Task<ActionResult> Index(string? name)
         {
-            ResponseDTO<Dictionary<string, object>?> response = await _service.Index(name);
+            ResponseBase<Dictionary<string, object>?> response = await _service.Index(name);
             if (response.Data == null)
             {
-                return View("/Views/Error/500.cshtml", new ResponseDTO<object?>(null, response.Message, response.Code));
+                return View("/Views/Error/500.cshtml", new ResponseBase<object?>(null, response.Message, response.Code));
             }
             return View(response.Data);
         }
@@ -35,7 +35,7 @@ namespace WEB_CLIENT.Controllers
             {
                 return Redirect("/Admin");
             }
-            ResponseDTO<Dictionary<string, object>?> response = await _service.Detail(id.Value);
+            ResponseBase<Dictionary<string, object>?> response = await _service.Detail(id.Value);
             if (response.Data == null)
             {
                 if (response.Code == (int)HttpStatusCode.NotFound)
@@ -55,10 +55,10 @@ namespace WEB_CLIENT.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(User user)
         {
-            ResponseDTO<List<string>?> response = await _service.Create(user);
+            ResponseBase<List<string>?> response = await _service.Create(user);
             if (response.Data == null)
             {
-                return View("/Views/Error/500.cshtml", new ResponseDTO<object?>(null, response.Message, response.Code));
+                return View("/Views/Error/500.cshtml", new ResponseBase<object?>(null, response.Message, response.Code));
             }
             if (response.Code == (int)HttpStatusCode.Conflict)
             {

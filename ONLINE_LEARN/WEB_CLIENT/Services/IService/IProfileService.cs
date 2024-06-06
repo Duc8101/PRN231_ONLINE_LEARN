@@ -1,11 +1,11 @@
-﻿using DataAccess.DTO;
+﻿using DataAccess.Base;
 using DataAccess.DTO.UserDTO;
 
 namespace WEB_CLIENT.Services.IService
 {
     public interface IProfileService
     {
-        Task<ResponseDTO<Dictionary<string, object>?>> Index(Guid UserID);
-        Task<ResponseDTO<Dictionary<string, object>?>> Index(Guid UserID, ProfileDTO DTO, string valueImg);
+        Task<ResponseBase<Dictionary<string, object>?>> Index(Guid UserID);
+        Task<ResponseBase<Dictionary<string, object>?>> Index(Guid UserID, ProfileDTO DTO, string valueImg);
     }
 }

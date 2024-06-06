@@ -1,6 +1,7 @@
-﻿using DataAccess.Const;
-using DataAccess.DTO;
+﻿using DataAccess.Base;
+using DataAccess.Const;
 using DataAccess.Entity;
+using DataAccess.Pagination;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using WEB_CLIENT.Attributes;
@@ -24,13 +25,13 @@ namespace WEB_CLIENT.Controllers
             string? StudentID = getUserID();
             if (StudentID == null)
             {
-                return View("/Views/Error/404.cshtml", new ResponseDTO<object?>(null, "Not found id. Please check login information", (int)HttpStatusCode.NotFound));
+                return View("/Views/Error/404.cshtml", new ResponseBase<object?>(null, "Not found id. Please check login information", (int)HttpStatusCode.NotFound));
             }
             int pageSelected = page == null ? 1 : page.Value;
-            ResponseDTO<PagedResultDTO<Course>?> response = await _service.Index(Guid.Parse(StudentID), pageSelected);
+            ResponseBase<PagedResult<Course>?> response = await _service.Index(Guid.Parse(StudentID), pageSelected);
             if (response.Data == null)
             {
-                return View("/Views/Error/500.cshtml", new ResponseDTO<object?>(null, response.Message, response.Code));
+                return View("/Views/Error/500.cshtml", new ResponseBase<object?>(null, response.Message, response.Code));
             }
             return View(response.Data);
         }

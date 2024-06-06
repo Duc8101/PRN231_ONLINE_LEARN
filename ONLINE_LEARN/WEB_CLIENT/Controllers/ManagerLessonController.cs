@@ -1,5 +1,5 @@
-﻿using DataAccess.Const;
-using DataAccess.DTO;
+﻿using DataAccess.Base;
+using DataAccess.Const;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using WEB_CLIENT.Attributes;
@@ -23,18 +23,18 @@ namespace WEB_CLIENT.Controllers
             string? TeacherID = getUserID();
             if (TeacherID == null)
             {
-                return View("/Views/Error/404.cshtml", new ResponseDTO<object?>(null, "Not found ID. Please check login information"));
+                return View("/Views/Error/404.cshtml", new ResponseBase<object?>(null, "Not found ID. Please check login information"));
             }
             if (id == null)
             {
                 return Redirect("/ManagerCourse");
             }
-            ResponseDTO<Dictionary<string, object>?> result = await _service.Index(id.Value, Guid.Parse(TeacherID), video, name, PDF, LessonID);
+            ResponseBase<Dictionary<string, object>?> result = await _service.Index(id.Value, Guid.Parse(TeacherID), video, name, PDF, LessonID);
             if (result.Data == null)
             {
                 if (result.Code == (int)HttpStatusCode.InternalServerError)
                 {
-                    return View("/Views/Error/500.cshtml", new ResponseDTO<object?>(null, result.Message));
+                    return View("/Views/Error/500.cshtml", new ResponseBase<object?>(null, result.Message));
                 }
                 return Redirect("/ManagerCourse");
             }
@@ -47,12 +47,12 @@ namespace WEB_CLIENT.Controllers
             string? TeacherID = getUserID();
             if (TeacherID == null)
             {
-                return View("/Views/Error/404.cshtml", new ResponseDTO<object?>(null, "Not found ID. Please check login information"));
+                return View("/Views/Error/404.cshtml", new ResponseBase<object?>(null, "Not found ID. Please check login information"));
             }
-            ResponseDTO<Dictionary<string, object>?> result = await _service.Create(LessonName, CourseID, Guid.Parse(TeacherID));
+            ResponseBase<Dictionary<string, object>?> result = await _service.Create(LessonName, CourseID, Guid.Parse(TeacherID));
             if (result.Data == null)
             {
-                return View("/Views/Error/" + result.Code + ".cshtml", new ResponseDTO<object?>(null, result.Message));
+                return View("/Views/Error/" + result.Code + ".cshtml", new ResponseBase<object?>(null, result.Message));
             }
             if (result.Code == (int)HttpStatusCode.Conflict)
             {
@@ -77,12 +77,12 @@ namespace WEB_CLIENT.Controllers
             string? TeacherID = getUserID();
             if (TeacherID == null)
             {
-                return View("/Views/Error/404.cshtml", new ResponseDTO<object?>(null, "Not found ID. Please check login information"));
+                return View("/Views/Error/404.cshtml", new ResponseBase<object?>(null, "Not found ID. Please check login information"));
             }
-            ResponseDTO<Dictionary<string, object>?> result = await _service.Update(id, LessonName, CourseID, Guid.Parse(TeacherID));
+            ResponseBase<Dictionary<string, object>?> result = await _service.Update(id, LessonName, CourseID, Guid.Parse(TeacherID));
             if (result.Data == null)
             {
-                return View("/Views/Error/" + result.Code + ".cshtml", new ResponseDTO<object?>(null, result.Message, result.Code));
+                return View("/Views/Error/" + result.Code + ".cshtml", new ResponseBase<object?>(null, result.Message, result.Code));
             }
             if (result.Code == (int)HttpStatusCode.Conflict)
             {
@@ -101,16 +101,16 @@ namespace WEB_CLIENT.Controllers
             string? TeacherID = getUserID();
             if (TeacherID == null)
             {
-                return View("/Views/Error/404.cshtml", new ResponseDTO<object?>(null, "Not found ID. Please check login information", (int)HttpStatusCode.NotFound));
+                return View("/Views/Error/404.cshtml", new ResponseBase<object?>(null, "Not found ID. Please check login information", (int)HttpStatusCode.NotFound));
             }
             if (id == null || CourseID == null)
             {
                 return Redirect("/ManagerCourse");
             }
-            ResponseDTO<Dictionary<string, object>?> result = await _service.Delete(id.Value, CourseID.Value, Guid.Parse(TeacherID));
+            ResponseBase<Dictionary<string, object>?> result = await _service.Delete(id.Value, CourseID.Value, Guid.Parse(TeacherID));
             if (result.Data == null)
             {
-                return View("/Views/Error/" + result.Code + ".cshtml", new ResponseDTO<object?>(null, result.Message, result.Code));
+                return View("/Views/Error/" + result.Code + ".cshtml", new ResponseBase<object?>(null, result.Message, result.Code));
             }
             ViewData["success"] = result.Message;
             return View("/Views/ManagerLesson/Index.cshtml", result.Data);

@@ -1,10 +1,10 @@
-﻿using DataAccess.DTO;
+﻿using DataAccess.Base;
 using DataAccess.Entity;
 
 namespace WEB_CLIENT.Services.IService
 {
     public interface IRegisterService
     {
-        Task<ResponseDTO<bool>> Index(User user);
+        Task<ResponseBase<bool>> Index(User user);
     }
 }

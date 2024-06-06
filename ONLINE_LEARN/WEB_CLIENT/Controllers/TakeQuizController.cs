@@ -1,5 +1,5 @@
-﻿using DataAccess.Const;
-using DataAccess.DTO;
+﻿using DataAccess.Base;
+using DataAccess.Const;
 using DataAccess.Entity;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -24,16 +24,16 @@ namespace WEB_CLIENT.Controllers
             string? StudentID = getUserID();
             if (StudentID == null)
             {
-                return View("/Views/Error/404.cshtml", new ResponseDTO<object?>(null, "Not found ID. Please check login information", (int)HttpStatusCode.NotFound));
+                return View("/Views/Error/404.cshtml", new ResponseBase<object?>(null, "Not found ID. Please check login information", (int)HttpStatusCode.NotFound));
             }
             if (id == null)
             {
                 return Redirect("/MyCourse");
             }
-            ResponseDTO<Dictionary<string, object?>?> response = await _service.Index(id.Value, Guid.Parse(StudentID));
+            ResponseBase<Dictionary<string, object?>?> response = await _service.Index(id.Value, Guid.Parse(StudentID));
             if (response.Data == null)
             {
-                return View("/Views/Error/" + response.Code + ".cshtml", new ResponseDTO<object?>(null, response.Message, response.Code));
+                return View("/Views/Error/" + response.Code + ".cshtml", new ResponseBase<object?>(null, response.Message, response.Code));
             }
             return View(response.Data);
         }
@@ -44,16 +44,16 @@ namespace WEB_CLIENT.Controllers
             string? StudentID = getUserID();
             if (StudentID == null)
             {
-                return View("/Views/Error/404.cshtml", new ResponseDTO<object?>(null, "Not found ID. Please check login information", (int)HttpStatusCode.NotFound));
+                return View("/Views/Error/404.cshtml", new ResponseBase<object?>(null, "Not found ID. Please check login information", (int)HttpStatusCode.NotFound));
             }
             HttpContext.Session.SetInt32(question_no.ToString(), answer == null ? 0 : answer.Value);
             // if finish exam
             if ((button != null && button.Equals("Finish")) || timeOut == 1)
             {
-                ResponseDTO<List<Quiz>?> response = await _service.Finish(id);
+                ResponseBase<List<Quiz>?> response = await _service.Finish(id);
                 if (response.Data == null)
                 {
-                    return View("/Views/Error/" + response.Code + ".cshtml", new ResponseDTO<object?>(null, response.Message, response.Code));
+                    return View("/Views/Error/" + response.Code + ".cshtml", new ResponseBase<object?>(null, response.Message, response.Code));
                 }
                 int score = 0;
                 for (int i = 0; i < response.Data.Count; i++)
@@ -70,17 +70,17 @@ namespace WEB_CLIENT.Controllers
                 }
                 float FinalScore = (float)score / response.Data.Count * 10;
                 string status = FinalScore >= 5.0 ? ResultConst.STATUS_PASSED : ResultConst.STATUS_NOT_PASSED;
-                ResponseDTO<Result?> responseDTO = await _service.Finish(id, Guid.Parse(StudentID), FinalScore, status);
+                ResponseBase<Result?> responseDTO = await _service.Finish(id, Guid.Parse(StudentID), FinalScore, status);
                 if (responseDTO.Data == null)
                 {
-                    return View("/Views/Error/500.cshtml", new ResponseDTO<object?>(null, response.Message, response.Code));
+                    return View("/Views/Error/500.cshtml", new ResponseBase<object?>(null, response.Message, response.Code));
                 }
                 return View("/Views/TakeQuiz/Result.cshtml", responseDTO.Data);
             }
-            ResponseDTO<Dictionary<string, object?>?> responseDic = await _service.Index(id, Guid.Parse(StudentID), button, minutes, question_no, seconds);
+            ResponseBase<Dictionary<string, object?>?> responseDic = await _service.Index(id, Guid.Parse(StudentID), button, minutes, question_no, seconds);
             if (responseDic.Data == null)
             {
-                return View("/Views/Error/" + responseDic.Code + ".cshtml", new ResponseDTO<object?>(null, responseDic.Message, responseDic.Code));
+                return View("/Views/Error/" + responseDic.Code + ".cshtml", new ResponseBase<object?>(null, responseDic.Message, responseDic.Code));
             }
             return View(responseDic.Data);
         }

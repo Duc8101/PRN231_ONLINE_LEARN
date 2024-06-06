@@ -1,5 +1,5 @@
-﻿using DataAccess.Const;
-using DataAccess.DTO;
+﻿using DataAccess.Base;
+using DataAccess.Const;
 using DataAccess.DTO.UserDTO;
 using DataAccess.Entity;
 using Microsoft.AspNetCore.Mvc;
@@ -24,7 +24,7 @@ namespace WEB_CLIENT.Controllers
             {
                 return View();
             }
-            ResponseDTO<User?> response = await _service.Index(Guid.Parse(userId));
+            ResponseBase<User?> response = await _service.Index(Guid.Parse(userId));
             // if get user failed
             if (response.Data == null)
             {
@@ -40,13 +40,13 @@ namespace WEB_CLIENT.Controllers
         [HttpPost]
         public async Task<ActionResult> Index(LoginDTO DTO)
         {
-            ResponseDTO<User?> response = await _service.Index(DTO);
+            ResponseBase<User?> response = await _service.Index(DTO);
             // if get user failed
             if (response.Data == null)
             {
                 if (response.Code == (int)HttpStatusCode.InternalServerError)
                 {
-                    return View("/Views/Shared/Error.cshtml", new ResponseDTO<object?>(null, response.Message, response.Code));
+                    return View("/Views/Shared/Error.cshtml", new ResponseBase<object?>(null, response.Message, response.Code));
                 }
                 ViewData["message"] = response.Message;
                 return View();

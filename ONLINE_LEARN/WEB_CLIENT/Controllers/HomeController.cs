@@ -1,5 +1,5 @@
-﻿using DataAccess.Const;
-using DataAccess.DTO;
+﻿using DataAccess.Base;
+using DataAccess.Const;
 using DataAccess.Entity;
 using Microsoft.AspNetCore.Mvc;
 using WEB_CLIENT.Services.IService;
@@ -21,11 +21,11 @@ namespace WEB_CLIENT.Controllers
                 return Redirect("/Admin");
             }
             // get top 4 teacher
-            ResponseDTO<List<User>?> response = await _service.Index();
+            ResponseBase<List<User>?> response = await _service.Index();
             // if get list failed
             if (response.Data == null)
             {
-                return View("/Views/Error/500.cshtml", new ResponseDTO<object?>(null, response.Message, response.Code));
+                return View("/Views/Error/500.cshtml", new ResponseBase<object?>(null, response.Message, response.Code));
             }
             return View(response.Data);
         }
