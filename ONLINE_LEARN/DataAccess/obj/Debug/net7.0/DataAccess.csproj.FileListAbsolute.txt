@@ -1,4 +1,3 @@
-D:\GitHub\PRN231_ONLINE_LEARN\ONLINE_LEARN\DataAccess\bin\Debug\net7.0\appsettings.json
 D:\GitHub\PRN231_ONLINE_LEARN\ONLINE_LEARN\DataAccess\bin\Debug\net7.0\DataAccess.deps.json
 D:\GitHub\PRN231_ONLINE_LEARN\ONLINE_LEARN\DataAccess\bin\Debug\net7.0\DataAccess.runtimeconfig.json
 D:\GitHub\PRN231_ONLINE_LEARN\ONLINE_LEARN\DataAccess\bin\Debug\net7.0\DataAccess.dll
