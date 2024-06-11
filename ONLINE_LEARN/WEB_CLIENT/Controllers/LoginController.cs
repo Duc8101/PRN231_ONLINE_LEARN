@@ -55,7 +55,6 @@ namespace WEB_CLIENT.Controllers
             HttpContext.Session.SetString("username", response.Data.Username);
             HttpContext.Session.SetString("role", response.Data.RoleName);
             HttpContext.Session.SetString("image", response.Data.Image);
-            IDLogin = response.Data.Id;
             CookieOptions option = new CookieOptions()
             {
                 Expires = DateTime.Now.AddDays(7)
