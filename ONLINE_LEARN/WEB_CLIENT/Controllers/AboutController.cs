@@ -1,4 +1,4 @@
-﻿using DataAccess.Const;
+﻿using Common.Consts;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WEB_CLIENT.Controllers

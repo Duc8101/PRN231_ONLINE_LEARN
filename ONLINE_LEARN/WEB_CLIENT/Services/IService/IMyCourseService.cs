@@ -1,6 +1,6 @@
-﻿using DataAccess.Base;
-using DataAccess.Entity;
-using DataAccess.Pagination;
+﻿using Common.Base;
+using Common.Entity;
+using Common.Pagination;
 
 namespace WEB_CLIENT.Services.IService
 {

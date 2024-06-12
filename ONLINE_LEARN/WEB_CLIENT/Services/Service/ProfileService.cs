@@ -1,7 +1,7 @@
-﻿using DataAccess.Base;
-using DataAccess.Const;
-using DataAccess.DTO.UserDTO;
-using DataAccess.Entity;
+﻿using Common.Base;
+using Common.Consts;
+using Common.DTO.UserDTO;
+using Common.Entity;
 using DataAccess.Model.IDAO;
 using DataAccess.Model.Util;
 using System.Net;

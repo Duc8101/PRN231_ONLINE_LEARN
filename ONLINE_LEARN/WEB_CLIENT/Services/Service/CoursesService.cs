@@ -1,8 +1,8 @@
-﻿using DataAccess.Base;
-using DataAccess.Const;
-using DataAccess.Entity;
+﻿using Common.Base;
+using Common.Consts;
+using Common.Entity;
+using Common.Pagination;
 using DataAccess.Model.IDAO;
-using DataAccess.Pagination;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
 using WEB_CLIENT.Services.IService;

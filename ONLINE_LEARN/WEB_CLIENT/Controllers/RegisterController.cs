@@ -1,5 +1,5 @@
-﻿using DataAccess.Base;
-using DataAccess.Entity;
+﻿using Common.Base;
+using Common.Entity;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using WEB_CLIENT.Services.IService;

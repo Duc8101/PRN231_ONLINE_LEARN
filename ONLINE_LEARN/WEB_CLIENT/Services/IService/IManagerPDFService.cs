@@ -1,5 +1,5 @@
-﻿using DataAccess.Base;
-using DataAccess.Entity;
+﻿using Common.Base;
+using Common.Entity;
 
 namespace WEB_CLIENT.Services.IService
 {

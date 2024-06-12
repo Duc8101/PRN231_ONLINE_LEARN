@@ -1,5 +1,5 @@
-﻿using DataAccess.Const;
-using DataAccess.Entity;
+﻿using Common.Consts;
+using Common.Entity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 

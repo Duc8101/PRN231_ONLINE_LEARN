@@ -1,4 +1,4 @@
-﻿using DataAccess.Const;
+﻿using Common.Consts;
 using MailKit.Net.Smtp;
 using Microsoft.Extensions.Configuration;
 using MimeKit;

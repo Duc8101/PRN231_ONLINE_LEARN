@@ -1,7 +1,7 @@
-﻿using DataAccess.Base;
-using DataAccess.Const;
-using DataAccess.Entity;
-using DataAccess.Pagination;
+﻿using Common.Base;
+using Common.Consts;
+using Common.Entity;
+using Common.Pagination;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using WEB_CLIENT.Attributes;

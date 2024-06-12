@@ -1,6 +1,6 @@
-﻿using DataAccess.Base;
-using DataAccess.Const;
-using DataAccess.Entity;
+﻿using Common.Base;
+using Common.Consts;
+using Common.Entity;
 using DataAccess.Model.IDAO;
 using DataAccess.Model.Util;
 using System.Net;

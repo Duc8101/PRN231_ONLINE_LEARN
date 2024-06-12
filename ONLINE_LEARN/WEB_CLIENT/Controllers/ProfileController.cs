@@ -1,6 +1,6 @@
-﻿using DataAccess.Base;
-using DataAccess.Const;
-using DataAccess.DTO.UserDTO;
+﻿using Common.Base;
+using Common.Consts;
+using Common.DTO.UserDTO;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using WEB_CLIENT.Attributes;

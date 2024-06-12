@@ -1,5 +1,5 @@
-﻿using DataAccess.Base;
-using DataAccess.Const;
+﻿using Common.Base;
+using Common.Consts;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using WEB_CLIENT.Attributes;

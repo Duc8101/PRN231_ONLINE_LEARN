@@ -1,5 +1,5 @@
-﻿using DataAccess.DTO.UserDTO;
-using DataAccess.Base;
+﻿using Common.Base;
+using Common.DTO.UserDTO;
 
 namespace WEB_CLIENT.Services.IService
 {
