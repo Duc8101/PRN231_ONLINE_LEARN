@@ -1,5 +1,5 @@
 ﻿using Common.Base;
-using Common.Consts;
+using Common.Const;
 using Common.Entity;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;

@@ -1,4 +1,4 @@
-﻿using Common.Consts;
+﻿using Common.Const;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using WEB_CLIENT.Providers;

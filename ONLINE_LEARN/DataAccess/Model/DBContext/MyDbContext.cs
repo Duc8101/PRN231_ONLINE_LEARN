@@ -1,7 +1,6 @@
-﻿using Common.Consts;
+﻿using Common.Const;
 using Common.Entity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 
 namespace DataAccess.Model.DBContext
 {

@@ -1,4 +1,4 @@
-﻿using Common.Consts;
+﻿using Common.Const;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WEB_CLIENT.Controllers

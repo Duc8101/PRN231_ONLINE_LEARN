@@ -1,7 +1,6 @@
 ﻿using Common.Base;
-using Common.Consts;
+using Common.Const;
 using Common.Entity;
-using DataAccess.Model.DAO;
 using DataAccess.Model.IDAO;
 using DataAccess.Model.Util;
 using Microsoft.EntityFrameworkCore;
@@ -98,7 +97,7 @@ namespace WEB_CLIENT.Services.Service
             }
             try
             {
-                if (await _daoUser.Any(u => u.Username == user.Username || u.Email == user.Email.Trim()) )
+                if (await _daoUser.Any(u => u.Username == user.Username || u.Email == user.Email.Trim()))
                 {
                     return new ResponseBase<List<string>?>(list, "Username or email has existed", (int)HttpStatusCode.Conflict);
                 }

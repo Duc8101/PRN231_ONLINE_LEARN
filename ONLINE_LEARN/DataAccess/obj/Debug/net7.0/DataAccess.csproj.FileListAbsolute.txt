@@ -1,5 +1,4 @@
 D:\GitHub\PRN231_ONLINE_LEARN\ONLINE_LEARN\DataAccess\bin\Debug\net7.0\DataAccess.deps.json
-D:\GitHub\PRN231_ONLINE_LEARN\ONLINE_LEARN\DataAccess\bin\Debug\net7.0\DataAccess.runtimeconfig.json
 D:\GitHub\PRN231_ONLINE_LEARN\ONLINE_LEARN\DataAccess\bin\Debug\net7.0\DataAccess.dll
 D:\GitHub\PRN231_ONLINE_LEARN\ONLINE_LEARN\DataAccess\bin\Debug\net7.0\DataAccess.pdb
 D:\GitHub\PRN231_ONLINE_LEARN\ONLINE_LEARN\DataAccess\obj\Debug\net7.0\DataAccess.csproj.AssemblyReference.cache
@@ -10,6 +9,8 @@ D:\GitHub\PRN231_ONLINE_LEARN\ONLINE_LEARN\DataAccess\obj\Debug\net7.0\DataAcces
 D:\GitHub\PRN231_ONLINE_LEARN\ONLINE_LEARN\DataAccess\obj\Debug\net7.0\DataAccess.dll
 D:\GitHub\PRN231_ONLINE_LEARN\ONLINE_LEARN\DataAccess\obj\Debug\net7.0\refint\DataAccess.dll
 D:\GitHub\PRN231_ONLINE_LEARN\ONLINE_LEARN\DataAccess\obj\Debug\net7.0\DataAccess.pdb
-D:\GitHub\PRN231_ONLINE_LEARN\ONLINE_LEARN\DataAccess\obj\Debug\net7.0\DataAccess.genruntimeconfig.cache
 D:\GitHub\PRN231_ONLINE_LEARN\ONLINE_LEARN\DataAccess\obj\Debug\net7.0\ref\DataAccess.dll
 D:\GitHub\PRN231_ONLINE_LEARN\ONLINE_LEARN\DataAccess\obj\Debug\net7.0\DataAccess.sourcelink.json
+D:\GitHub\PRN231_ONLINE_LEARN\ONLINE_LEARN\DataAccess\bin\Debug\net7.0\Common.dll
+D:\GitHub\PRN231_ONLINE_LEARN\ONLINE_LEARN\DataAccess\bin\Debug\net7.0\Common.pdb
+D:\GitHub\PRN231_ONLINE_LEARN\ONLINE_LEARN\DataAccess\obj\Debug\net7.0\DataAccess.csproj.Up2Date

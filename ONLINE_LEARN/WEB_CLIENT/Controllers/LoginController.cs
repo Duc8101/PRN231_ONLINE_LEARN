@@ -1,5 +1,5 @@
 ﻿using Common.Base;
-using Common.Consts;
+using Common.Const;
 using Common.DTO.UserDTO;
 using Common.Entity;
 using Microsoft.AspNetCore.Mvc;
