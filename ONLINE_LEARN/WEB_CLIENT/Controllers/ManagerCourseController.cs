@@ -11,6 +11,7 @@ namespace WEB_CLIENT.Controllers
 {
     [Role(UserConst.ROLE_TEACHER)]
     [Authorize]
+    [ResponseCache(NoStore = true)]
     public class ManagerCourseController : BaseController
     {
         private readonly IManagerCourseService _service;
@@ -22,6 +23,10 @@ namespace WEB_CLIENT.Controllers
 
         public async Task<ActionResult> Index(int? page)
         {
+            if (isLogin == false)
+            {
+                return Redirect("/Home");
+            }
             string? TeacherID = getUserID();
             if (TeacherID == null)
             {
@@ -36,6 +41,10 @@ namespace WEB_CLIENT.Controllers
         }
         public async Task<ActionResult> Create()
         {
+            if (isLogin == false)
+            {
+                return Redirect("/Home");
+            }
             ResponseBase<List<Category>?> response = await _service.Create();
             if (response.Data == null)
             {
@@ -47,6 +56,10 @@ namespace WEB_CLIENT.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(Course course)
         {
+            if (isLogin == false)
+            {
+                return Redirect("/Home");
+            }
             string? TeacherID = getUserID();
             if (TeacherID == null)
             {
@@ -69,6 +82,10 @@ namespace WEB_CLIENT.Controllers
         }
         public async Task<ActionResult> Update(Guid? id)
         {
+            if (isLogin == false)
+            {
+                return Redirect("/Home");
+            }
             if (id == null)
             {
                 return Redirect("/ManagerCourse");
@@ -93,6 +110,10 @@ namespace WEB_CLIENT.Controllers
         [HttpPost]
         public async Task<ActionResult> Update(Guid id, Course course)
         {
+            if (isLogin == false)
+            {
+                return Redirect("/Home");
+            }
             ResponseBase<Dictionary<string, object>?> response = await _service.Update(id, course);
             if (response.Data == null)
             {
@@ -111,6 +132,10 @@ namespace WEB_CLIENT.Controllers
 
         public async Task<ActionResult> Delete(Guid? id)
         {
+            if (isLogin == false)
+            {
+                return Redirect("/Home");
+            }
             if (id == null)
             {
                 return Redirect("/Home");

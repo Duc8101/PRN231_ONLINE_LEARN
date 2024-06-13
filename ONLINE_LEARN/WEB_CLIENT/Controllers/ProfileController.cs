@@ -10,6 +10,7 @@ namespace WEB_CLIENT.Controllers
 {
     [Role(UserConst.ROLE_STUDENT, UserConst.ROLE_TEACHER)]
     [Authorize]
+    [ResponseCache(NoStore = true)]
     public class ProfileController : BaseController
     {
         private readonly IProfileService _service;
@@ -21,6 +22,10 @@ namespace WEB_CLIENT.Controllers
 
         public async Task<ActionResult> Index()
         {
+            if (isLogin == false)
+            {
+                return Redirect("/Home");
+            }
             string? UserID = getUserID();
             if (UserID == null)
             {
@@ -38,6 +43,10 @@ namespace WEB_CLIENT.Controllers
         [HttpPost]
         public async Task<ActionResult> Index(ProfileDTO DTO, string valueImg)
         {
+            if (isLogin == false)
+            {
+                return Redirect("/Home");
+            }
             string? UserID = getUserID();
             if (UserID == null)
             {

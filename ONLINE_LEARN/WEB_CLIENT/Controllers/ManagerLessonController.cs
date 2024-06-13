@@ -9,6 +9,7 @@ namespace WEB_CLIENT.Controllers
 {
     [Role(UserConst.ROLE_TEACHER)]
     [Authorize]
+    [ResponseCache(NoStore = true)]
     public class ManagerLessonController : BaseController
     {
         private readonly IManagerLessonService _service;
@@ -19,6 +20,10 @@ namespace WEB_CLIENT.Controllers
         }
         public async Task<ActionResult> Index(Guid? id, string? video /* file video */, string? name /*video name or pdf name*/, string? PDF /*file PDF */, Guid? LessonID)
         {
+            if (isLogin == false)
+            {
+                return Redirect("/Home");
+            }
             ViewData["ViewLesson"] = true;
             string? TeacherID = getUserID();
             if (TeacherID == null)
@@ -43,6 +48,10 @@ namespace WEB_CLIENT.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(string? LessonName, Guid CourseID)
         {
+            if (isLogin == false)
+            {
+                return Redirect("/Home");
+            }
             ViewData["ViewLesson"] = true;
             string? TeacherID = getUserID();
             if (TeacherID == null)
@@ -68,11 +77,10 @@ namespace WEB_CLIENT.Controllers
         [HttpPost]
         public async Task<ActionResult> Update(Guid id, string? LessonName, Guid CourseID)
         {
-            /*// if session time out
-            if (isSessionTimeout())
+            if (isLogin == false)
             {
-                return Redirect("/Logout");
-            }*/
+                return Redirect("/Home");
+            }
             ViewData["ViewLesson"] = true;
             string? TeacherID = getUserID();
             if (TeacherID == null)
@@ -97,6 +105,10 @@ namespace WEB_CLIENT.Controllers
 
         public async Task<ActionResult> Delete(Guid? id, Guid? CourseID)
         {
+            if (isLogin == false)
+            {
+                return Redirect("/Home");
+            }
             ViewData["ViewLesson"] = true;
             string? TeacherID = getUserID();
             if (TeacherID == null)

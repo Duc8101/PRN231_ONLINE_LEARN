@@ -10,6 +10,7 @@ namespace WEB_CLIENT.Controllers
 {
     [Role(UserConst.ROLE_STUDENT, UserConst.ROLE_TEACHER)]
     [Authorize]
+    [ResponseCache(NoStore = true)]
     public class ChangePasswordController : BaseController
     {
         private readonly IChangePasswordService _service;
@@ -21,12 +22,20 @@ namespace WEB_CLIENT.Controllers
 
         public ActionResult Index()
         {
+            if (isLogin == false)
+            {
+                return Redirect("/Home");
+            }
             return View();
         }
 
         [HttpPost]
         public async Task<ActionResult> Index(ChangePasswordDTO DTO)
         {
+            if (isLogin == false)
+            {
+                return Redirect("/Home");
+            }
             string? username = getUsername();
             // if not found username
             if (username == null)

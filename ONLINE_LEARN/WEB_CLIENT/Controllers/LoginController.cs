@@ -20,7 +20,7 @@ namespace WEB_CLIENT.Controllers
         public async Task<ActionResult> Index()
         {
             string? userId = Request.Cookies["UserID"];
-            if(userId == null)
+            if (userId == null)
             {
                 return View();
             }
@@ -30,6 +30,7 @@ namespace WEB_CLIENT.Controllers
             {
                 return Redirect("/Logout");
             }
+            isLogin = true;
             HttpContext.Session.SetString("UserID", userId);
             HttpContext.Session.SetString("username", response.Data.Username);
             HttpContext.Session.SetString("role", response.Data.RoleName);
@@ -51,6 +52,7 @@ namespace WEB_CLIENT.Controllers
                 ViewData["message"] = response.Message;
                 return View();
             }
+            isLogin = true;
             HttpContext.Session.SetString("UserID", response.Data.Id.ToString());
             HttpContext.Session.SetString("username", response.Data.Username);
             HttpContext.Session.SetString("role", response.Data.RoleName);

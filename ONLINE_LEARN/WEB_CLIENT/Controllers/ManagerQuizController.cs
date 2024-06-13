@@ -10,6 +10,7 @@ namespace WEB_CLIENT.Controllers
 {
     [Role(UserConst.ROLE_TEACHER)]
     [Authorize]
+    [ResponseCache(NoStore = true)]
     public class ManagerQuizController : BaseController
     {
         private readonly IManagerQuizService _service;
@@ -19,6 +20,10 @@ namespace WEB_CLIENT.Controllers
         }
         public async Task<ActionResult> Index(Guid? LessonID, Guid? CourseID)
         {
+            if (isLogin == false)
+            {
+                return Redirect("/Home");
+            }
             string? TeacherID = getUserID();
             if (TeacherID == null)
             {
@@ -41,6 +46,10 @@ namespace WEB_CLIENT.Controllers
         }
         public async Task<ActionResult> Detail(Guid? id, Guid? LessonID, Guid? CourseID)
         {
+            if (isLogin == false)
+            {
+                return Redirect("/Home");
+            }
             string? TeacherID = getUserID();
             if (TeacherID == null)
             {
@@ -63,6 +72,10 @@ namespace WEB_CLIENT.Controllers
         }
         public async Task<ActionResult> Create(Guid? LessonID, Guid? CourseID)
         {
+            if (isLogin == false)
+            {
+                return Redirect("/Home");
+            }
             string? TeacherID = getUserID();
             if (TeacherID == null)
             {
@@ -87,6 +100,10 @@ namespace WEB_CLIENT.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(Quiz create, Guid LessonID, Guid CourseID)
         {
+            if (isLogin == false)
+            {
+                return Redirect("/Home");
+            }
             string? TeacherID = getUserID();
             if (TeacherID == null)
             {
@@ -109,12 +126,20 @@ namespace WEB_CLIENT.Controllers
         }
         public async Task<ActionResult> Update(Guid? id, Guid? LessonID, Guid? CourseID)
         {
+            if (isLogin == false)
+            {
+                return Redirect("/Home");
+            }
             return await Detail(id, LessonID, CourseID);
         }
 
         [HttpPost]
         public async Task<ActionResult> Update(Guid id, Quiz obj, Guid LessonID, Guid CourseID)
         {
+            if (isLogin == false)
+            {
+                return Redirect("/Home");
+            }
             string? TeacherID = getUserID();
             if (TeacherID == null)
             {
@@ -137,6 +162,10 @@ namespace WEB_CLIENT.Controllers
         }
         public async Task<ActionResult> Delete(Guid? id, Guid? LessonID, Guid? CourseID)
         {
+            if (isLogin == false)
+            {
+                return Redirect("/Home");
+            }
             string? TeacherID = getUserID();
             if (TeacherID == null)
             {

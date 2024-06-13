@@ -11,6 +11,7 @@ namespace WEB_CLIENT.Controllers
 {
     [Role(UserConst.ROLE_STUDENT)]
     [Authorize]
+    [ResponseCache(NoStore = true)]
     public class MyCourseController : BaseController
     {
         private readonly IMyCourseService _service;
@@ -22,6 +23,10 @@ namespace WEB_CLIENT.Controllers
 
         public async Task<ActionResult> Index(int? page)
         {
+            if (isLogin == false)
+            {
+                return Redirect("/Home");
+            }
             string? StudentID = getUserID();
             if (StudentID == null)
             {

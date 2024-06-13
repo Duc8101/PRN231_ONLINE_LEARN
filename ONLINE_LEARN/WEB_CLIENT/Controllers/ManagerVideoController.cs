@@ -10,6 +10,7 @@ namespace WEB_CLIENT.Controllers
 {
     [Role(UserConst.ROLE_TEACHER)]
     [Authorize]
+    [ResponseCache(NoStore = true)]
     public class ManagerVideoController : BaseController
     {
         private readonly IManagerVideoService _service;
@@ -20,6 +21,10 @@ namespace WEB_CLIENT.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(LessonVideo create, Guid CourseID)
         {
+            if (isLogin == false)
+            {
+                return Redirect("/Home");
+            }
             ViewData["ViewLesson"] = true;
             string? TeacherID = getUserID();
             if (TeacherID == null)
@@ -45,6 +50,10 @@ namespace WEB_CLIENT.Controllers
         [HttpPost]
         public async Task<ActionResult> Update(int id, LessonVideo obj, Guid CourseID)
         {
+            if (isLogin == false)
+            {
+                return Redirect("/Home");
+            }
             ViewData["ViewLesson"] = true;
             string? TeacherID = getUserID();
             if (TeacherID == null)
@@ -69,6 +78,10 @@ namespace WEB_CLIENT.Controllers
 
         public async Task<ActionResult> Delete(int? id, Guid? LessonID, Guid? CourseID)
         {
+            if (isLogin == false)
+            {
+                return Redirect("/Home");
+            }
             ViewData["ViewLesson"] = true;
             string? TeacherID = getUserID();
             if (TeacherID == null)

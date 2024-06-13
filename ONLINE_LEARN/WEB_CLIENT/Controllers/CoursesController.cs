@@ -69,8 +69,13 @@ namespace WEB_CLIENT.Controllers
         }
         [Role(UserConst.ROLE_STUDENT)]
         [Authorize]
+        [ResponseCache(NoStore = true)]
         public async Task<ActionResult> LearnCourse(Guid? id, string? video /* file video */, string? name /*video name or pdf name*/, string? PDF /*file PDF */, Guid? LessonID, int? VideoID, int? PDFID)
         {
+            if (isLogin == false)
+            {
+                return Redirect("/Home");
+            }
             ViewData["LearnCourse"] = true;
             if (id == null)
             {

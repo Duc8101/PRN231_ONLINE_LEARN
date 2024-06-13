@@ -10,6 +10,7 @@ namespace WEB_CLIENT.Controllers
 {
     [Authorize]
     [Role(UserConst.ROLE_ADMIN)]
+    [ResponseCache(NoStore = true)]
     public class AdminController : BaseController
     {
         private readonly IAdminService _service;
@@ -21,6 +22,10 @@ namespace WEB_CLIENT.Controllers
 
         public async Task<ActionResult> Index(string? name)
         {
+            if(isLogin == false)
+            {
+                return Redirect("/Home");
+            }
             ResponseBase<Dictionary<string, object>?> response = await _service.Index(name);
             if (response.Data == null)
             {
@@ -31,6 +36,10 @@ namespace WEB_CLIENT.Controllers
 
         public async Task<ActionResult> Detail(Guid? id)
         {
+            if (isLogin == false)
+            {
+                return Redirect("/Home");
+            }
             if (id == null)
             {
                 return Redirect("/Admin");
@@ -48,6 +57,10 @@ namespace WEB_CLIENT.Controllers
 
         public ActionResult Create()
         {
+            if (isLogin == false)
+            {
+                return Redirect("/Home");
+            }
             List<string> list = _service.Create();
             return View(list);
         }
@@ -55,6 +68,10 @@ namespace WEB_CLIENT.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(User user)
         {
+            if (isLogin == false)
+            {
+                return Redirect("/Home");
+            }
             ResponseBase<List<string>?> response = await _service.Create(user);
             if (response.Data == null)
             {

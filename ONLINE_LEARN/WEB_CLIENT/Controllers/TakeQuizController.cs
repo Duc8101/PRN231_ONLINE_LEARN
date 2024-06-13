@@ -10,6 +10,7 @@ namespace WEB_CLIENT.Controllers
 {
     [Role(UserConst.ROLE_STUDENT)]
     [Authorize]
+    [ResponseCache(NoStore = true)]
     public class TakeQuizController : BaseController
     {
         private readonly ITakeQuizService _service;
