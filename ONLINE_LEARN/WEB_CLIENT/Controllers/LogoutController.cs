@@ -7,15 +7,7 @@ namespace WEB_CLIENT.Controllers
         public ActionResult Index()
         {
             HttpContext.Session.Clear();
-            string? UserID = Request.Cookies["UserID"];
-            CookieOptions option = new CookieOptions
-            {
-                Expires = DateTime.Now.AddDays(-1)
-            };
-            if (UserID != null)
-            {
-                Response.Cookies.Append("UserID", UserID, option);
-            }
+            Response.Cookies.Delete("UserID");
             return Redirect("/Home");
         }
     }
