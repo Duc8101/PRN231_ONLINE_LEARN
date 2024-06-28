@@ -4,7 +4,7 @@ using Common.Entity;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using WEB_CLIENT.Attributes;
-using WEB_CLIENT.Services.IService;
+using WEB_CLIENT.Services.ManagerPDF;
 
 namespace WEB_CLIENT.Controllers
 {

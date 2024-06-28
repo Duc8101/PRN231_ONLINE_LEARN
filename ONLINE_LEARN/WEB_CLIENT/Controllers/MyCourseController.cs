@@ -5,7 +5,7 @@ using Common.Pagination;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using WEB_CLIENT.Attributes;
-using WEB_CLIENT.Services.IService;
+using WEB_CLIENT.Services.MyCourse;
 
 namespace WEB_CLIENT.Controllers
 {

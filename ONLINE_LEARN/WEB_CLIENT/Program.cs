@@ -3,8 +3,21 @@ using DataAccess.Model.DBContext;
 using DataAccess.Model.IDAO;
 using Microsoft.EntityFrameworkCore;
 using WEB_CLIENT.Providers;
-using WEB_CLIENT.Services.IService;
-using WEB_CLIENT.Services.Service;
+using WEB_CLIENT.Services.Admin;
+using WEB_CLIENT.Services.ChangePassword;
+using WEB_CLIENT.Services.Courses;
+using WEB_CLIENT.Services.ForgotPassword;
+using WEB_CLIENT.Services.Home;
+using WEB_CLIENT.Services.Login;
+using WEB_CLIENT.Services.ManagerCourse;
+using WEB_CLIENT.Services.ManagerLesson;
+using WEB_CLIENT.Services.ManagerPDF;
+using WEB_CLIENT.Services.ManagerQuiz;
+using WEB_CLIENT.Services.ManagerVideo;
+using WEB_CLIENT.Services.MyCourse;
+using WEB_CLIENT.Services.Profile;
+using WEB_CLIENT.Services.Register;
+using WEB_CLIENT.Services.TakeQuiz;
 
 namespace WEB_CLIENT
 {

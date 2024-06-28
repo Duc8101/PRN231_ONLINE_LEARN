@@ -2,7 +2,7 @@
 using Common.Const;
 using Common.Entity;
 using Microsoft.AspNetCore.Mvc;
-using WEB_CLIENT.Services.IService;
+using WEB_CLIENT.Services.Home;
 
 namespace WEB_CLIENT.Controllers
 {

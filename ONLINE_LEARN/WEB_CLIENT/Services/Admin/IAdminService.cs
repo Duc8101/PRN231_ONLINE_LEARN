@@ -1,0 +1,13 @@
+﻿using Common.Base;
+using Common.Entity;
+
+namespace WEB_CLIENT.Services.Admin
+{
+    public interface IAdminService
+    {
+        Task<ResponseBase<Dictionary<string, object>?>> Index(string? name);
+        Task<ResponseBase<Dictionary<string, object>?>> Detail(Guid UserID);
+        List<string> Create();
+        Task<ResponseBase<List<string>?>> Create(User user);
+    }
+}

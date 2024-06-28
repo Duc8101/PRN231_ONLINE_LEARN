@@ -1,7 +1,7 @@
 ﻿using Common.Base;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
-using WEB_CLIENT.Services.IService;
+using WEB_CLIENT.Services.ForgotPassword;
 
 namespace WEB_CLIENT.Controllers
 {
