@@ -220,7 +220,7 @@
     <br />
     <h3 style="margin-left:10%">Your latest submission : @result.Score</h3>
     <h3 style="margin-left:10%">Your latest submitted date : @result.UpdateAt.ToShortDateString()</h3>
-    <h3 style="margin-left:10%">Status: <span style="color:@(result.Status == ResultConst.STATUS_NOT_PASSED ? "red" : "green")">@result.Status</span></h3>
+    <h3 style="margin-left:10%">Status: <span style="color:@(result.Status == ResultConst.NotPassed ? "red" : "green")">@result.Status</span></h3>
 }
 <div class="section">
     <div class="section__exam">

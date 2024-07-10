@@ -1,7 +1,7 @@
 ﻿namespace Common.Const
 {
-    public class LessonVideoConst
+    public enum LessonVideoConst
     {
-        public const int MAX_LENGTH_LESSON_VIDEO_NAME = 200;
+        Lesson_Video_Name = 200
     }
 }

@@ -28,10 +28,10 @@ namespace WEB_CLIENT.Services.ManagerCourse
             try
             {
                 IQueryable<Course> query = _daoCourse.FindAll(c => c.IsDeleted == false, c => c.CreatorId == TeacherID);
-                List<Course> list = await query.Skip(PageSizeConst.MAX_COURSE_IN_PAGE * (pageSelected - 1))
-                    .Take(PageSizeConst.MAX_COURSE_IN_PAGE).ToListAsync();
+                List<Course> list = await query.Skip((int)PageSizeConst.Course_Page * (pageSelected - 1))
+                    .Take((int)PageSizeConst.Course_Page).ToListAsync();
                 int count = await query.CountAsync();
-                int numberPage = (int)Math.Ceiling((double)count / PageSizeConst.MAX_COURSE_IN_PAGE);
+                int numberPage = (int)Math.Ceiling((double)count / (int)PageSizeConst.Course_Page);
                 PagedResult<Course> result = new PagedResult<Course>()
                 {
                     PageSelected = pageSelected,

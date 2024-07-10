@@ -70,7 +70,7 @@ namespace WEB_CLIENT.Controllers
                     HttpContext.Session.Remove(QuestionNo.ToString());
                 }
                 float FinalScore = (float)score / response.Data.Count * 10;
-                string status = FinalScore >= 5.0 ? ResultConst.STATUS_PASSED : ResultConst.STATUS_NOT_PASSED;
+                string status = FinalScore >= 5.0 ? ResultConst.Passed : ResultConst.NotPassed;
                 ResponseBase<Result?> responseDTO = await _service.Finish(id, Guid.Parse(StudentID), FinalScore, status);
                 if (responseDTO.Data == null)
                 {

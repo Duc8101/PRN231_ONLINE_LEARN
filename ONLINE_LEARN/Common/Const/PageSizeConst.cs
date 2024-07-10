@@ -1,7 +1,7 @@
 ﻿namespace Common.Const
 {
-    public class PageSizeConst
+    public enum PageSizeConst
     {
-        public const int MAX_COURSE_IN_PAGE = 6;
+        Course_Page = 6
     }
 }

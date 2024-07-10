@@ -21,10 +21,10 @@ namespace WEB_CLIENT.Services.MyCourse
             {
                 IQueryable<EnrollCourse> query = _daoEnroll.FindAll(e => e.StudentId == StudentID && e.Course.IsDeleted == false)
                     .Include(e => e.Course).ThenInclude(e => e.Creator);
-                List<Course> list = await query.OrderByDescending(e => e.Course.UpdateAt).Skip(PageSizeConst.MAX_COURSE_IN_PAGE * (page - 1))
-                    .Take(PageSizeConst.MAX_COURSE_IN_PAGE).Select(e => e.Course).ToListAsync();
+                List<Course> list = await query.OrderByDescending(e => e.Course.UpdateAt).Skip((int)PageSizeConst.Course_Page * (page - 1))
+                    .Take((int)PageSizeConst.Course_Page).Select(e => e.Course).ToListAsync();
                 int count = await query.CountAsync();
-                int number = (int)Math.Ceiling((double)count / PageSizeConst.MAX_COURSE_IN_PAGE);
+                int number = (int)Math.Ceiling((double)count / (int)PageSizeConst.Course_Page);
                 PagedResult<Course> result = new PagedResult<Course>()
                 {
                     PageSelected = page,

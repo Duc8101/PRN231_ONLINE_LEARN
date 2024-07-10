@@ -10,7 +10,7 @@ namespace Common.Entity
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("VideoID")]
         public int VideoId { get; set; }
-        [MaxLength(LessonVideoConst.MAX_LENGTH_LESSON_VIDEO_NAME)]
+        [MaxLength((int)LessonVideoConst.Lesson_Video_Name)]
         public string VideoName { get; set; } = null!;
         public string FileVideo { get; set; } = null!;
 

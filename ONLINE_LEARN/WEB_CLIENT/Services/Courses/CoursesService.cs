@@ -90,15 +90,15 @@ namespace WEB_CLIENT.Services.Courses
                     nextURL = "/Courses" + "?CategoryID=" + CategoryID + "&properties=" + properties + "&flow=" + flow + "&page=" + nextPage;
                 }
             }
-
+          
             try
             {
                 IQueryable<Course> query = getQuery(CategoryID, properties, flow);
-                List<Course> listCourse = await query.Skip(PageSizeConst.MAX_COURSE_IN_PAGE * (pageSelected - 1))
-                    .Take(PageSizeConst.MAX_COURSE_IN_PAGE).ToListAsync();
+                List<Course> listCourse = await query.Skip((int)PageSizeConst.Course_Page * (pageSelected - 1))
+                    .Take((int)PageSizeConst.Course_Page).ToListAsync();
                 List<Category> listCategory = await _daoCategory.FindAll().ToListAsync();
                 int count = await query.CountAsync();
-                int numberPage = (int)Math.Ceiling((double)count / PageSizeConst.MAX_COURSE_IN_PAGE);
+                int numberPage = (int)Math.Ceiling((double)count / (int)PageSizeConst.Course_Page);
                 PagedResult<Course> result = new PagedResult<Course>()
                 {
                     PageSelected = pageSelected,

@@ -2,7 +2,14 @@
 {
     public class ResultConst
     {
-        public const string STATUS_PASSED = "PASSED";
-        public const string STATUS_NOT_PASSED = "NOT PASSED";
+        public static string Passed 
+        {
+            get => "PASSED";
+        }
+
+        public static string NotPassed
+        {
+            get => "NOT PASSED";
+        }
     }
 }

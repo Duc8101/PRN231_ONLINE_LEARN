@@ -17,7 +17,7 @@ namespace Common.Entity
         [Key]
         [Column("LessonID")]
         public Guid LessonId { get; set; }
-        [MaxLength(LessonConst.MAX_LENGTH_LESSON_NAME)]
+        [MaxLength((int)LessonConst.Lesson_Name)]
         public string LessonName { get; set; } = null!;
 
         [Column("CourseID")]

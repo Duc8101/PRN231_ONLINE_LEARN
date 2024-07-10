@@ -77,9 +77,9 @@ namespace WEB_CLIENT.Services.ManagerLesson
                 {
                     return new ResponseBase<Dictionary<string, object>?>(response.Data, "You have to input lesson name", (int)HttpStatusCode.Conflict);
                 }
-                if (LessonName.Trim().Length > LessonConst.MAX_LENGTH_LESSON_NAME)
+                if (LessonName.Trim().Length > (int)(int)LessonConst.Lesson_Name)
                 {
-                    return new ResponseBase<Dictionary<string, object>?>(response.Data, "Lesson name max " + LessonConst.MAX_LENGTH_LESSON_NAME + " characters", (int)HttpStatusCode.Conflict);
+                    return new ResponseBase<Dictionary<string, object>?>(response.Data, LessonConst.Lesson_Name.ToString(), (int)HttpStatusCode.Conflict);
                 }
                 if (await _daoLesson.Any(l => l.LessonName == LessonName.Trim() && l.CourseId == CourseID && l.IsDeleted == false))
                 {
@@ -122,9 +122,9 @@ namespace WEB_CLIENT.Services.ManagerLesson
                 {
                     return new ResponseBase<Dictionary<string, object>?>(response.Data, "You have to input lesson name", (int)HttpStatusCode.Conflict);
                 }
-                if (LessonName.Trim().Length > LessonConst.MAX_LENGTH_LESSON_NAME)
+                if (LessonName.Trim().Length > (int)LessonConst.Lesson_Name)
                 {
-                    return new ResponseBase<Dictionary<string, object>?>(response.Data, "Lesson name max " + LessonConst.MAX_LENGTH_LESSON_NAME + " characters", (int)HttpStatusCode.Conflict);
+                    return new ResponseBase<Dictionary<string, object>?>(response.Data, LessonConst.Lesson_Name.ToString(), (int)HttpStatusCode.Conflict);
                 }
                 Lesson? lesson = await _daoLesson.Get(l => l.IsDeleted == false && l.LessonId == LessonID
                 && l.Course.IsDeleted == false && l.CourseId == CourseID);

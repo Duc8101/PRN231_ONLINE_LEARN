@@ -1,7 +1,10 @@
-﻿namespace Common.Const
+﻿using System.ComponentModel;
+
+namespace Common.Const
 {
-    public class LessonConst
+    public enum LessonConst
     {
-        public const int MAX_LENGTH_LESSON_NAME = 200;
+        [Description("Lesson name max 200 characters")]
+        Lesson_Name = 200
     }
 }
