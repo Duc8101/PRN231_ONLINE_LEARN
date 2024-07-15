@@ -1,21 +1,21 @@
 ﻿using Common.Base;
 using Common.DTO.UserDTO;
 using Common.Entity;
-using DataAccess.Model.IDAO;
-using DataAccess.Model.Util;
+using DataAccess.Model.DAO;
+using DataAccess.Model.Helper;
 using System.Net;
 
 namespace WEB_CLIENT.Services.ChangePassword
 {
     public class ChangePasswordService : IChangePasswordService
     {
-        private readonly ICommonDAO<User> _daoUser;
-        public ChangePasswordService(ICommonDAO<User> daoUser)
+        private readonly DAOUser _daoUser;
+        public ChangePasswordService(DAOUser daoUser)
         {
             _daoUser = daoUser;
         }
 
-        public async Task<ResponseBase<bool>> Index(string username, ChangePasswordDTO DTO)
+        public ResponseBase<bool> Index(string username, ChangePasswordDTO DTO)
         {
             try
             {
@@ -36,8 +36,8 @@ namespace WEB_CLIENT.Services.ChangePassword
                     Username = username,
                     Password = DTO.CurrentPassword
                 };
-                User? user = await _daoUser.Get(u => u.Username == login.Username && u.IsDeleted == false);
-                if (user == null || login.Password == null || string.Compare(user.Password, UserUtil.HashPassword(login.Password), false) != 0)
+                User? user = _daoUser.getUser(login);
+                if (user == null || login.Password == null || string.Compare(user.Password, UserHelper.HashPassword(login.Password), false) != 0)
                 {
                     return new ResponseBase<bool>(false, "Your old password not correct", (int)HttpStatusCode.Conflict);
                 }
@@ -45,10 +45,9 @@ namespace WEB_CLIENT.Services.ChangePassword
                 {
                     return new ResponseBase<bool>(false, "Your confirm password not the same new password", (int)HttpStatusCode.Conflict);
                 }
-                user.Password = UserUtil.HashPassword(DTO.NewPassword);
+                user.Password = UserHelper.HashPassword(DTO.NewPassword);
                 user.UpdateAt = DateTime.Now;
-                await _daoUser.Update(user);
-                await _daoUser.Save();
+                _daoUser.UpdateUser(user);
                 return new ResponseBase<bool>(true, "Change successful");
             }
             catch (Exception ex)

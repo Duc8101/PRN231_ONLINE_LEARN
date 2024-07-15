@@ -5,9 +5,9 @@ namespace WEB_CLIENT.Controllers
     public class BaseController : Controller
     {
         internal bool isLogin = false;
-        internal string? getUserID()
+        internal string? getUserId()
         {
-            return HttpContext.Session.GetString("UserID");
+            return HttpContext.Session.GetString("userId");
         }
 
         internal string? getUsername()

@@ -5,6 +5,6 @@ namespace WEB_CLIENT.Services.Home
 {
     public interface IHomeService
     {
-        Task<ResponseBase<List<User>?>> Index();
+        ResponseBase<List<User>?> Index();
     }
 }

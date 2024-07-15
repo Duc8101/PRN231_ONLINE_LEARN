@@ -1,52 +1,51 @@
 ﻿using Common.Base;
 using Common.DTO.UserDTO;
 using Common.Entity;
-using DataAccess.Model.IDAO;
-using DataAccess.Model.Util;
+using DataAccess.Model.DAO;
 using System.Net;
 
 namespace WEB_CLIENT.Services.Login
 {
     public class LoginService : ILoginService
     {
-        private readonly ICommonDAO<User> _daoUser;
+        private readonly DAOUser _daoUser;
 
-        public LoginService(ICommonDAO<User> daoUser)
+        public LoginService(DAOUser daoUser)
         {
             _daoUser = daoUser;
         }
 
-        public async Task<ResponseBase<User?>> Index(Guid UserID)
+        public ResponseBase<User?> Index(Guid userId)
         {
             try
             {
-                User? user = await _daoUser.GetById(UserID);
+                User? user = _daoUser.getUser(userId);
                 if (user == null)
                 {
-                    return new ResponseBase<User?>(null, "Not found user", (int)HttpStatusCode.NotFound);
+                    return new ResponseBase<User?>("Not found user", (int)HttpStatusCode.NotFound);
                 }
-                return new ResponseBase<User?>(user, string.Empty);
+                return new ResponseBase<User?>(user);
             }
             catch (Exception ex)
             {
-                return new ResponseBase<User?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseBase<User?>(ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
 
-        public async Task<ResponseBase<User?>> Index(LoginDTO DTO)
+        public ResponseBase<User?> Index(LoginDTO DTO)
         {
             try
             {
-                User? user = await _daoUser.Get(u => u.Username == DTO.Username && u.IsDeleted == false);
-                if (user == null || DTO.Password == null || string.Compare(user.Password, UserUtil.HashPassword(DTO.Password), false) != 0)
+                User? user = _daoUser.getUser(DTO);
+                if (DTO.Password == null || user == null)
                 {
-                    return new ResponseBase<User?>(null, "Username or password incorrect", (int)HttpStatusCode.Conflict);
+                    return new ResponseBase<User?>("Username or password incorrect", (int)HttpStatusCode.Conflict);
                 }
-                return new ResponseBase<User?>(user, string.Empty);
+                return new ResponseBase<User?>(user);
             }
             catch (Exception ex)
             {
-                return new ResponseBase<User?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseBase<User?>(ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
     }

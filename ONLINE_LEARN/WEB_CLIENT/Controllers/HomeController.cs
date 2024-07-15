@@ -13,7 +13,8 @@ namespace WEB_CLIENT.Controllers
         {
             _service = service;
         }
-        public async Task<ActionResult> Index()
+
+        public ActionResult Index()
         {
             string? role = getRole();
             if (role == UserConst.ROLE_ADMIN)
@@ -21,7 +22,7 @@ namespace WEB_CLIENT.Controllers
                 return Redirect("/Admin");
             }
             // get top 4 teacher
-            ResponseBase<List<User>?> response = await _service.Index();
+            ResponseBase<List<User>?> response = _service.Index();
             // if get list failed
             if (response.Data == null)
             {

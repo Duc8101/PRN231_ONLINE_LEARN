@@ -5,7 +5,7 @@ namespace WEB_CLIENT.Services.Profile
 {
     public interface IProfileService
     {
-        Task<ResponseBase<Dictionary<string, object>?>> Index(Guid UserID);
-        Task<ResponseBase<Dictionary<string, object>?>> Index(Guid UserID, ProfileDTO DTO, string valueImg);
+        ResponseBase<Dictionary<string, object>?> Index(Guid userId);
+        ResponseBase<Dictionary<string, object>?> Index(Guid userId, ProfileDTO DTO, string valueImg);
     }
 }

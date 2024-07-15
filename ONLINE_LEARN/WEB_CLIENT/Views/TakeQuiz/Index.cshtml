@@ -210,7 +210,7 @@
     int Question_No = (int)Model["question_no"];
     int minutes = (int)Model["minutes"];
     int seconds = (int)Model["seconds"];
-    Guid LessonID = (Guid) Model["LessonID"];
+    Guid lessonId = (Guid) Model["lessonId"];
     Result? result = (Result?)Model["result"];
     int? answer = Context.Session.GetInt32(Question_No.ToString());
 }
@@ -224,7 +224,7 @@
 }
 <div class="section">
     <div class="section__exam">
-        <form action="/TakeQuiz/Index/@LessonID" method="POST" id="quiz_form">
+        <form action="/TakeQuiz/Index/@lessonId" method="POST" id="quiz_form">
             <div class="section__quiz">
                 <span>Question @Question_No</span>
                 <p class="section__question">

@@ -1,25 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Net;
 
 namespace Common.Base
 {
     public class ResponseBase<T>
     {
-        public int Code { get; set; }
-        public string Message { get; set; } = null!;
-        public T? Data { get; set; }
+        public int Code { get; }
+        public string Message { get; } = string.Empty;
+        public T? Data { get; }
 
         public ResponseBase()
         {
 
         }
+
         public ResponseBase(T data, string message, int code)
         {
             Data = data;
+            Message = message;
+            Code = code;
+        }
+
+        public ResponseBase(string message, int code)
+        {
             Message = message;
             Code = code;
         }
@@ -28,6 +30,12 @@ namespace Common.Base
         {
             Data = data;
             Message = message;
+            Code = (int)HttpStatusCode.OK;
+        }
+
+        public ResponseBase(T data)
+        {
+            Data = data;
             Code = (int)HttpStatusCode.OK;
         }
     }

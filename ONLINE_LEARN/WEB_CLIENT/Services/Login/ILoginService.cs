@@ -6,7 +6,7 @@ namespace WEB_CLIENT.Services.Login
 {
     public interface ILoginService
     {
-        Task<ResponseBase<User?>> Index(Guid UserID);
-        Task<ResponseBase<User?>> Index(LoginDTO DTO);
+        ResponseBase<User?> Index(Guid userId);
+        ResponseBase<User?> Index(LoginDTO DTO);
     }
 }

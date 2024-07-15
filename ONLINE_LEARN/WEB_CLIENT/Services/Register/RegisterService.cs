@@ -1,44 +1,47 @@
-﻿using Common.Base;
+﻿using AutoMapper;
+using Common.Base;
 using Common.Const;
+using Common.DTO.UserDTO;
 using Common.Entity;
-using DataAccess.Model.IDAO;
-using DataAccess.Model.Util;
+using DataAccess.Model.DAO;
+using DataAccess.Model.Helper;
 using System.Net;
+using WEB_CLIENT.Services.Base;
 
 namespace WEB_CLIENT.Services.Register
 {
-    public class RegisterService : IRegisterService
+    public class RegisterService : BaseService, IRegisterService
     {
-        private readonly ICommonDAO<User> _daoUser;
-        public RegisterService(ICommonDAO<User> daoUser)
+        private readonly DAOUser _daoUser;
+
+        public RegisterService(IMapper mapper, DAOUser daoUser) : base(mapper)
         {
             _daoUser = daoUser;
         }
-        public async Task<ResponseBase<bool>> Index(User user)
+
+        public async Task<ResponseBase<bool>> Index(UserCreateDTO DTO)
         {
             try
             {
-                if (await _daoUser.Any(u => u.Username == user.Username || u.Email == user.Email.Trim()))
+                if (_daoUser.isExist(DTO.Username, DTO.Email))
                 {
                     return new ResponseBase<bool>(false, "Username or email has existed", (int)HttpStatusCode.Conflict);
                 }
-                string newPw = UserUtil.RandomPassword();
-                string hashPw = UserUtil.HashPassword(newPw);
+                string newPw = UserHelper.RandomPassword();
+                string hashPw = UserHelper.HashPassword(newPw);
                 // get body email
-                string body = UserUtil.BodyEmailForRegister(newPw);
+                string body = UserHelper.BodyEmailForRegister(newPw);
                 // send email
-                await UserUtil.sendEmail("Welcome to E-Learning", body, user.Email);
+                await UserHelper.sendEmail("Welcome to E-Learning", body, DTO.Email.Trim());
+                User user = _mapper.Map<User>(DTO);
                 user.Id = Guid.NewGuid();
-                user.FullName = user.FullName.Trim();
-                user.Image = UserConst.AVATAR;
-                user.Address = user.Address == null || user.Address.Trim().Length == 0 ? null : user.Address.Trim();
+                user.Image = UserConst.AVATAR;                
                 user.Password = hashPw;
                 user.RoleName = UserConst.ROLE_STUDENT;
                 user.CreatedAt = DateTime.Now;
                 user.UpdateAt = DateTime.Now;
                 user.IsDeleted = false;
-                await _daoUser.Create(user);
-                await _daoUser.Save();
+                _daoUser.CreateUser(user);
                 return new ResponseBase<bool>(true, "Register successful");
             }
             catch (Exception ex)

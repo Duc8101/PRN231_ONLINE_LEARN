@@ -1,60 +1,31 @@
 ﻿using Common.Base;
-using Common.Const;
 using Common.Entity;
-using Common.Pagination;
-using DataAccess.Model.IDAO;
-using Microsoft.EntityFrameworkCore;
+using Common.Paginations;
+using DataAccess.Model.DAO;
 using System.Net;
 
 namespace WEB_CLIENT.Services.Courses
 {
     public class CoursesService : ICoursesService
     {
-        private readonly ICommonDAO<Course> _daoCourse;
-        private readonly ICommonDAO<Category> _daoCategory;
-        private readonly ICommonDAO<EnrollCourse> _daoEnroll;
-        private readonly ICommonDAO<Lesson> _daoLesson;
-        private readonly ICommonDAO<LessonPdf> _daoPDF;
-        private readonly ICommonDAO<Quiz> _daoQuiz;
-        private readonly ICommonDAO<LessonVideo> _daoVideo;
-        public CoursesService(ICommonDAO<Course> daoCourse, ICommonDAO<Category> daoCategory, ICommonDAO<EnrollCourse> daoEnroll
-            , ICommonDAO<Lesson> daoLesson, ICommonDAO<LessonPdf> daoPDF, ICommonDAO<Quiz> daoQuiz, ICommonDAO<LessonVideo> daoVideo)
+        private readonly DAOCourse _daoCourse;
+        private readonly DAOCategory _daoCategory;
+        private readonly DAOEnrollCourse _daoEnroll;
+        private readonly DAOLesson _daoLesson;
+        private readonly DAOLessonPDF _daoPDF;
+        private readonly DAOLessonVideo _daoVideo;
+        public CoursesService(DAOCourse daoCourse, DAOCategory daoCategory, DAOEnrollCourse daoEnroll, DAOLesson daoLesson
+            , DAOLessonPDF daoPDF, DAOLessonVideo daoVideo)
         {
             _daoCourse = daoCourse;
             _daoCategory = daoCategory;
             _daoEnroll = daoEnroll;
             _daoLesson = daoLesson;
             _daoPDF = daoPDF;
-            _daoQuiz = daoQuiz;
             _daoVideo = daoVideo;
         }
 
-        private IQueryable<Course> getQuery(int? CategoryID, string? properties, string? flow)
-        {
-            IQueryable<Course> query = _daoCourse.FindAll(c => c.IsDeleted == false).Include(c => c.Creator);
-            if (CategoryID.HasValue)
-            {
-                query = query.Where(c => c.CategoryId == CategoryID);
-            }
-
-            if (properties == null)
-            {
-                query = query.OrderByDescending(c => c.UpdateAt);
-            }
-            else if (flow != null)
-            {
-                if (flow == "asc")
-                {
-                    query = query.OrderBy(c => c.CourseName);
-                }
-                else if (flow == "desc")
-                {
-                    query = query.OrderByDescending(c => c.CourseName);
-                }
-            }
-            return query;
-        }
-        public async Task<ResponseBase<Dictionary<string, object?>?>> Index(int? CategoryID, string? properties, string? flow, int? page, string? userId)
+        public ResponseBase<Dictionary<string, object?>?> Index(int? categoryId, string? properties, bool? asc, int? page, string? userId)
         {
             int pageSelected = page == null ? 1 : page.Value;
             int prePage = pageSelected - 1;
@@ -62,47 +33,44 @@ namespace WEB_CLIENT.Services.Courses
             string preURL;
             string nextURL;
             // if not sort
-            if (properties == null && flow == null)
+            if (properties == null && asc == null)
             {
                 // if not choose category
-                if (CategoryID == null)
+                if (categoryId == null)
                 {
                     preURL = "/Courses" + "?page=" + prePage;
                     nextURL = "/Courses" + "?page=" + nextPage;
                 }
                 else
                 {
-                    preURL = "/Courses" + "?CategoryID=" + CategoryID + "&page=" + prePage;
-                    nextURL = "/Courses" + "?CategoryID=" + CategoryID + "&page=" + nextPage;
+                    preURL = "/Courses" + "?categoryId=" + categoryId + "&page=" + prePage;
+                    nextURL = "/Courses" + "?categoryId=" + categoryId + "&page=" + nextPage;
                 }
             }
             else
             {
                 // if not choose category
-                if (CategoryID == null)
+                if (categoryId == null)
                 {
-                    preURL = "/Courses" + "?properties=" + properties + "&flow=" + flow + "&page=" + prePage;
-                    nextURL = "/Courses" + "?properties=" + properties + "&flow=" + flow + "&page=" + nextPage;
+                    preURL = "/Courses" + "?properties=" + properties + "&asc=" + asc + "&page=" + prePage;
+                    nextURL = "/Courses" + "?properties=" + properties + "&asc=" + asc + "&page=" + nextPage;
                 }
                 else
                 {
-                    preURL = "/Courses" + "?CategoryID=" + CategoryID + "&properties=" + properties + "&flow=" + flow + "&page=" + prePage;
-                    nextURL = "/Courses" + "?CategoryID=" + CategoryID + "&properties=" + properties + "&flow=" + flow + "&page=" + nextPage;
+                    preURL = "/Courses" + "?categoryId=" + categoryId + "&properties=" + properties + "&asc=" + asc + "&page=" + prePage;
+                    nextURL = "/Courses" + "?categoryId=" + categoryId + "&properties=" + properties + "&asc=" + asc + "&page=" + nextPage;
                 }
             }
-          
+
             try
             {
-                IQueryable<Course> query = getQuery(CategoryID, properties, flow);
-                List<Course> listCourse = await query.Skip((int)PageSizeConst.Course_Page * (pageSelected - 1))
-                    .Take((int)PageSizeConst.Course_Page).ToListAsync();
-                List<Category> listCategory = await _daoCategory.FindAll().ToListAsync();
-                int count = await query.CountAsync();
-                int numberPage = (int)Math.Ceiling((double)count / (int)PageSizeConst.Course_Page);
-                PagedResult<Course> result = new PagedResult<Course>()
+                List<Course> listCourse = _daoCourse.getListCourse(categoryId, properties, asc, null, pageSelected);
+                List<Category> listCategory = _daoCategory.getListCategory();
+                int numberPage = _daoCourse.getNumberPage(categoryId, properties, asc, null);
+                Pagination<Course> result = new Pagination<Course>()
                 {
                     PageSelected = pageSelected,
-                    Results = listCourse,
+                    List = listCourse,
                     NumberPage = numberPage,
                     PRE_URL = preURL,
                     NEXT_URL = nextURL,
@@ -110,44 +78,42 @@ namespace WEB_CLIENT.Services.Courses
                 List<List<Lesson>> listListLesson = new List<List<Lesson>>();
                 foreach (Course course in listCourse)
                 {
-                    List<Lesson> listLesson = await _daoLesson.FindAll(l => l.IsDeleted == false && l.CourseId == course.CourseId).ToListAsync();
+                    List<Lesson> listLesson = _daoLesson.getListLesson(course.CourseId);
                     listListLesson.Add(listLesson);
                 }
-                Dictionary<string, object?> dic = new Dictionary<string, object?>();
-                dic["result"] = result;
-                dic["properties"] = properties == null ? "" : properties;
-                dic["flow"] = flow == null ? "" : flow;
-                dic["CategoryID"] = CategoryID == null ? 0 : CategoryID;
-                dic["listCategory"] = listCategory;
-                dic["listListLesson"] = listListLesson;
+                Dictionary<string, object?> data = new Dictionary<string, object?>();
+                data["result"] = result;
+                data["properties"] = properties == null ? "" : properties;
+                data["asc"] = asc;
+                data["categoryId"] = categoryId == null ? 0 : categoryId;
+                data["listCategory"] = listCategory;
+                data["listListLesson"] = listListLesson;
                 if (userId == null)
                 {
-                    dic["listEnroll"] = null;
+                    data["listEnroll"] = null;
                 }
                 else
                 {
-                    List<EnrollCourse> listEnroll = await _daoEnroll.FindAll(e => e.StudentId == Guid.Parse(userId) && e.Course.IsDeleted == false)
-                        .Include(e => e.Course).ThenInclude(e => e.Creator).ToListAsync();
-                    dic["listEnroll"] = listEnroll;
+                    List<EnrollCourse> listEnroll = _daoEnroll.getListEnrollCourse(Guid.Parse(userId));
+                    data["listEnroll"] = listEnroll;
                 }
-                return new ResponseBase<Dictionary<string, object?>?>(dic, string.Empty);
+                return new ResponseBase<Dictionary<string, object?>?>(data);
             }
             catch (Exception ex)
             {
-                return new ResponseBase<Dictionary<string, object?>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseBase<Dictionary<string, object?>?>(ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
-        public async Task<ResponseBase<Dictionary<string, object?>?>> Detail(Guid CourseID, string? userId)
+        public ResponseBase<Dictionary<string, object?>?> Detail(Guid courseId, string? userId)
         {
             try
             {
-                Course? course = await _daoCourse.FindAll(c => c.CourseId == CourseID).Include(c => c.Creator).FirstOrDefaultAsync();
+                Course? course = _daoCourse.getCourse(courseId);
                 if (course == null)
                 {
-                    return new ResponseBase<Dictionary<string, object?>?>(null, "Not found course", (int)HttpStatusCode.NotFound);
+                    return new ResponseBase<Dictionary<string, object?>?>("Not found course", (int)HttpStatusCode.NotFound);
                 }
-                List<Lesson> list = await _daoLesson.FindAll(l => l.IsDeleted == false && l.CourseId == CourseID)
-                    .OrderBy(l => l.LessonNo).ToListAsync();
+                List<Lesson> list = _daoLesson.getListLesson(courseId);
                 Dictionary<string, object?> dic = new Dictionary<string, object?>();
                 dic["course"] = course;
                 dic["list"] = list;
@@ -157,101 +123,97 @@ namespace WEB_CLIENT.Services.Courses
                 }
                 else
                 {
-                    dic["listEnroll"] = _daoEnroll.FindAll(e => e.StudentId == Guid.Parse(userId) && e.Course.IsDeleted == false)
-                        .Include(e => e.Course).ThenInclude(e => e.Creator);
+                    dic["listEnroll"] = _daoEnroll.getListEnrollCourse(Guid.Parse(userId));
                 }
-                return new ResponseBase<Dictionary<string, object?>?>(dic, string.Empty);
+                return new ResponseBase<Dictionary<string, object?>?>(dic);
             }
             catch (Exception ex)
             {
-                return new ResponseBase<Dictionary<string, object?>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseBase<Dictionary<string, object?>?>(ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
-        public async Task<ResponseBase<Dictionary<string, object?>?>> EnrollCourse(Guid CourseID, Guid UserID)
+        public ResponseBase<Dictionary<string, object?>?> EnrollCourse(Guid courseId, Guid userId)
         {
             try
             {
-                Course? course = await _daoCourse.FindAll(c => c.CourseId == CourseID).Include(c => c.Creator).FirstOrDefaultAsync();
+                Course? course = _daoCourse.getCourse(courseId);
                 if (course == null)
                 {
-                    return new ResponseBase<Dictionary<string, object?>?>(null, "Not found course", (int)HttpStatusCode.NotFound);
+                    return new ResponseBase<Dictionary<string, object?>?>("Not found course", (int)HttpStatusCode.NotFound);
                 }
-                ResponseBase<Dictionary<string, object?>?> result = await Index(null, null, null, null, UserID.ToString());
+                ResponseBase<Dictionary<string, object?>?> result = Index(null, null, null, null, userId.ToString());
                 // if get result failed
                 if (result.Data == null)
                 {
-                    return new ResponseBase<Dictionary<string, object?>?>(null, result.Message, result.Code);
+                    return new ResponseBase<Dictionary<string, object?>?>(result.Message, result.Code);
                 }
                 // if already enroll course
-                if (await _daoEnroll.Any(e => e.CourseId == CourseID && e.StudentId == UserID))
+                if (_daoEnroll.isExist(courseId, userId))
                 {
                     return new ResponseBase<Dictionary<string, object?>?>(result.Data, "You have enrolled this course", (int)HttpStatusCode.Conflict);
                 }
                 EnrollCourse enroll = new EnrollCourse()
                 {
-                    CourseId = CourseID,
-                    StudentId = UserID,
+                    CourseId = courseId,
+                    StudentId = userId,
                     CreatedAt = DateTime.Now,
                     UpdateAt = DateTime.Now,
                     IsDeleted = false,
                 };
-                await _daoEnroll.Create(enroll);
-                await _daoEnroll.Save();
+                _daoEnroll.CreateEnrollCourse(enroll);
                 return new ResponseBase<Dictionary<string, object?>?>(result.Data, "Enroll successful");
             }
             catch (Exception ex)
             {
-                return new ResponseBase<Dictionary<string, object?>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseBase<Dictionary<string, object?>?>(ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
-        public async Task<ResponseBase<Dictionary<string, object>?>> LearnCourse(Guid CourseID, Guid UserID, string? video /* file video */, string? name /*video name or pdf name*/, string? PDF /*file PDF */, Guid? LessonID, int? VideoID, int? PDFID)
+        public ResponseBase<Dictionary<string, object>?> LearnCourse(Guid courseId, Guid userId, string? video /* file video */, string? name /*video name or pdf name*/, string? PDF /*file PDF */, Guid? lessonId, int? videoId, int? PDFId)
         {
             try
             {
-                Course? course = await _daoCourse.FindAll(c => c.CourseId == CourseID).Include(c => c.Creator).FirstOrDefaultAsync();
+                Course? course = _daoCourse.getCourse(courseId);
                 if (course == null)
                 {
-                    return new ResponseBase<Dictionary<string, object>?>(null, "Not found course", (int)HttpStatusCode.NotFound);
+                    return new ResponseBase<Dictionary<string, object>?>("Not found course", (int)HttpStatusCode.NotFound);
                 }
                 // if enroll course
-                if (await _daoEnroll.Any(e => e.CourseId == CourseID && e.StudentId == UserID))
+                if (_daoEnroll.isExist(courseId, userId))
                 {
-                    List<Lesson> listLesson = await _daoLesson.FindAll(l => l.IsDeleted == false && l.CourseId == CourseID)
-                        .OrderBy(l => l.LessonNo).ToListAsync();
-                    List<LessonPdf> listPDF = await _daoPDF.FindAll(p => p.IsDeleted == false).ToListAsync();
-                    List<Guid> listLessonQuiz = await _daoQuiz.FindAll(q => q.IsDeleted == false).Select(q => q.LessonId).Distinct().ToListAsync();
-                    List<LessonVideo> listVideo = await _daoVideo.FindAll(v => v.IsDeleted == false).ToListAsync();
+                    List<Lesson> listLessonCourse = _daoLesson.getListLesson(courseId);
+                    List<LessonPdf> listPDF = _daoPDF.getListPDF();
+                    List<Lesson> listLessonQuiz = _daoLesson.getListLesson();
+                    List<LessonVideo> listVideo = _daoVideo.getListVideo();
                     // if start to learn course
                     if (video == null && PDF == null)
                     {
-                        LessonVideo? lessonVideo = await _daoVideo.Get(v => v.IsDeleted == false && v.Lesson.IsDeleted == false && v.Lesson.LessonNo == 1
-                            && v.Lesson.CourseId == CourseID);
+                        LessonVideo? lessonVideo = _daoVideo.getVideo(courseId);
                         if (lessonVideo != null)
                         {
                             video = lessonVideo.FileVideo;
                             name = lessonVideo.VideoName;
-                            VideoID = lessonVideo.VideoId;
-                            LessonID = lessonVideo.LessonId;
+                            videoId = lessonVideo.VideoId;
+                            lessonId = lessonVideo.LessonId;
                         }
                     }
                     Dictionary<string, object> result = new Dictionary<string, object>();
-                    result["listLesson"] = listLesson;
+                    result["listLessonCourse"] = listLessonCourse;
                     result["listPDF"] = listPDF;
                     result["listLessonQuiz"] = listLessonQuiz;
                     result["listVideo"] = listVideo;
                     result["video"] = video == null ? "" : video;
                     result["PDF"] = PDF == null ? "" : PDF;
                     result["name"] = name == null ? "" : name;
-                    result["vID"] = VideoID == null ? 0 : VideoID;
-                    result["lID"] = LessonID == null ? Guid.NewGuid() : LessonID;
-                    result["pID"] = PDFID == null ? 0 : PDFID;
-                    return new ResponseBase<Dictionary<string, object>?>(result, string.Empty);
+                    result["vId"] = videoId == null ? 0 : videoId;
+                    result["lId"] = lessonId == null ? Guid.NewGuid() : lessonId;
+                    result["pId"] = PDFId == null ? 0 : PDFId;
+                    return new ResponseBase<Dictionary<string, object>?>(result);
                 }
-                return new ResponseBase<Dictionary<string, object>?>(null, string.Empty, (int)HttpStatusCode.Conflict);
+                return new ResponseBase<Dictionary<string, object>?>(string.Empty, (int)HttpStatusCode.Conflict);
             }
             catch (Exception ex)
             {
-                return new ResponseBase<Dictionary<string, object>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseBase<Dictionary<string, object>?>(ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
     }

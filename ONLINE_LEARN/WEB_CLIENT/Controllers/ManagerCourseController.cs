@@ -1,7 +1,8 @@
 ﻿using Common.Base;
 using Common.Const;
+using Common.DTO.CourseDTO;
 using Common.Entity;
-using Common.Pagination;
+using Common.Paginations;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using WEB_CLIENT.Attributes;
@@ -21,54 +22,55 @@ namespace WEB_CLIENT.Controllers
             _service = service;
         }
 
-        public async Task<ActionResult> Index(int? page)
+        public ActionResult Index(int? page)
         {
             if (isLogin == false)
             {
                 return Redirect("/Home");
             }
-            string? TeacherID = getUserID();
-            if (TeacherID == null)
+            string? teacherId = getUserId();
+            if (teacherId == null)
             {
-                return View("/Views/Error/404.cshtml", new ResponseBase<object?>(null, "Not found ID. Please check login information"));
+                return View("/Views/Error/404.cshtml", new ResponseBase<object?>("Not found Id. Please check login information"));
             }
-            ResponseBase<PagedResult<Course>?> response = await _service.Index(page, Guid.Parse(TeacherID));
+            ResponseBase<Pagination<Course>?> response = _service.Index(page, Guid.Parse(teacherId));
             if (response.Data == null)
             {
-                return View("/Views/Error/500.cshtml", new ResponseBase<object?>(null, response.Message));
+                return View("/Views/Error/500.cshtml", new ResponseBase<object?>(response.Message));
             }
             return View(response.Data);
         }
-        public async Task<ActionResult> Create()
+        
+        public ActionResult Create()
         {
             if (isLogin == false)
             {
                 return Redirect("/Home");
             }
-            ResponseBase<List<Category>?> response = await _service.Create();
+            ResponseBase<List<Category>?> response = _service.Create();
             if (response.Data == null)
             {
-                return View("/Views/Error/500.cshtml", new ResponseBase<object?>(null, response.Message, response.Code));
+                return View("/Views/Error/500.cshtml", new ResponseBase<object?>(response.Message, response.Code));
             }
             return View(response.Data);
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(Course course)
+        public ActionResult Create(CourseCreateUpdateDTO DTO)
         {
             if (isLogin == false)
             {
                 return Redirect("/Home");
             }
-            string? TeacherID = getUserID();
-            if (TeacherID == null)
+            string? teacherId = getUserId();
+            if (teacherId == null)
             {
-                return View("/Views/Error/404.cshtml", new ResponseBase<object?>(null, "Not found ID. Please check login information"));
+                return View("/Views/Error/404.cshtml", new ResponseBase<object?>("Not found Id. Please check login information"));
             }
-            ResponseBase<List<Category>?> response = await _service.Create(course, Guid.Parse(TeacherID));
+            ResponseBase<List<Category>?> response = _service.Create(DTO, Guid.Parse(teacherId));
             if (response.Data == null)
             {
-                return View("/Views/Error/500.cshtml", new ResponseBase<object?>(null, response.Message));
+                return View("/Views/Error/500.cshtml", new ResponseBase<object?>(response.Message));
             }
             if (response.Code == (int)HttpStatusCode.Conflict)
             {
@@ -80,7 +82,8 @@ namespace WEB_CLIENT.Controllers
             }
             return View(response.Data);
         }
-        public async Task<ActionResult> Update(Guid? id)
+
+        public ActionResult Update(Guid? id)
         {
             if (isLogin == false)
             {
@@ -90,34 +93,34 @@ namespace WEB_CLIENT.Controllers
             {
                 return Redirect("/ManagerCourse");
             }
-            string? TeacherID = getUserID();
-            if (TeacherID == null)
+            string? teacherId = getUserId();
+            if (teacherId == null)
             {
-                return View("/Views/Error/404.cshtml", new ResponseBase<object?>(null, "Not found ID. Please check login information"));
+                return View("/Views/Error/404.cshtml", new ResponseBase<object?>("Not found Id. Please check login information"));
             }
-            ResponseBase<Dictionary<string, object>?> response = await _service.Update(id.Value, Guid.Parse(TeacherID));
+            ResponseBase<Dictionary<string, object>?> response = _service.Update(id.Value, Guid.Parse(teacherId));
             if (response.Data == null)
             {
                 if (response.Code == (int)HttpStatusCode.NotFound)
                 {
                     return Redirect("/ManagerCourse");
                 }
-                return View("/Views/Error/500.cshtml", new ResponseBase<object?>(null, response.Message));
+                return View("/Views/Error/500.cshtml", new ResponseBase<object?>(response.Message));
             }
             return View(response.Data);
         }
 
         [HttpPost]
-        public async Task<ActionResult> Update(Guid id, Course course)
+        public ActionResult Update(Guid id, CourseCreateUpdateDTO DTO)
         {
             if (isLogin == false)
             {
                 return Redirect("/Home");
             }
-            ResponseBase<Dictionary<string, object>?> response = await _service.Update(id, course);
+            ResponseBase<Dictionary<string, object>?> response = _service.Update(id, DTO);
             if (response.Data == null)
             {
-                return View("/Views/Error/" + response.Code + ".cshtml", new ResponseBase<object?>(null, response.Message));
+                return View("/Views/Error/" + response.Code + ".cshtml", new ResponseBase<object?>(response.Message));
             }
             if (response.Code == (int)HttpStatusCode.Conflict)
             {
@@ -130,7 +133,7 @@ namespace WEB_CLIENT.Controllers
             return View(response.Data);
         }
 
-        public async Task<ActionResult> Delete(Guid? id)
+        public ActionResult Delete(Guid? id)
         {
             if (isLogin == false)
             {
@@ -140,19 +143,19 @@ namespace WEB_CLIENT.Controllers
             {
                 return Redirect("/Home");
             }
-            string? TeacherID = getUserID();
-            if (TeacherID == null)
+            string? teacherId = getUserId();
+            if (teacherId == null)
             {
-                return View("/Views/Error/404.cshtml", new ResponseBase<object?>(null, "Not found ID. Please check login information"));
+                return View("/Views/Error/404.cshtml", new ResponseBase<object?>("Not found Id. Please check login information"));
             }
-            ResponseBase<PagedResult<Course>?> response = await _service.Delete(id.Value, Guid.Parse(TeacherID));
-            if (response.Data == null)
+            ResponseBase<bool> response = _service.Delete(id.Value, Guid.Parse(teacherId));
+            if (response.Data == false)
             {
                 if (response.Code == (int)HttpStatusCode.NotFound)
                 {
                     return Redirect("/Home");
                 }
-                return View("/Views/Error/500.cshtml", new ResponseBase<object?>(null, response.Message));
+                return View("/Views/Error/500.cshtml", new ResponseBase<object?>(response.Message));
             }
             return Redirect("/ManagerCourse");
         }

@@ -1,6 +1,7 @@
 ﻿using Common.Const;
 using Common.Entity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace DataAccess.Model.DBContext
 {
@@ -26,14 +27,15 @@ namespace DataAccess.Model.DBContext
         public virtual DbSet<Result> Results { get; set; } = null!;
         public virtual DbSet<User> Users { get; set; } = null!;
 
-        /*        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-                {
-                    ConfigurationBuilder builder = new ConfigurationBuilder();
-                    IConfigurationRoot config = builder.SetBasePath(Directory.GetCurrentDirectory())
-                        .AddJsonFile("appsettings.json", true, true).Build();
-                    string? connect = config.GetConnectionString("DefaultConnection");
-                    optionsBuilder.UseSqlServer(connect);
-                }*/
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            ConfigurationBuilder builder = new ConfigurationBuilder();
+            IConfigurationRoot config = builder.SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", true, true).Build();
+            string? connect = config.GetConnectionString("DefaultConnection");
+            optionsBuilder.UseSqlServer(connect);
+        }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<EnrollCourse>().HasKey(e => new { e.CourseId, e.StudentId });

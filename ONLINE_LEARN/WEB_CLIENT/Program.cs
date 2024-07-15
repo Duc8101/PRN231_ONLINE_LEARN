@@ -1,3 +1,4 @@
+using AutoMapper;
 using DataAccess.Model.DAO;
 using DataAccess.Model.DBContext;
 using DataAccess.Model.IDAO;
@@ -29,13 +30,27 @@ namespace WEB_CLIENT
             // Add services to the container.
             builder.Services.AddControllersWithViews();
             builder.Services.AddSession();
+            builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile(new MappingProfile());
+            });
             // -------------------------register dbcontext----------------------------
             string? connection = builder.Configuration.GetConnectionString("DefaultConnection");
-            builder.Services.AddDbContext<MyDbContext>(options =>
-                options.UseSqlServer(connection)
+            builder.Services.AddDbContext<MyDbContext>(/*options =>
+                options.UseSqlServer(connection)*/
             );
             // -------------------------register service ----------------------------
             builder.Services.AddTransient(typeof(ICommonDAO<>), typeof(CommonDAO<>));
+            builder.Services.AddTransient<DAOUser>();
+            builder.Services.AddTransient<DAOCourse>();
+            builder.Services.AddTransient<DAOLesson>();
+            builder.Services.AddTransient<DAOEnrollCourse>();
+            builder.Services.AddTransient<DAOCategory>();
+            builder.Services.AddTransient<DAOLessonPDF>();
+            builder.Services.AddTransient<DAOLessonVideo>();
+            builder.Services.AddTransient<DAOQuiz>();
+            builder.Services.AddTransient<DAOResult>();
             builder.Services.AddScoped<IAdminService, AdminService>();
             builder.Services.AddScoped<IChangePasswordService, ChangePasswordService>();
             builder.Services.AddScoped<ICoursesService, CoursesService>();
@@ -51,7 +66,7 @@ namespace WEB_CLIENT
             builder.Services.AddScoped<IProfileService, ProfileService>();
             builder.Services.AddScoped<IRegisterService, RegisterService>();
             builder.Services.AddScoped<ITakeQuizService, TakeQuizService>();
-            builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            builder.Services.AddHttpContextAccessor();
             var app = builder.Build();
             StaticServiceProvider.Provider = app.Services;
             // Configure the HTTP request pipeline.

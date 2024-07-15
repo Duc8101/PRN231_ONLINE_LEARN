@@ -1,6 +1,6 @@
 ﻿using Common.Base;
 using Common.Const;
-using Common.Entity;
+using Common.DTO.UserDTO;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using WEB_CLIENT.Attributes;
@@ -20,21 +20,21 @@ namespace WEB_CLIENT.Controllers
             _service = service;
         }
 
-        public async Task<ActionResult> Index(string? name)
+        public ActionResult Index(string? name)
         {
-            if(isLogin == false)
+            if (isLogin == false)
             {
                 return Redirect("/Home");
             }
-            ResponseBase<Dictionary<string, object>?> response = await _service.Index(name);
+            ResponseBase<Dictionary<string, object>?> response = _service.Index(name);
             if (response.Data == null)
             {
-                return View("/Views/Error/500.cshtml", new ResponseBase<object?>(null, response.Message, response.Code));
+                return View("/Views/Error/500.cshtml", new ResponseBase<object?>(response.Message, response.Code));
             }
             return View(response.Data);
         }
 
-        public async Task<ActionResult> Detail(Guid? id)
+        public ActionResult Detail(Guid? id)
         {
             if (isLogin == false)
             {
@@ -44,7 +44,7 @@ namespace WEB_CLIENT.Controllers
             {
                 return Redirect("/Admin");
             }
-            ResponseBase<Dictionary<string, object>?> response = await _service.Detail(id.Value);
+            ResponseBase<Dictionary<string, object>?> response = _service.Detail(id.Value);
             if (response.Data == null)
             {
                 if (response.Code == (int)HttpStatusCode.NotFound)
@@ -66,16 +66,16 @@ namespace WEB_CLIENT.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(User user)
+        public async Task<ActionResult> Create(UserCreateDTO DTO)
         {
             if (isLogin == false)
             {
                 return Redirect("/Home");
             }
-            ResponseBase<List<string>?> response = await _service.Create(user);
+            ResponseBase<List<string>?> response = await _service.Create(DTO);
             if (response.Data == null)
             {
-                return View("/Views/Error/500.cshtml", new ResponseBase<object?>(null, response.Message, response.Code));
+                return View("/Views/Error/500.cshtml", new ResponseBase<object?>(response.Message, response.Code));
             }
             if (response.Code == (int)HttpStatusCode.Conflict)
             {

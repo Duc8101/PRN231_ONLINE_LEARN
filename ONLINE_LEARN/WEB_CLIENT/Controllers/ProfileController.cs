@@ -20,43 +20,43 @@ namespace WEB_CLIENT.Controllers
             _service = service;
         }
 
-        public async Task<ActionResult> Index()
+        public ActionResult Index()
         {
             if (isLogin == false)
             {
                 return Redirect("/Home");
             }
-            string? UserID = getUserID();
-            if (UserID == null)
+            string? userId = getUserId();
+            if (userId == null)
             {
-                return View("/Views/Error/404.cshtml", new ResponseBase<object?>(null, "Not found id. Please check login information", (int)HttpStatusCode.NotFound));
+                return View("/Views/Error/404.cshtml", new ResponseBase<object?>("Not found id. Please check login information", (int)HttpStatusCode.NotFound));
             }
-            ResponseBase<Dictionary<string, object>?> response = await _service.Index(Guid.Parse(UserID));
+            ResponseBase<Dictionary<string, object>?> response = _service.Index(Guid.Parse(userId));
             // if get result failed
             if (response.Data == null)
             {
-                return View("/Views/Error/" + response.Code + ".cshtml", new ResponseBase<object?>(null, response.Message, response.Code));
+                return View("/Views/Error/" + response.Code + ".cshtml", new ResponseBase<object?>(response.Message, response.Code));
             }
             return View(response.Data);
         }
 
         [HttpPost]
-        public async Task<ActionResult> Index(ProfileDTO DTO, string valueImg)
+        public ActionResult Index(ProfileDTO DTO, string valueImg)
         {
             if (isLogin == false)
             {
                 return Redirect("/Home");
             }
-            string? UserID = getUserID();
-            if (UserID == null)
+            string? userId = getUserId();
+            if (userId == null)
             {
-                return View("/Views/Error/404.cshtml", new ResponseBase<object?>(null, "Not found id. Please check login information"));
+                return View("/Views/Error/404.cshtml", new ResponseBase<object?>("Not found id. Please check login information"));
             }
-            ResponseBase<Dictionary<string, object>?> response = await _service.Index(Guid.Parse(UserID), DTO, valueImg);
+            ResponseBase<Dictionary<string, object>?> response = _service.Index(Guid.Parse(userId), DTO, valueImg);
             // if get data failed
             if (response.Data == null)
             {
-                return View("/Views/Error/" + response.Code + ".cshtml", new ResponseBase<object?>(null, response.Message, response.Code));
+                return View("/Views/Error/" + response.Code + ".cshtml", new ResponseBase<object?>(response.Message, response.Code));
             }
             if (response.Code == (int)HttpStatusCode.Conflict)
             {

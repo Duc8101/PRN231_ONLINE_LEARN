@@ -1,13 +1,13 @@
 ﻿using Common.Base;
-using Common.Entity;
+using Common.DTO.UserDTO;
 
 namespace WEB_CLIENT.Services.Admin
 {
     public interface IAdminService
     {
-        Task<ResponseBase<Dictionary<string, object>?>> Index(string? name);
-        Task<ResponseBase<Dictionary<string, object>?>> Detail(Guid UserID);
+        ResponseBase<Dictionary<string, object>?> Index(string? name);
+        ResponseBase<Dictionary<string, object>?> Detail(Guid userId);
         List<string> Create();
-        Task<ResponseBase<List<string>?>> Create(User user);
+        Task<ResponseBase<List<string>?>> Create(UserCreateDTO DTO);
     }
 }

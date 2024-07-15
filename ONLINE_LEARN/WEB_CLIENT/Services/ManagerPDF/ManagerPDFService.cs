@@ -1,19 +1,22 @@
-﻿using Common.Base;
+﻿using AutoMapper;
+using Common.Base;
+using Common.DTO.LessonPdfDTO;
 using Common.Entity;
-using DataAccess.Model.IDAO;
-using Microsoft.EntityFrameworkCore;
+using DataAccess.Model.DAO;
 using System.Net;
+using WEB_CLIENT.Services.Base;
 
 namespace WEB_CLIENT.Services.ManagerPDF
 {
-    public class ManagerPDFService : IManagerPDFService
+    public class ManagerPDFService : BaseService, IManagerPDFService
     {
-        private readonly ICommonDAO<Course> _daoCourse;
-        private readonly ICommonDAO<Lesson> _daoLesson;
-        private readonly ICommonDAO<LessonPdf> _daoPDF;
-        private readonly ICommonDAO<LessonVideo> _daoVideo;
-        public ManagerPDFService(ICommonDAO<Course> daoCourse, ICommonDAO<Lesson> daoLesson, ICommonDAO<LessonPdf> daoPDF
-            , ICommonDAO<LessonVideo> daoVideo)
+        private readonly DAOCourse _daoCourse;
+        private readonly DAOLesson _daoLesson;
+        private readonly DAOLessonPDF _daoPDF;
+        private readonly DAOLessonVideo _daoVideo;
+
+        public ManagerPDFService(IMapper mapper, DAOCourse daoCourse, DAOLesson daoLesson, DAOLessonPDF daoPDF
+            , DAOLessonVideo daoVideo) : base(mapper)
         {
             _daoCourse = daoCourse;
             _daoLesson = daoLesson;
@@ -21,152 +24,145 @@ namespace WEB_CLIENT.Services.ManagerPDF
             _daoVideo = daoVideo;
         }
 
-        private async Task<ResponseBase<Dictionary<string, object>?>> getResult(Guid CourseID, Guid CreatorID)
+        private ResponseBase<Dictionary<string, object>?> getResponse(Guid courseId, Guid creatorId)
         {
             try
             {
-                Course? course = await _daoCourse.FindAll(c => c.CourseId == CourseID && c.IsDeleted == false && c.CreatorId == CreatorID)
-                    .Include(c => c.Creator).FirstOrDefaultAsync();
+                Course? course = _daoCourse.getCourse(courseId, creatorId);
                 if (course == null)
                 {
-                    return new ResponseBase<Dictionary<string, object>?>(null, "Not found course", (int)HttpStatusCode.NotFound);
+                    return new ResponseBase<Dictionary<string, object>?>("Not found course", (int)HttpStatusCode.NotFound);
                 }
-                List<Lesson> listLesson = await _daoLesson.FindAll(l => l.IsDeleted == false && l.CourseId == CourseID)
-                  .OrderBy(l => l.LessonNo).ToListAsync();
-                List<LessonPdf> listPDF = await _daoPDF.FindAll(p => p.IsDeleted == false).ToListAsync(); ;
-                List<LessonVideo> listVideo = await _daoVideo.FindAll(v => v.IsDeleted == false).ToListAsync();
-                LessonVideo? lessonVideo = await _daoVideo.Get(v => v.IsDeleted == false && v.Lesson.IsDeleted == false && v.Lesson.LessonNo == 1
-                        && v.Lesson.CourseId == CourseID);
+                List<Lesson> listLesson = _daoLesson.getListLesson(courseId);
+                List<LessonPdf> listPDF = _daoPDF.getListPDF();
+                List<LessonVideo> listVideo = _daoVideo.getListVideo();
+                LessonVideo? lessonVideo = _daoVideo.getVideo(courseId);
                 string video = string.Empty;
                 string name = string.Empty;
-                Guid LessonID = Guid.NewGuid();
+                Guid lessonId = Guid.NewGuid();
                 if (lessonVideo != null)
                 {
                     video = lessonVideo.FileVideo;
                     name = lessonVideo.VideoName;
-                    LessonID = lessonVideo.LessonId;
+                    lessonId = lessonVideo.LessonId;
                 }
-                Dictionary<string, object> result = new Dictionary<string, object>();
-                result["listLesson"] = listLesson;
-                result["listPDF"] = listPDF;
-                result["listVideo"] = listVideo;
-                result["video"] = video;
-                result["PDF"] = string.Empty;
-                result["name"] = name;
-                result["lID"] = LessonID;
-                result["CourseID"] = CourseID;
-                return new ResponseBase<Dictionary<string, object>?>(result, string.Empty);
+                Dictionary<string, object> response = new Dictionary<string, object>();
+                response["listLesson"] = listLesson;
+                response["listPDF"] = listPDF;
+                response["listVideo"] = listVideo;
+                response["video"] = video;
+                response["PDF"] = string.Empty;
+                response["name"] = name;
+                response["lId"] = lessonId;
+                response["courseId"] = courseId;
+                return new ResponseBase<Dictionary<string, object>?>(response);
             }
             catch (Exception ex)
             {
-                return new ResponseBase<Dictionary<string, object>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseBase<Dictionary<string, object>?>(ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
-        public async Task<ResponseBase<Dictionary<string, object>?>> Create(LessonPdf create, Guid CourseID, Guid CreatorID)
+
+        public ResponseBase<Dictionary<string, object>?> Create(LessonPdfCreateUpdateDTO DTO, Guid courseId, Guid creatorId)
         {
             try
             {
-                ResponseBase<Dictionary<string, object>?> result = await getResult(CourseID, CreatorID);
-                if (result.Data == null)
+                ResponseBase<Dictionary<string, object>?> response = getResponse(courseId, creatorId);
+                if (response.Data == null)
                 {
-                    return new ResponseBase<Dictionary<string, object>?>(null, result.Message, result.Code);
+                    return new ResponseBase<Dictionary<string, object>?>(response.Message, response.Code);
                 }
-                Lesson? lesson = await _daoLesson.Get(l => l.IsDeleted == false && l.LessonId == create.LessonId
-                && l.Course.IsDeleted == false && l.CourseId == CourseID);
+                Lesson? lesson = _daoLesson.getLesson(DTO.LessonId, courseId);
                 if (lesson == null)
                 {
-                    return new ResponseBase<Dictionary<string, object>?>(null, "Not found lesson", (int)HttpStatusCode.NotFound);
+                    return new ResponseBase<Dictionary<string, object>?>("Not found lesson", (int)HttpStatusCode.NotFound);
                 }
-                if (create.Pdfname == null || create.Pdfname.Trim().Length == 0)
+                if (DTO.Pdfname == null || DTO.Pdfname.Trim().Length == 0)
                 {
-                    return new ResponseBase<Dictionary<string, object>?>(result.Data, "You have to input PDF name", (int)HttpStatusCode.Conflict);
+                    return new ResponseBase<Dictionary<string, object>?>(response.Data, "You have to input PDF name", (int)HttpStatusCode.Conflict);
                 }
-                create.Pdfname = create.Pdfname.Trim();
-                create.CreatedAt = DateTime.Now;
-                create.UpdateAt = DateTime.Now;
-                create.IsDeleted = false;
-                await _daoPDF.Create(create);
-                await _daoPDF.Save();
-                List<LessonPdf> listPDF = await _daoPDF.FindAll(p => p.IsDeleted == false).ToListAsync();
-                result.Data["listPDF"] = listPDF;
-                return new ResponseBase<Dictionary<string, object>?>(result.Data, "PDF " + create.Pdfname.Trim() + " was added successfully!");
+                LessonPdf obj = _mapper.Map<LessonPdf>(DTO);
+                obj.CreatedAt = DateTime.Now;
+                obj.UpdateAt = DateTime.Now;
+                obj.IsDeleted = false;
+                _daoPDF.CreatePDF(obj);
+                List<LessonPdf> listPDF = _daoPDF.getListPDF();
+                response.Data["listPDF"] = listPDF;
+                return new ResponseBase<Dictionary<string, object>?>(response.Data, "PDF " + DTO.Pdfname.Trim() + " was added successfully!");
             }
             catch (Exception ex)
             {
-                return new ResponseBase<Dictionary<string, object>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseBase<Dictionary<string, object>?>(ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
-        public async Task<ResponseBase<Dictionary<string, object>?>> Update(int PdfID, LessonPdf obj, Guid CourseID, Guid CreatorID)
+
+        public ResponseBase<Dictionary<string, object>?> Update(int pdfId, LessonPdfCreateUpdateDTO DTO, Guid courseId, Guid creatorId)
         {
             try
             {
-                ResponseBase<Dictionary<string, object>?> result = await getResult(CourseID, CreatorID);
-                if (result.Data == null)
+                ResponseBase<Dictionary<string, object>?> response = getResponse(courseId, creatorId);
+                if (response.Data == null)
                 {
-                    return new ResponseBase<Dictionary<string, object>?>(null, result.Message, result.Code);
+                    return new ResponseBase<Dictionary<string, object>?>(response.Message, response.Code);
                 }
-                Lesson? lesson = await _daoLesson.Get(l => l.IsDeleted == false && l.LessonId == obj.LessonId
-                && l.Course.IsDeleted == false && l.CourseId == CourseID);
+                Lesson? lesson = _daoLesson.getLesson(DTO.LessonId, courseId);
                 if (lesson == null)
                 {
-                    return new ResponseBase<Dictionary<string, object>?>(null, "Not found lesson", (int)HttpStatusCode.NotFound);
+                    return new ResponseBase<Dictionary<string, object>?>("Not found lesson", (int)HttpStatusCode.NotFound);
                 }
-                LessonPdf? PDF = await _daoPDF.Get(p => p.Pdfid == PdfID && p.IsDeleted == false && p.LessonId == obj.LessonId);
+                LessonPdf? PDF = _daoPDF.getPDF(pdfId, DTO.LessonId);
                 if (PDF == null)
                 {
-                    return new ResponseBase<Dictionary<string, object>?>(null, "Not found PDF", (int)HttpStatusCode.NotFound);
+                    return new ResponseBase<Dictionary<string, object>?>("Not found PDF", (int)HttpStatusCode.NotFound);
                 }
-                if (obj.Pdfname == null || obj.Pdfname.Trim().Length == 0)
+                if (DTO.Pdfname == null || DTO.Pdfname.Trim().Length == 0)
                 {
-                    return new ResponseBase<Dictionary<string, object>?>(result.Data, "You have to input PDF name", (int)HttpStatusCode.Conflict);
+                    return new ResponseBase<Dictionary<string, object>?>(response.Data, "You have to input PDF name", (int)HttpStatusCode.Conflict);
                 }
-                PDF.Pdfname = obj.Pdfname.Trim();
-                if (obj.FilePdf != null && obj.FilePdf.Length > 0)
+                PDF.Pdfname = DTO.Pdfname.Trim();
+                if (DTO.FilePdf != null && DTO.FilePdf.Length > 0)
                 {
-                    PDF.FilePdf = obj.FilePdf;
+                    PDF.FilePdf = DTO.FilePdf;
                 }
                 PDF.UpdateAt = DateTime.Now;
-                await _daoPDF.Update(PDF);
-                await _daoPDF.Save();
-                List<LessonPdf> listPDF = await _daoPDF.FindAll(p => p.IsDeleted == false).ToListAsync();
-                result.Data["listPDF"] = listPDF;
-                return new ResponseBase<Dictionary<string, object>?>(result.Data, "Update successful");
+                _daoPDF.UpdatePDF(PDF);
+                List<LessonPdf> listPDF = _daoPDF.getListPDF();
+                response.Data["listPDF"] = listPDF;
+                return new ResponseBase<Dictionary<string, object>?>(response.Data, "Update successful");
             }
             catch (Exception ex)
             {
-                return new ResponseBase<Dictionary<string, object>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseBase<Dictionary<string, object>?>(ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
-        public async Task<ResponseBase<Dictionary<string, object>?>> Delete(int PdfID, Guid LessonID, Guid CourseID, Guid CreatorID)
+
+        public ResponseBase<Dictionary<string, object>?> Delete(int pdfId, Guid lessonId, Guid courseId, Guid creatorId)
         {
             try
             {
-                ResponseBase<Dictionary<string, object>?> result = await getResult(CourseID, CreatorID);
-                if (result.Data == null)
+                ResponseBase<Dictionary<string, object>?> response = getResponse(courseId, creatorId);
+                if (response.Data == null)
                 {
-                    return new ResponseBase<Dictionary<string, object>?>(null, result.Message, result.Code);
+                    return new ResponseBase<Dictionary<string, object>?>(null, response.Message, response.Code);
                 }
-                Lesson? lesson = await _daoLesson.Get(l => l.IsDeleted == false && l.LessonId == LessonID
-                && l.Course.IsDeleted == false && l.CourseId == CourseID);
+                Lesson? lesson = _daoLesson.getLesson(lessonId, courseId);
                 if (lesson == null)
                 {
-                    return new ResponseBase<Dictionary<string, object>?>(null, "Not found lesson", (int)HttpStatusCode.NotFound);
+                    return new ResponseBase<Dictionary<string, object>?>("Not found lesson", (int)HttpStatusCode.NotFound);
                 }
-                LessonPdf? PDF = await _daoPDF.Get(p => p.Pdfid == PdfID && p.IsDeleted == false && p.LessonId == LessonID);
+                LessonPdf? PDF = _daoPDF.getPDF(pdfId, lessonId);
                 if (PDF == null)
                 {
-                    return new ResponseBase<Dictionary<string, object>?>(null, "Not found PDF", (int)HttpStatusCode.NotFound);
+                    return new ResponseBase<Dictionary<string, object>?>("Not found PDF", (int)HttpStatusCode.NotFound);
                 }
-                PDF.IsDeleted = true;
-                await _daoPDF.Update(PDF);
-                await _daoPDF.Save();
-                List<LessonPdf> listPDF = await _daoPDF.FindAll(p => p.IsDeleted == false).ToListAsync();
-                result.Data["listPDF"] = listPDF;
-                return new ResponseBase<Dictionary<string, object>?>(result.Data, "Delete successful");
+                _daoPDF.DeletePDF(PDF);
+                List<LessonPdf> listPDF = _daoPDF.getListPDF();
+                response.Data["listPDF"] = listPDF;
+                return new ResponseBase<Dictionary<string, object>?>(response.Data, "Delete successful");
             }
             catch (Exception ex)
             {
-                return new ResponseBase<Dictionary<string, object>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseBase<Dictionary<string, object>?>(ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
 

@@ -1,24 +1,26 @@
-﻿using Common.Base;
-using Common.Const;
+﻿using AutoMapper;
+using Common.Base;
+using Common.DTO.CourseDTO;
 using Common.Entity;
-using Common.Pagination;
-using DataAccess.Model.IDAO;
-using Microsoft.EntityFrameworkCore;
+using Common.Paginations;
+using DataAccess.Model.DAO;
 using System.Net;
+using WEB_CLIENT.Services.Base;
 
 namespace WEB_CLIENT.Services.ManagerCourse
 {
-    public class ManagerCourseService : IManagerCourseService
+    public class ManagerCourseService : BaseService, IManagerCourseService
     {
-        private readonly ICommonDAO<Course> _daoCourse;
-        private readonly ICommonDAO<Category> _daoCategory;
-        public ManagerCourseService(ICommonDAO<Course> daoCourse, ICommonDAO<Category> daoCategory)
+        private readonly DAOCourse _daoCourse;
+        private readonly DAOCategory _daoCategory;
+
+        public ManagerCourseService(IMapper mapper, DAOCourse daoCourse, DAOCategory daoCategory) : base(mapper)
         {
             _daoCourse = daoCourse;
             _daoCategory = daoCategory;
         }
 
-        public async Task<ResponseBase<PagedResult<Course>?>> Index(int? page, Guid TeacherID)
+        public ResponseBase<Pagination<Course>?> Index(int? page, Guid teacherId)
         {
             int pageSelected = page == null ? 1 : page.Value;
             int prePage = pageSelected - 1;
@@ -27,140 +29,129 @@ namespace WEB_CLIENT.Services.ManagerCourse
             string nextURL = "/ManagerCourse?page=" + nextPage;
             try
             {
-                IQueryable<Course> query = _daoCourse.FindAll(c => c.IsDeleted == false, c => c.CreatorId == TeacherID);
-                List<Course> list = await query.Skip((int)PageSizeConst.Course_Page * (pageSelected - 1))
-                    .Take((int)PageSizeConst.Course_Page).ToListAsync();
-                int count = await query.CountAsync();
-                int numberPage = (int)Math.Ceiling((double)count / (int)PageSizeConst.Course_Page);
-                PagedResult<Course> result = new PagedResult<Course>()
+                List<Course> list = _daoCourse.getListCourse(null, null, null, teacherId, pageSelected);
+                int numberPage = _daoCourse.getNumberPage(null, null, null, teacherId);
+                Pagination<Course> result = new Pagination<Course>()
                 {
                     PageSelected = pageSelected,
-                    Results = list,
+                    List = list,
                     NumberPage = numberPage,
                     PRE_URL = preURL,
                     NEXT_URL = nextURL,
                 };
-                return new ResponseBase<PagedResult<Course>?>(result, string.Empty);
+                return new ResponseBase<Pagination<Course>?>(result);
             }
             catch (Exception ex)
             {
-                return new ResponseBase<PagedResult<Course>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseBase<Pagination<Course>?>(ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
-        public async Task<ResponseBase<List<Category>?>> Create()
+
+        public ResponseBase<List<Category>?> Create()
         {
             try
             {
-                List<Category> list = await _daoCategory.FindAll().ToListAsync();
-                return new ResponseBase<List<Category>?>(list, string.Empty);
+                List<Category> list = _daoCategory.getListCategory();
+                return new ResponseBase<List<Category>?>(list);
             }
             catch (Exception ex)
             {
-                return new ResponseBase<List<Category>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseBase<List<Category>?>(ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
-        public async Task<ResponseBase<List<Category>?>> Create(Course course, Guid CreatorID)
+
+        public ResponseBase<List<Category>?> Create(CourseCreateUpdateDTO DTO, Guid creatorId)
         {
             try
             {
-                List<Category> list = await _daoCategory.FindAll().ToListAsync();
-                if (await _daoCourse.Any(c => c.CourseName == course.CourseName.Trim() && c.CategoryId == course.CategoryId && c.IsDeleted == false))
+                List<Category> list = _daoCategory.getListCategory();
+                if (_daoCourse.isExist(DTO.CourseName, DTO.CategoryId))
                 {
                     return new ResponseBase<List<Category>?>(list, "Course existed", (int)HttpStatusCode.Conflict);
                 }
+                Course course = _mapper.Map<Course>(DTO);
                 course.CourseId = Guid.NewGuid();
-                course.CreatorId = CreatorID;
-                course.Image = course.Image.Trim();
-                course.Description = course.Description == null || course.Description.Trim().Length == 0 ? null : course.Description.Trim();
+                course.CreatorId = creatorId;
                 course.CreatedAt = DateTime.Now;
                 course.UpdateAt = DateTime.Now;
                 course.IsDeleted = false;
-                await _daoCourse.Create(course);
-                await _daoCourse.Save();
+                _daoCourse.CreateCourse(course);
                 return new ResponseBase<List<Category>?>(list, "Create successful");
             }
             catch (Exception ex)
             {
-                return new ResponseBase<List<Category>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseBase<List<Category>?>(ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
-        public async Task<ResponseBase<Dictionary<string, object>?>> Update(Guid CourseID, Guid CreatorID)
+
+        public ResponseBase<Dictionary<string, object>?> Update(Guid courseId, Guid creatorId)
         {
             try
             {
-                Course? course = await _daoCourse.FindAll(c => c.CourseId == CourseID && c.IsDeleted == false && c.CreatorId == CreatorID)
-                    .Include(c => c.Creator).FirstOrDefaultAsync();
+                Course? course = _daoCourse.getCourse(courseId, creatorId);
                 if (course == null)
                 {
-                    return new ResponseBase<Dictionary<string, object>?>(null, string.Empty, (int)HttpStatusCode.NotFound);
+                    return new ResponseBase<Dictionary<string, object>?>(string.Empty, (int)HttpStatusCode.NotFound);
                 }
-                List<Category> list = await _daoCategory.FindAll().ToListAsync();
-                Dictionary<string, object> dic = new Dictionary<string, object>();
-                dic["course"] = course;
-                dic["list"] = list;
-                return new ResponseBase<Dictionary<string, object>?>(dic, string.Empty);
+                List<Category> list = _daoCategory.getListCategory();
+                Dictionary<string, object> data = new Dictionary<string, object>();
+                data["course"] = course;
+                data["list"] = list;
+                return new ResponseBase<Dictionary<string, object>?>(data);
             }
             catch (Exception ex)
             {
-                return new ResponseBase<Dictionary<string, object>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseBase<Dictionary<string, object>?>(ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
-        public async Task<ResponseBase<Dictionary<string, object>?>> Update(Guid CourseID, Course course)
+
+        public ResponseBase<Dictionary<string, object>?> Update(Guid courseId, CourseCreateUpdateDTO DTO)
         {
             try
             {
-                Course? update = await _daoCourse.FindAll(c => c.CourseId == CourseID && c.IsDeleted == false)
-                    .Include(c => c.Creator).FirstOrDefaultAsync(); ;
-                if (update == null)
+                Course? course = _daoCourse.getCourse(courseId);
+                if (course == null)
                 {
                     return new ResponseBase<Dictionary<string, object>?>(null, "Not found course", (int)HttpStatusCode.NotFound);
                 }
-                update.CourseName = course.CourseName.Trim();
-                update.CategoryId = course.CategoryId;
-                update.Image = course.Image.Trim();
-                update.Description = course.Description == null || course.Description.Trim().Length == 0 ? null : course.Description.Trim();
-                List<Category> list = await _daoCategory.FindAll().ToListAsync();
-                Dictionary<string, object> dic = new Dictionary<string, object>();
-                dic["course"] = update;
-                dic["list"] = list;
-                if (await _daoCourse.Any(c => c.CourseName == course.CourseName.Trim() && c.CategoryId == course.CategoryId && c.IsDeleted == false && c.CourseId != CourseID))
+                course.CourseName = DTO.CourseName.Trim();
+                course.CategoryId = DTO.CategoryId;
+                course.Image = DTO.Image.Trim();
+                course.Description = DTO.Description == null || DTO.Description.Trim().Length == 0 ? null : DTO.Description.Trim();
+                List<Category> list = _daoCategory.getListCategory();
+                Dictionary<string, object> data = new Dictionary<string, object>();
+                data["course"] = course;
+                data["list"] = list;
+                if (_daoCourse.isExist(DTO.CourseName, DTO.CategoryId, courseId))
                 {
-                    return new ResponseBase<Dictionary<string, object>?>(dic, "Course existed", (int)HttpStatusCode.Conflict);
+                    return new ResponseBase<Dictionary<string, object>?>(data, "Course existed", (int)HttpStatusCode.Conflict);
                 }
-                update.UpdateAt = DateTime.Now;
-                await _daoCourse.Update(update);
-                await _daoCourse.Save();
-                dic["course"] = update;
-                return new ResponseBase<Dictionary<string, object>?>(dic, "Update successful");
+                course.UpdateAt = DateTime.Now;
+                _daoCourse.UpdateCourse(course);
+                data["course"] = course;
+                return new ResponseBase<Dictionary<string, object>?>(data, "Update successful");
             }
             catch (Exception ex)
             {
-                return new ResponseBase<Dictionary<string, object>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseBase<Dictionary<string, object>?>(ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
-        public async Task<ResponseBase<PagedResult<Course>?>> Delete(Guid CourseID, Guid CreatorID)
+
+        public ResponseBase<bool> Delete(Guid courseId, Guid creatorId)
         {
             try
             {
-                Course? course = await _daoCourse.FindAll(c => c.CourseId == CourseID && c.IsDeleted == false && c.CreatorId == CreatorID)
-                    .Include(c => c.Creator).FirstOrDefaultAsync();
+                Course? course = _daoCourse.getCourse(courseId, creatorId);
                 if (course == null)
                 {
-                    return new ResponseBase<PagedResult<Course>?>(null, string.Empty, (int)HttpStatusCode.NotFound);
+                    return new ResponseBase<bool>(false, string.Empty, (int)HttpStatusCode.NotFound);
                 }
-                ResponseBase<PagedResult<Course>?> result = await Index(null, CreatorID);
-                if (result.Data == null)
-                {
-                    return new ResponseBase<PagedResult<Course>?>(null, "Get data failed", (int)HttpStatusCode.Conflict);
-                }
-                course.IsDeleted = true;
-                await _daoCourse.Update(course);
-                await _daoCourse.Save();
-                return new ResponseBase<PagedResult<Course>?>(result.Data, "Course name : " + course.CourseName + " deleted successfully");
+                _daoCourse.DeleteCourse(course);
+                return new ResponseBase<bool>(true);
             }
             catch (Exception ex)
             {
-                return new ResponseBase<PagedResult<Course>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseBase<bool>(false, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
     }

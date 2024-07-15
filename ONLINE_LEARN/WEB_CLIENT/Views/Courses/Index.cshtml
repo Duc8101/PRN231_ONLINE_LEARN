@@ -1,6 +1,6 @@
 ﻿@using Common.Const;
 @using Common.Entity;
-@using Common.Pagination;
+@using Common.Paginations;
 @model Dictionary<string,object>
 <!-- Spinner Start -->
 <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
@@ -66,9 +66,9 @@
 }
 
 @{
-    PagedResult<Course> result = (PagedResult<Course>) Model["result"];
-    int CategoryID = (int)Model["CategoryID"];
-    string flow = (string) Model["flow"];
+    Pagination<Course> result = (Pagination<Course>)Model["result"];
+    int categoryId = (int)Model["categoryId"];
+    bool? asc = (bool?)Model["asc"];
     string properties = (string) Model["properties"];
     List<Category> listCategory = (List<Category>)Model["listCategory"];
     List<List<Lesson>> listListLesson = (List<List<Lesson>>)Model["listListLesson"];
@@ -84,62 +84,49 @@
         <div class="row">
             <div class="col-2 border">
                 <div class="list-group mt-2">
-                    <a class="py-3 list-group-item list-group-item-action @(CategoryID == 0 ? "active" : "")" href="/Courses">ALL</a>
+                    <a class="py-3 list-group-item list-group-item-action @(categoryId == 0 ? "active" : "")" href="/Courses">ALL</a>
                     @foreach (Category category in listCategory)
                     {
-                        <a class="py-3 list-group-item list-group-item-action @(category.Id == CategoryID ? "active" : "")" href="/Courses?CategoryID=@category.Id">@category.Name</a>
+                        <a class="py-3 list-group-item list-group-item-action @(category.Id == categoryId ? "active" : "")" href="/Courses?categoryId=@category.Id">@category.Name</a>
                     }
                 </div>
             </div>
 
             <div class="border col-10">
                 <form action="Courses" class=" my-3 wow fadeInDown row fs-5 fw-bolder" data-wow-delay="0.2s">
-                    @if (CategoryID != 0)
+                    @if (categoryId != 0)
                     {
-                        <input type="hidden" name="CategoryID" value="@CategoryID">
+                        <input type="hidden" name="categoryId" value="@categoryId">
                     }
                     <div class="border col-2 text-center py-2 ms-2 fs-5 fw-bolder">Sort By : </div>
                     <select name="properties" class="form-select form-select-md col-3 mx-1 py-2 fs-5 fw-bolder" aria-label=".form-select-lg example" style="width: 15%">
                         <option value="CourseName">Title</option>
                     </select>
 
-                    <select name="flow" class="form-select form-select-md col-3 mx-1 py-2 fs-5 fw-bolder" aria-label=".form-select-lg example" style="width: 15%">
-                        @if (flow.Length == 0 || flow != "asc" || flow != "desc")
-                        {
-                            <option value="asc">Ascending</option>
-                            <option value="desc">Descending</option>
-                        }
-                        else if (flow == "asc")
-                        {
-                            <option value="asc" selected>Ascending</option>
-                            <option value="desc">Descending</option>
-                        }
-                        else if (flow == "desc")
-                        {
-                            <option value="asc">Ascending</option>
-                            <option value="desc" selected>Descending</option>
-                        }
+                    <select name="asc" class="form-select form-select-md col-3 mx-1 py-2 fs-5 fw-bolder" aria-label=".form-select-lg example" style="width: 15%">
+                        <option value="true" selected="@(asc == true)">Ascending</option>
+                        <option value="false" selected="@(asc == false)">Descending</option>
                     </select>
                     <input class="mx-2 btn btn-primary border border-primary col-1 py-2 fs-5 fw-bolder" type="submit" value="Sort">
                 </form>
 
                 <div class="row g-4 justify-content-center">
                     @{
-                        string? UserID = Context.Session.GetString("UserID");
+                        string? userId = Context.Session.GetString("userId");
                     }
-                    @for (int i = 0; i < result.Results.Count; i++)
+                    @for (int i = 0; i < result.List.Count; i++)
                     {
                         bool isExist = false;
                         <div class="col-lg-4 col-md-6 wow fadeInDown" data-wow-delay="0.1s">
                             <div class="course-item bg-light">
                                 <div class="position-relative overflow-hidden">
                                     <div style="height: 240px">
-                                        <img class="img-fluid w-100" src="@result.Results[i].Image" alt="">
+                                        <img class="img-fluid w-100" src="@result.List[i].Image" alt="">
                                     </div>
                                     @if(role == null || role == UserConst.ROLE_STUDENT)
                                     {
                                         <div class="w-100 d-flex justify-content-center position-absolute bottom-0 start-0 mb-4">
-                                            <a href="/Courses/Detail/@result.Results[i].CourseId" class="flex-shrink-0 btn btn-sm btn-primary px-3 border-end"
+                                            <a href="/Courses/Detail/@result.List[i].CourseId" class="flex-shrink-0 btn btn-sm btn-primary px-3 border-end"
                                                style="border-radius: 30px @(listListLesson[i].Count == 0 ? "" : "0 0") 30px;">
                                                 Read More
                                             </a>
@@ -147,7 +134,7 @@
                                             {
                                                 foreach (EnrollCourse enroll in listEnroll)
                                                 {
-                                                    if (enroll.CourseId == result.Results[i].CourseId)
+                                                    if (enroll.CourseId == result.List[i].CourseId)
                                                     {
                                                         isExist = true;
                                                         break;
@@ -157,13 +144,13 @@
                                             }
                                             @if (isExist && listListLesson[i].Count > 0)
                                             {
-                                                <a href="/Courses/LearnCourse/@result.Results[i].CourseId" class="flex-shrink-0 btn btn-sm btn-primary px-3"
+                                                <a href="/Courses/LearnCourse/@result.List[i].CourseId" class="flex-shrink-0 btn btn-sm btn-primary px-3"
                                                    style="border-radius: 0 30px 30px 0;">Learn Course</a>
                                                 // if not exist student learn course and exist lesson in course
                                             }
                                             else if (listListLesson[i].Count > 0)
                                             {
-                                                <a href="/Courses/EnrollCourse/@result.Results[i].CourseId" class="flex-shrink-0 btn btn-sm btn-primary px-3"
+                                                <a href="/Courses/EnrollCourse/@result.List[i].CourseId" class="flex-shrink-0 btn btn-sm btn-primary px-3"
                                                    style="border-radius: 0 30px 30px 0;">Enroll Course</a>
                                             }
                                         </div>
@@ -172,18 +159,18 @@
                                     {
                                         <div class="col-4 bg-primary border">
                                             <form action="/ManagerLesson">
-                                                <input type="hidden" name="CourseID" value="@result.Results[i].CourseId">
+                                                <input type="hidden" name="courseId" value="@result.List[i].CourseId">
                                                 <input type="submit" value="View Lesson" class="btn btn-primary">
                                             </form>
                                         </div>
 
                                         <div class="col-4 bg-primary border">
-                                            <a href="/ManagerCourse/Edit/@result.Results[i].CourseId" class="text-light">Update Course</a>
+                                            <a href="/ManagerCourse/Update/@result.List[i].CourseId" class="text-light">Update Course</a>
                                         </div>
 
                                         <div class="col-4 bg-primary border">
-                                            <a href="/ManagerCourse/Delete/@result.Results[i].CourseId" class="text-light"
-                                               onclick="return confirm('Are you sure you want to delete this course :\n@(result.Results[i].CourseName)')">Delete Course</a>
+                                            <a href="/ManagerCourse/Delete/@result.List[i].CourseId" class="text-light"
+                                               onclick="return confirm('Are you sure you want to delete this course :\n@(result.List[i].CourseName)')">Delete Course</a>
                                         </div>                         
                                     }
                                 </div>
@@ -192,12 +179,12 @@
                                     <div class="mb-1">
                                     </div>
 
-                                    <h5 class="mb-2">@(result.Results[i].CourseName.Length <= 24 ? result.Results[i].CourseName : result.Results[i].CourseName.Substring(0, 24) + "...")</h5>
+                                    <h5 class="mb-2">@(result.List[i].CourseName.Length <= 24 ? result.List[i].CourseName : result.List[i].CourseName.Substring(0, 24) + "...")</h5>
                                 </div>
 
 
                                 <div class="d-flex border-top">
-                                    <small class="flex-fill text-center border-end py-2"><i class="fa fa-user-tie text-primary me-2"></i>@result.Results[i].Creator.FullName</small>
+                                    <small class="flex-fill text-center border-end py-2"><i class="fa fa-user-tie text-primary me-2"></i>@result.List[i].Creator.FullName</small>
                                 </div>
                             </div>
                         </div>
@@ -212,28 +199,28 @@
                                 {
                                     string pageURL;
                                     // if not sort
-                                    if (properties.Length == 0 && flow.Length == 0)
+                                    if (properties.Length == 0 && asc == null)
                                     {
                                         // if not choose category
-                                        if (CategoryID == 0)
+                                        if (categoryId == 0)
                                         {
                                             pageURL = "/Courses" + "?page=" + i;
                                         }
                                         else
                                         {
-                                            pageURL = "/Courses" + "?CategoryID=" + CategoryID + "&page=" + i;
+                                            pageURL = "/Courses" + "?categoryId=" + categoryId + "&page=" + i;
                                         }
                                     }
                                     else
                                     {
                                         // if not choose category
-                                        if (CategoryID == 0)
+                                        if (categoryId == 0)
                                         {
-                                            pageURL = "/Courses" + "?properties=" + properties + "&flow=" + flow + "&page=" + i;
+                                            pageURL = "/Courses" + "?properties=" + properties + "&asc=" + asc + "&page=" + i;
                                         }
                                         else
                                         {
-                                            pageURL = "/Courses" + "?CategoryID=" + CategoryID + "&properties=" + properties + "&flow=" + flow + "&page=" + i;
+                                            pageURL = "/Courses" + "?categoryId=" + categoryId + "&properties=" + properties + "&asc=" + asc + "&page=" + i;
                                         }
                                     }
                                     <li class="page-item"><a class="page-link" href="@pageURL">@i</a></li>

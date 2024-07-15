@@ -5,9 +5,9 @@ using MimeKit;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace DataAccess.Model.Util
+namespace DataAccess.Model.Helper
 {
-    public class UserUtil
+    public class UserHelper
     {
         private const int MAX_SIZE = 8; // randow password 8 characters
         public static string HashPassword(string password)

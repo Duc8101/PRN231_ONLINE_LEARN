@@ -1,19 +1,21 @@
-﻿using Common.Base;
+﻿using AutoMapper;
+using Common.Base;
+using Common.DTO.LessonVideoDTO;
 using Common.Entity;
-using DataAccess.Model.IDAO;
-using Microsoft.EntityFrameworkCore;
+using DataAccess.Model.DAO;
 using System.Net;
+using WEB_CLIENT.Services.Base;
 
 namespace WEB_CLIENT.Services.ManagerVideo
 {
-    public class ManagerVideoService : IManagerVideoService
+    public class ManagerVideoService : BaseService, IManagerVideoService
     {
-        private readonly ICommonDAO<Course> _daoCourse;
-        private readonly ICommonDAO<Lesson> _daoLesson;
-        private readonly ICommonDAO<LessonPdf> _daoPDF;
-        private readonly ICommonDAO<LessonVideo> _daoVideo;
-        public ManagerVideoService(ICommonDAO<Course> daoCourse, ICommonDAO<Lesson> daoLesson, ICommonDAO<LessonPdf> daoPDF
-            , ICommonDAO<LessonVideo> daoVideo)
+        private readonly DAOCourse _daoCourse;
+        private readonly DAOLesson _daoLesson;
+        private readonly DAOLessonPDF _daoPDF;
+        private readonly DAOLessonVideo _daoVideo;
+        public ManagerVideoService(IMapper mapper, DAOCourse daoCourse, DAOLesson daoLesson, DAOLessonPDF daoPDF
+            , DAOLessonVideo daoVideo) : base(mapper)
         {
             _daoCourse = daoCourse;
             _daoLesson = daoLesson;
@@ -21,152 +23,147 @@ namespace WEB_CLIENT.Services.ManagerVideo
             _daoVideo = daoVideo;
         }
 
-        private async Task<ResponseBase<Dictionary<string, object>?>> getResult(Guid CourseID, Guid CreatorID)
+        private ResponseBase<Dictionary<string, object>?> getResponse(Guid courseId, Guid creatorId)
         {
             try
             {
-                Course? course = await _daoCourse.FindAll(c => c.CourseId == CourseID && c.IsDeleted == false && c.CreatorId == CreatorID)
-                    .Include(c => c.Creator).FirstOrDefaultAsync();
+                Course? course = _daoCourse.getCourse(courseId, creatorId);
                 if (course == null)
                 {
-                    return new ResponseBase<Dictionary<string, object>?>(null, "Not found course", (int)HttpStatusCode.NotFound);
+                    return new ResponseBase<Dictionary<string, object>?>("Not found course", (int)HttpStatusCode.NotFound);
                 }
-                List<Lesson> listLesson = await _daoLesson.FindAll(l => l.IsDeleted == false && l.CourseId == CourseID)
-                    .OrderBy(l => l.LessonNo).ToListAsync();
-                List<LessonPdf> listPDF = await _daoPDF.FindAll(p => p.IsDeleted == false).ToListAsync(); ;
-                List<LessonVideo> listVideo = await _daoVideo.FindAll(v => v.IsDeleted == false).ToListAsync();
-                LessonVideo? lessonVideo = await _daoVideo.Get(v => v.IsDeleted == false && v.Lesson.IsDeleted == false && v.Lesson.LessonNo == 1
-                       && v.Lesson.CourseId == CourseID);
+                List<Lesson> listLesson = _daoLesson.getListLesson(courseId);
+                List<LessonPdf> listPDF = _daoPDF.getListPDF();
+                List<LessonVideo> listVideo = _daoVideo.getListVideo();
+                LessonVideo? lessonVideo = _daoVideo.getVideo(courseId);
                 string video = string.Empty;
                 string name = string.Empty;
-                Guid LessonID = Guid.NewGuid();
+                Guid lessonId = Guid.NewGuid();
                 if (lessonVideo != null)
                 {
                     video = lessonVideo.FileVideo;
                     name = lessonVideo.VideoName;
-                    LessonID = lessonVideo.LessonId;
+                    lessonId = lessonVideo.LessonId;
                 }
-                Dictionary<string, object> result = new Dictionary<string, object>();
-                result["listLesson"] = listLesson;
-                result["listPDF"] = listPDF;
-                result["listVideo"] = listVideo;
-                result["video"] = video;
-                result["PDF"] = string.Empty;
-                result["name"] = name;
-                result["lID"] = LessonID;
-                result["CourseID"] = CourseID;
-                return new ResponseBase<Dictionary<string, object>?>(result, string.Empty);
+                Dictionary<string, object> data = new Dictionary<string, object>();
+                data["listLesson"] = listLesson;
+                data["listPDF"] = listPDF;
+                data["listVideo"] = listVideo;
+                data["video"] = video;
+                data["PDF"] = string.Empty;
+                data["name"] = name;
+                data["lId"] = lessonId;
+                data["courseId"] = courseId;
+                return new ResponseBase<Dictionary<string, object>?>(data);
             }
             catch (Exception ex)
             {
-                return new ResponseBase<Dictionary<string, object>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseBase<Dictionary<string, object>?>(ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
-        public async Task<ResponseBase<Dictionary<string, object>?>> Create(LessonVideo create, Guid CourseID, Guid CreatorID)
+
+        public ResponseBase<Dictionary<string, object>?> Create(LessonVideoCreateUpdateDTO DTO, Guid courseId, Guid creatorId)
         {
             try
             {
-                ResponseBase<Dictionary<string, object>?> result = await getResult(CourseID, CreatorID);
-                if (result.Data == null)
+                ResponseBase<Dictionary<string, object>?> response = getResponse(courseId, creatorId);
+                if (response.Data == null)
                 {
-                    return new ResponseBase<Dictionary<string, object>?>(null, result.Message, result.Code);
+                    return new ResponseBase<Dictionary<string, object>?>(response.Message, response.Code);
                 }
-                Lesson? lesson = await _daoLesson.Get(l => l.IsDeleted == false && l.LessonId == create.LessonId
-                && l.Course.IsDeleted == false && l.CourseId == CourseID);
+                Lesson? lesson = _daoLesson.getLesson(DTO.LessonId, courseId);
                 if (lesson == null)
                 {
-                    return new ResponseBase<Dictionary<string, object>?>(null, "Not found lesson", (int)HttpStatusCode.NotFound);
+                    return new ResponseBase<Dictionary<string, object>?>("Not found lesson", (int)HttpStatusCode.NotFound);
                 }
-                if (create.VideoName == null || create.VideoName.Trim().Length == 0)
+                if (DTO.VideoName == null || DTO.VideoName.Trim().Length == 0)
                 {
-                    return new ResponseBase<Dictionary<string, object>?>(result.Data, "You have to input video name", (int)HttpStatusCode.Conflict);
+                    return new ResponseBase<Dictionary<string, object>?>(response.Data, "You have to input video name", (int)HttpStatusCode.Conflict);
                 }
-                create.VideoName = create.VideoName.Trim();
-                create.CreatedAt = DateTime.Now;
-                create.UpdateAt = DateTime.Now;
-                create.IsDeleted = false;
-                await _daoVideo.Create(create);
-                await _daoVideo.Save();
-                List<LessonVideo> listVideo = await _daoVideo.FindAll(v => v.IsDeleted == false).ToListAsync();
-                result.Data["listVideo"] = listVideo;
-                return new ResponseBase<Dictionary<string, object>?>(result.Data, "Video " + create.VideoName + " was added successfully!");
+                LessonVideo video = _mapper.Map<LessonVideo>(DTO);
+                video.CreatedAt = DateTime.Now;
+                video.UpdateAt = DateTime.Now;
+                video.IsDeleted = false;
+                _daoVideo.CreateVideo(video);
+                List<LessonVideo> listVideo = _daoVideo.getListVideo();
+                response.Data["listVideo"] = listVideo;
+                return new ResponseBase<Dictionary<string, object>?>(response.Data, "Video " + DTO.VideoName + " was added successfully!");
             }
             catch (Exception ex)
             {
-                return new ResponseBase<Dictionary<string, object>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseBase<Dictionary<string, object>?>(ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
-        public async Task<ResponseBase<Dictionary<string, object>?>> Update(int VideoID, LessonVideo obj, Guid CourseID, Guid CreatorID)
+
+        public ResponseBase<Dictionary<string, object>?> Update(int videoId, LessonVideoCreateUpdateDTO DTO
+            , Guid courseId, Guid creatorId)
         {
             try
             {
-                ResponseBase<Dictionary<string, object>?> result = await getResult(CourseID, CreatorID);
-                if (result.Data == null)
+                ResponseBase<Dictionary<string, object>?> response = getResponse(courseId, creatorId);
+                if (response.Data == null)
                 {
-                    return new ResponseBase<Dictionary<string, object>?>(null, result.Message, result.Code);
+                    return new ResponseBase<Dictionary<string, object>?>(response.Message, response.Code);
                 }
-                Lesson? lesson = await _daoLesson.Get(l => l.IsDeleted == false && l.LessonId == obj.LessonId
-                && l.Course.IsDeleted == false && l.CourseId == CourseID);
+                Lesson? lesson = _daoLesson.getLesson(DTO.LessonId, courseId);
                 if (lesson == null)
                 {
-                    return new ResponseBase<Dictionary<string, object>?>(null, "Not found lesson", (int)HttpStatusCode.NotFound);
+                    return new ResponseBase<Dictionary<string, object>?>("Not found lesson", (int)HttpStatusCode.NotFound);
                 }
-                LessonVideo? video = await _daoVideo.Get(v => v.VideoId == VideoID && v.IsDeleted == false && v.LessonId == obj.LessonId);
+                LessonVideo? video = _daoVideo.getVideo(videoId, DTO.LessonId);
                 if (video == null)
                 {
-                    return new ResponseBase<Dictionary<string, object>?>(null, "Not found video", (int)HttpStatusCode.NotFound);
+                    return new ResponseBase<Dictionary<string, object>?>("Not found video", (int)HttpStatusCode.NotFound);
                 }
-                if (obj.VideoName == null || obj.VideoName.Trim().Length == 0)
+                if (DTO.VideoName == null || DTO.VideoName.Trim().Length == 0)
                 {
-                    return new ResponseBase<Dictionary<string, object>?>(result.Data, "You have to input video name", (int)HttpStatusCode.Conflict);
+                    return new ResponseBase<Dictionary<string, object>?>(response.Data, "You have to input video name", (int)HttpStatusCode.Conflict);
                 }
-                video.VideoName = obj.VideoName.Trim();
-                if (obj.FileVideo != null && obj.FileVideo.Length > 0)
+                video.VideoName = DTO.VideoName.Trim();
+                if (DTO.FileVideo != null && DTO.FileVideo.Length > 0)
                 {
-                    video.FileVideo = obj.FileVideo;
+                    video.FileVideo = DTO.FileVideo;
                 }
                 video.UpdateAt = DateTime.Now;
-                await _daoVideo.Update(video);
-                await _daoVideo.Save();
-                List<LessonVideo> listVideo = await _daoVideo.FindAll(v => v.IsDeleted == false).ToListAsync();
-                result.Data["listVideo"] = listVideo;
-                return new ResponseBase<Dictionary<string, object>?>(result.Data, "Update successful");
+                _daoVideo.UpdateVideo(video);
+                List<LessonVideo> listVideo = _daoVideo.getListVideo();
+                response.Data["listVideo"] = listVideo;
+                return new ResponseBase<Dictionary<string, object>?>(response.Data, "Update successful");
             }
             catch (Exception ex)
             {
-                return new ResponseBase<Dictionary<string, object>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseBase<Dictionary<string, object>?>(ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
-        public async Task<ResponseBase<Dictionary<string, object>?>> Delete(int VideoID, Guid LessonID, Guid CourseID, Guid CreatorID)
+
+        public ResponseBase<Dictionary<string, object>?> Delete(int videoId, Guid lessonId, Guid courseId, Guid creatorId)
         {
             try
             {
-                ResponseBase<Dictionary<string, object>?> result = await getResult(CourseID, CreatorID);
-                if (result.Data == null)
+                ResponseBase<Dictionary<string, object>?> response = getResponse(courseId, creatorId);
+                if (response.Data == null)
                 {
-                    return new ResponseBase<Dictionary<string, object>?>(null, result.Message, result.Code);
+                    return new ResponseBase<Dictionary<string, object>?>(response.Message, response.Code);
                 }
-                Lesson? lesson = await _daoLesson.Get(l => l.IsDeleted == false && l.LessonId == LessonID
-                && l.Course.IsDeleted == false && l.CourseId == CourseID);
+                Lesson? lesson = _daoLesson.getLesson(lessonId, courseId);
                 if (lesson == null)
                 {
-                    return new ResponseBase<Dictionary<string, object>?>(null, "Not found lesson", (int)HttpStatusCode.NotFound);
+                    return new ResponseBase<Dictionary<string, object>?>("Not found lesson", (int)HttpStatusCode.NotFound);
                 }
-                LessonVideo? video = await _daoVideo.Get(v => v.VideoId == VideoID && v.IsDeleted == false && v.LessonId == LessonID);
+                LessonVideo? video = _daoVideo.getVideo(videoId, lessonId);
                 if (video == null)
                 {
-                    return new ResponseBase<Dictionary<string, object>?>(null, "Not found video", (int)HttpStatusCode.NotFound);
+                    return new ResponseBase<Dictionary<string, object>?>("Not found video", (int)HttpStatusCode.NotFound);
                 }
                 video.IsDeleted = true;
-                await _daoVideo.Update(video);
-                await _daoVideo.Save();
-                List<LessonVideo> listVideo = await _daoVideo.FindAll(v => v.IsDeleted == false).ToListAsync();
-                result.Data["listVideo"] = listVideo;
-                return new ResponseBase<Dictionary<string, object>?>(result.Data, "Delete successful");
+                _daoVideo.DeleteVideo(video);
+                List<LessonVideo> listVideo = _daoVideo.getListVideo();
+                response.Data["listVideo"] = listVideo;
+                return new ResponseBase<Dictionary<string, object>?>(response.Data, "Delete successful");
             }
             catch (Exception ex)
             {
-                return new ResponseBase<Dictionary<string, object>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseBase<Dictionary<string, object>?>(ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
     }

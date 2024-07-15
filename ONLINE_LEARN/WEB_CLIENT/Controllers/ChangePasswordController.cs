@@ -30,7 +30,7 @@ namespace WEB_CLIENT.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Index(ChangePasswordDTO DTO)
+        public ActionResult Index(ChangePasswordDTO DTO)
         {
             if (isLogin == false)
             {
@@ -40,9 +40,9 @@ namespace WEB_CLIENT.Controllers
             // if not found username
             if (username == null)
             {
-                return View("/Views/Error/404.cshtml", new ResponseBase<object?>(null, "Not found username. Please check login information"));
+                return View("/Views/Error/404.cshtml", new ResponseBase<object?>("Not found username. Please check login information"));
             }
-            ResponseBase<bool> response = await _service.Index(username, DTO);
+            ResponseBase<bool> response = _service.Index(username, DTO);
             if (response.Data == false)
             {
                 if (response.Code == (int)HttpStatusCode.Conflict)
@@ -50,7 +50,7 @@ namespace WEB_CLIENT.Controllers
                     ViewData["error"] = response.Message;
                     return View();
                 }
-                return View("/Views/Error/500.cshtml", new ResponseBase<object?>(null, response.Message));
+                return View("/Views/Error/500.cshtml", new ResponseBase<object?>(response.Message));
             }
             ViewData["success"] = response.Message;
             return View();

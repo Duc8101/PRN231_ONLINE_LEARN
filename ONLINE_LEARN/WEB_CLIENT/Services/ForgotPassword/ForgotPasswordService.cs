@@ -1,37 +1,37 @@
 ﻿using Common.Base;
 using Common.Entity;
-using DataAccess.Model.IDAO;
-using DataAccess.Model.Util;
+using DataAccess.Model.DAO;
+using DataAccess.Model.Helper;
 using System.Net;
 
 namespace WEB_CLIENT.Services.ForgotPassword
 {
     public class ForgotPasswordService : IForgotPasswordService
     {
-        private readonly ICommonDAO<User> _daoUser;
+        private readonly DAOUser _daoUser;
 
-        public ForgotPasswordService(ICommonDAO<User> daoUser)
+        public ForgotPasswordService(DAOUser daoUser)
         {
             _daoUser = daoUser;
         }
+
         public async Task<ResponseBase<bool>> Index(string email)
         {
             try
             {
-                User? user = await _daoUser.Get(u => u.Email == email.Trim());
+                User? user = _daoUser.getUser(email);
                 if (user == null)
                 {
                     return new ResponseBase<bool>(false, "Not found email", (int)HttpStatusCode.NotFound);
                 }
-                string body = UserUtil.BodyEmailForForgetPassword(email);
-                string newPw = UserUtil.RandomPassword();
-                string hashPw = UserUtil.HashPassword(newPw);
+                string body = UserHelper.BodyEmailForForgetPassword(email);
+                string newPw = UserHelper.RandomPassword();
+                string hashPw = UserHelper.HashPassword(newPw);
                 // send email
-                await UserUtil.sendEmail("Welcome to E-Learning", body, user.Email);
+                await UserHelper.sendEmail("Welcome to E-Learning", body, user.Email);
                 user.Password = hashPw;
                 user.UpdateAt = DateTime.Now;
-                await _daoUser.Update(user);
-                await _daoUser.Save();
+                _daoUser.UpdateUser(user);
                 return new ResponseBase<bool>(true, "Password changed successful. Please check your email");
             }
             catch (Exception ex)

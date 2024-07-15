@@ -71,8 +71,8 @@
     string Video = (string)Model["video"];
     string pdf = (string)Model["PDF"];
     string name = (string)Model["name"];
-    Guid LessonID = (Guid)Model["lID"];
-    Guid CourseID = (Guid)Model["CourseID"];
+    Guid lessonId = (Guid)Model["lId"];
+    Guid courseId = (Guid)Model["courseId"];
 }
 
 <div class="container-fluid">
@@ -89,7 +89,7 @@
                 <form action="/ManagerLesson/Create" method="POST">
                     <div class="card card-body collapse" id="addLesson" style="margin-top: 3%">
                         <input type="text" name="LessonName" placeholder="Enter Lesson Name" required />
-                        <input type="hidden" name="CourseID" value="@CourseID" />
+                        <input type="hidden" name="CourseId" value="@courseId" />
                         <input type="submit" value="Submit" />
                     </div>
                 </form>
@@ -108,7 +108,7 @@
                                     </a>
                                 </div>
                                 <div class="col-md-2 teacher">
-                                    <a style="float: right;" href="/ManagerLesson/Delete/@lesson.LessonId?CourseID=@CourseID">
+                                    <a style="float: right;" href="/ManagerLesson/Delete/@lesson.LessonId?courseId=@courseId">
                                         <i onclick="return confirm('Are you sure you want to delete lesson: @lesson.LessonName')" style="color:red" class="bi bi-x"></i>
                                     </a>
                                     <a style="float: right; margin-right: 2%" role="button" data-bs-toggle="collapse" data-bs-target="#updateLesson@(lesson.LessonId)" aria-expanded="false" aria-controls="updateLesson@(lesson.LessonId)"><i class="bi bi-pencil" style="color: green;"></i></a>
@@ -119,14 +119,14 @@
                             <form action="/ManagerLesson/Update/@lesson.LessonId" method="post">
                                 <div class="card card-body collapse" id="updateLesson@(lesson.LessonId)" style="margin-top: 1%">
                                     Lesson Name:<input type="text" name="LessonName" required value="@lesson.LessonName" />
-                                    <input type="hidden" name="CourseID" value="@CourseID" />
+                                    <input type="hidden" name="CourseId" value="@courseId" />
                                     <input type="submit" value="Submit" />
                                 </div>
                             </form>
                         </div>
                     </div>
 
-                    @if (lesson.LessonId == LessonID)
+                    @if (lesson.LessonId == lessonId)
                     {
                         <div class="list-group collapse multi-collapse show" id="collapseExample@(lesson.LessonNo)">
                             <div class="teacher">
@@ -134,14 +134,14 @@
                                     <div class="col-md-4"><button style="background-color: #f0fbfc; border-radius: 10%" data-bs-toggle="collapse" data-bs-target="#addVideo@(lesson.LessonNo)" aria-expanded="false" aria-controls="addVideo@(lesson.LessonNo)">Add Video</button></div>
                                     <div class="col-md-4"><button style="background-color: #f0fbfc; border-radius: 10%" data-bs-toggle="collapse" data-bs-target="#addPDF@(lesson.LessonNo)" aria-expanded="false" aria-controls="addPDF@(lesson.LessonNo)">Add PDF</button></div>
                                     <div class="col-md-3">
-                                        <a class="btn btn-info" role="button" style="text-decoration: none; color: black" href="/ManagerQuiz?LessonID=@lesson.LessonId&CourseID=@CourseID"><i class="bi bi-eye"></i> Quiz</a>
+                                        <a class="btn btn-info" role="button" style="text-decoration: none; color: black" href="/ManagerQuiz?lessonId=@lesson.LessonId&courseId=@courseId"><i class="bi bi-eye"></i> Quiz</a>
                                     </div>
                                 </div>
 
                                 <!--form add video-->
                                 <form action="/ManagerVideo/Create" method="POST">
                                     <input type="hidden" name="LessonId" value="@lesson.LessonId" />
-                                    <input type="hidden" name="CourseID" value="@CourseID" />
+                                    <input type="hidden" name="CourseId" value="@courseId" />
                                     <div class="card card-body collapse" id="addVideo@(lesson.LessonNo)" style="margin-top: 1%">
                                         <input type="text" name="VideoName" required value="" placeholder="Enter Video Name" />
                                         <input type="file" name="FileVideo" required multiple accept=".mp4">
@@ -152,7 +152,7 @@
                                 <!--form add pdf-->
                                 <form action="/ManagerPDF/Create" method="POST">
                                     <input type="hidden" name="LessonId" value="@lesson.LessonId" />
-                                    <input type="hidden" name="CourseID" value="@CourseID" />
+                                    <input type="hidden" name="CourseId" value="@courseId" />
                                     <div class="card card-body collapse" id="addPDF@(lesson.LessonNo)" style="margin-top: 1%">
                                         <input type="text" name="Pdfname" required value="" placeholder="Enter PDF Name" />
                                         <input type="file" id="file-uploader" required name="FilePdf" accept=".pdf" multiple>
@@ -168,12 +168,12 @@
                                     <div class="list-group-item list-group-item-action">
                                         <div class="row">
                                             <div class="col-md-10">
-                                                <a href="/ManagerLesson/Index/@CourseID?LessonID=@video.LessonId&name=@video.VideoName&video=@video.FileVideo" style="text-decoration: none; color: black">
+                                                <a href="/ManagerLesson/Index/@courseId?lessonId=@video.LessonId&name=@video.VideoName&video=@video.FileVideo" style="text-decoration: none; color: black">
                                                     <i class="bi bi-play-circle" style="color: red; margin-right: 2%"></i>@video.VideoName
                                                 </a>
                                             </div>
                                             <div class="col-md-2 teacher">
-                                                <a style="float: right;" href="/ManagerVideo/Delete/@video.VideoId?LessonID=@video.LessonId&CourseID=@CourseID"><i onclick="return confirm('Are you sure you want to delete Video: @video.VideoName')" class="bi bi-x" style="color: red"></i></a>
+                                                <a style="float: right;" href="/ManagerVideo/Delete/@video.VideoId?lessonId=@video.LessonId&courseId=@courseId"><i onclick="return confirm('Are you sure you want to delete Video: @video.VideoName')" class="bi bi-x" style="color: red"></i></a>
                                                 <a style="float: right; margin-right: 2%" role="button" data-bs-toggle="collapse" data-bs-target="#updateVideo@(video.VideoId)" aria-expanded="false" aria-controls="updateVideo@(video.VideoId)"><i class="bi bi-pencil" style="color: green;"></i></a>
                                             </div>
                                         </div>
@@ -181,7 +181,7 @@
 
                                     <form action="/ManagerVideo/Update/@video.VideoId" method="POST">
                                         <input type="hidden" name="LessonId" value="@lesson.LessonId" />
-                                        <input type="hidden" name="CourseID" value="@CourseID" />
+                                        <input type="hidden" name="CourseId" value="@courseId" />
                                         <div class="card card-body collapse" id="updateVideo@(video.VideoId)" style="margin-top: 1%">
                                             Name:<input type="text" name="VideoName" value="@video.VideoName" required />
                                             New File Video:<input type="file" name="FileVideo" accept=".mp4" multiple />
@@ -198,12 +198,12 @@
                                     <div class="list-group-item list-group-item-action">
                                         <div class="row">
                                             <div class="col-md-10">
-                                                <a href="/ManagerLesson/Index/@CourseID?LessonID=@PDF.LessonId&name=@PDF.Pdfname&PDF=@PDF.FilePdf" style="text-decoration: none; color: black">
+                                                <a href="/ManagerLesson/Index/@courseId?lessonId=@PDF.LessonId&name=@PDF.Pdfname&PDF=@PDF.FilePdf" style="text-decoration: none; color: black">
                                                     <i class="bi bi-book" style="color: green; margin-right: 2%"></i>@PDF.Pdfname
                                                 </a>
                                             </div>
                                             <div class="col-md-2 teacher">
-                                                <a style="float: right;" href="/ManagerPDF/Delete/@PDF.Pdfid?LessonID=@PDF.LessonId&CourseID=@CourseID"><i onclick="return confirm('Are you sure you want to delete pdf @PDF.Pdfname')" class="bi bi-x" style="color: red"></i></a>
+                                                <a style="float: right;" href="/ManagerPDF/Delete/@PDF.Pdfid?lessonId=@PDF.LessonId&courseId=@courseId"><i onclick="return confirm('Are you sure you want to delete pdf @PDF.Pdfname')" class="bi bi-x" style="color: red"></i></a>
                                                 <a style="float: right; margin-right: 2%" href="/ManagerPDF/Update/@PDF.Pdfid" data-bs-toggle="collapse" data-bs-target="#updateVideo@(PDF.Pdfid)" aria-expanded="false" aria-controls="updateVideo@(PDF.Pdfid)"><i class="bi bi-pencil" style="color: green;"></i></a>
                                             </div>
                                         </div>
@@ -211,7 +211,7 @@
 
                                     <form action="/ManagerPDF/Update/@PDF.Pdfid" method="POST">
                                         <input type="hidden" name="LessonId" value="@lesson.LessonId" />
-                                        <input type="hidden" name="CourseID" value="@CourseID" />
+                                        <input type="hidden" name="CourseId" value="@courseId" />
                                         <div class="card card-body collapse" id="updateVideo@(PDF.Pdfid)" style="margin-top: 1%">
                                             Name:<input type="text" name="Pdfname" value="@PDF.Pdfname" required />
                                             New File PDF:<input type="file" name="FilePdf" accept=".pdf" multiple />
@@ -231,14 +231,14 @@
                                     <div class="col-md-4"><button style="background-color: #f0fbfc; border-radius: 10%" data-bs-toggle="collapse" data-bs-target="#addVideo@(lesson.LessonNo)" aria-expanded="false" aria-controls="addVideo@(lesson.LessonNo)">Add Video</button></div>
                                     <div class="col-md-4"><button style="background-color: #f0fbfc; border-radius: 10%" data-bs-toggle="collapse" data-bs-target="#addPDF@(lesson.LessonNo)" aria-expanded="false" aria-controls="addPDF@(lesson.LessonNo)">Add PDF</button></div>
                                     <div class="col-md-3">
-                                        <a class="btn btn-info" role="button" style="text-decoration: none; color: black" href="/ManagerQuiz?LessonID=@lesson.LessonId&CourseID=@CourseID"><i class="bi bi-eye"></i>Quiz</a>
+                                        <a class="btn btn-info" role="button" style="text-decoration: none; color: black" href="/ManagerQuiz?lessonId=@lesson.LessonId&courseId=@courseId"><i class="bi bi-eye"></i>Quiz</a>
                                     </div>
                                 </div>
 
                                 <!--form add video-->
                                 <form action="/ManagerVideo/Create" method="POST">
                                     <input type="hidden" name="LessonId" value="@lesson.LessonId" />
-                                    <input type="hidden" name="CourseID" value="@CourseID" />
+                                    <input type="hidden" name="CourseId" value="@courseId" />
                                     <div class="card card-body collapse" id="addVideo@(lesson.LessonNo)" style="margin-top: 1%">
                                         <input type="text" name="VideoName" required value="" placeholder="Enter Video Name" />
                                         <input type="file" name="FileVideo" required multiple accept=".mp4">
@@ -249,7 +249,7 @@
                                 <!--form add pdf-->
                                 <form action="/ManagerPDF/Create" method="POST">
                                     <input type="hidden" name="LessonId" value="@lesson.LessonId" />
-                                    <input type="hidden" name="CourseID" value="@CourseID" />
+                                    <input type="hidden" name="CourseId" value="@courseId" />
                                     <div class="card card-body collapse" id="addPDF@(lesson.LessonNo)" style="margin-top: 1%">
                                         <input type="text" name="Pdfname" required value="" placeholder="Enter PDF Name" />
                                         <input type="file" id="file-uploader" required name="FilePdf" accept=".pdf" multiple>
@@ -265,12 +265,12 @@
                                     <div class="list-group-item list-group-item-action">
                                         <div class="row">
                                             <div class="col-md-10">
-                                                <a href="/ManagerLesson/Index/@CourseID?LessonID=@video.LessonId&name=@video.VideoName&video=@video.FileVideo" style="text-decoration: none; color: black">
+                                                <a href="/ManagerLesson/Index/@courseId?lessonId=@video.LessonId&name=@video.VideoName&video=@video.FileVideo" style="text-decoration: none; color: black">
                                                     <i class="bi bi-play-circle" style="color: red; margin-right: 2%"></i>@video.VideoName
                                                 </a>
                                             </div>
                                             <div class="col-md-2 teacher">
-                                                <a style="float: right;" href="/ManagerVideo/Delete/@video.VideoId?LessonID=@video.LessonId&CourseID=@CourseID"><i onclick="return confirm('Are you sure you want to delete Video: @video.VideoName')" class="bi bi-x" style="color: red"></i></a>
+                                                <a style="float: right;" href="/ManagerVideo/Delete/@video.VideoId?lessonId=@video.LessonId&courseId=@courseId"><i onclick="return confirm('Are you sure you want to delete Video: @video.VideoName')" class="bi bi-x" style="color: red"></i></a>
                                                 <a style="float: right; margin-right: 2%" role="button" data-bs-toggle="collapse" data-bs-target="#updateVideo@(video.VideoId)" aria-expanded="false" aria-controls="updateVideo@(video.VideoId)"><i class="bi bi-pencil" style="color: green;"></i></a>
                                             </div>
                                         </div>
@@ -278,7 +278,7 @@
 
                                     <form action="/ManagerVideo/Update/@video.VideoId" method="POST">
                                         <input type="hidden" name="LessonId" value="@lesson.LessonId" />
-                                        <input type="hidden" name="CourseID" value="@CourseID" />
+                                        <input type="hidden" name="CourseId" value="@courseId" />
                                         <div class="card card-body collapse" id="updateVideo@(video.VideoId)" style="margin-top: 1%">
                                             Name:<input type="text" name="VideoName" value="@video.VideoName" required />
                                             New File Video:<input type="file" name="FileVideo" accept=".mp4" multiple />
@@ -295,12 +295,12 @@
                                     <div class="list-group-item list-group-item-action">
                                         <div class="row">
                                             <div class="col-md-10">
-                                                <a href="/ManagerLesson/Index/@CourseID?LessonID=@PDF.LessonId&name=@PDF.Pdfname&PDF=@PDF.FilePdf" style="text-decoration: none; color: black">
+                                                <a href="/ManagerLesson/Index/@courseId?lessonId=@PDF.LessonId&name=@PDF.Pdfname&PDF=@PDF.FilePdf" style="text-decoration: none; color: black">
                                                     <i class="bi bi-book" style="color: green; margin-right: 2%"></i>@PDF.Pdfname
                                                 </a>
                                             </div>
                                             <div class="col-md-2 teacher">
-                                                <a style="float: right;" href="/ManagerPDF/Delete/@PDF.Pdfid?LessonID=@PDF.LessonId&CourseID=@CourseID"><i onclick="return confirm('Are you sure you want to delete pdf @PDF.Pdfname')" class="bi bi-x" style="color: red"></i></a>
+                                                <a style="float: right;" href="/ManagerPDF/Delete/@PDF.Pdfid?lessonId=@PDF.LessonId&courseId=@courseId"><i onclick="return confirm('Are you sure you want to delete pdf @PDF.Pdfname')" class="bi bi-x" style="color: red"></i></a>
                                                 <a style="float: right; margin-right: 2%" href="/ManagerPDF/Update/@(PDF.Pdfid)" data-bs-toggle="collapse" data-bs-target="#updateVideo@(PDF.Pdfid)" aria-expanded="false" aria-controls="updateVideo@(PDF.Pdfid)"><i class="bi bi-pencil" style="color: green;"></i></a>
                                             </div>
                                         </div>
@@ -308,7 +308,7 @@
 
                                     <form action="/ManagerPDF/Update/@PDF.Pdfid" method="POST">
                                         <input type="hidden" name="LessonId" value="@lesson.LessonId" />
-                                        <input type="hidden" name="CourseID" value="@CourseID" />
+                                        <input type="hidden" name="CourseId" value="@courseId" />
                                         <div class="card card-body collapse" id="updateVideo@(PDF.Pdfid)" style="margin-top: 1%">
                                             Name:<input type="text" name="Pdfname" value="@PDF.Pdfname" required />
                                             New File PDF:<input type="file" name="FilePdf" accept=".pdf" multiple />

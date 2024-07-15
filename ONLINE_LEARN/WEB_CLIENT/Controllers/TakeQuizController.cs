@@ -20,30 +20,30 @@ namespace WEB_CLIENT.Controllers
             _service = service;
         }
 
-        public async Task<ActionResult> Index(Guid? id /*LessonID*/)
+        public ActionResult Index(Guid? id /*LessonID*/)
         {
-            string? StudentID = getUserID();
-            if (StudentID == null)
+            string? studentId = getUserId();
+            if (studentId == null)
             {
-                return View("/Views/Error/404.cshtml", new ResponseBase<object?>(null, "Not found ID. Please check login information", (int)HttpStatusCode.NotFound));
+                return View("/Views/Error/404.cshtml", new ResponseBase<object?>("Not found ID. Please check login information", (int)HttpStatusCode.NotFound));
             }
             if (id == null)
             {
                 return Redirect("/MyCourse");
             }
-            ResponseBase<Dictionary<string, object?>?> response = await _service.Index(id.Value, Guid.Parse(StudentID));
+            ResponseBase<Dictionary<string, object?>?> response = _service.Index(id.Value, Guid.Parse(studentId));
             if (response.Data == null)
             {
-                return View("/Views/Error/" + response.Code + ".cshtml", new ResponseBase<object?>(null, response.Message, response.Code));
+                return View("/Views/Error/" + response.Code + ".cshtml", new ResponseBase<object?>(response.Message, response.Code));
             }
             return View(response.Data);
         }
 
         [HttpPost]
-        public async Task<ActionResult> Index(Guid id /*LessonID*/, string? button, int? answer, int timeOut, int minutes, int question_no, int seconds)
+        public ActionResult Index(Guid id /*LessonID*/, string? button, int? answer, int timeOut, int minutes, int question_no, int seconds)
         {
-            string? StudentID = getUserID();
-            if (StudentID == null)
+            string? studentId = getUserId();
+            if (studentId == null)
             {
                 return View("/Views/Error/404.cshtml", new ResponseBase<object?>(null, "Not found ID. Please check login information", (int)HttpStatusCode.NotFound));
             }
@@ -51,10 +51,10 @@ namespace WEB_CLIENT.Controllers
             // if finish exam
             if ((button != null && button.Equals("Finish")) || timeOut == 1)
             {
-                ResponseBase<List<Quiz>?> response = await _service.Finish(id);
+                ResponseBase<List<Quiz>?> response = _service.Finish(id);
                 if (response.Data == null)
                 {
-                    return View("/Views/Error/" + response.Code + ".cshtml", new ResponseBase<object?>(null, response.Message, response.Code));
+                    return View("/Views/Error/" + response.Code + ".cshtml", new ResponseBase<object?>(response.Message, response.Code));
                 }
                 int score = 0;
                 for (int i = 0; i < response.Data.Count; i++)
@@ -71,17 +71,17 @@ namespace WEB_CLIENT.Controllers
                 }
                 float FinalScore = (float)score / response.Data.Count * 10;
                 string status = FinalScore >= 5.0 ? ResultConst.Passed : ResultConst.NotPassed;
-                ResponseBase<Result?> responseDTO = await _service.Finish(id, Guid.Parse(StudentID), FinalScore, status);
+                ResponseBase<Result?> responseDTO = _service.Finish(id, Guid.Parse(studentId), FinalScore, status);
                 if (responseDTO.Data == null)
                 {
-                    return View("/Views/Error/500.cshtml", new ResponseBase<object?>(null, response.Message, response.Code));
+                    return View("/Views/Error/500.cshtml", new ResponseBase<object?>(response.Message, response.Code));
                 }
                 return View("/Views/TakeQuiz/Result.cshtml", responseDTO.Data);
             }
-            ResponseBase<Dictionary<string, object?>?> responseDic = await _service.Index(id, Guid.Parse(StudentID), button, minutes, question_no, seconds);
+            ResponseBase<Dictionary<string, object?>?> responseDic = _service.Index(id, Guid.Parse(studentId), button, minutes, question_no, seconds);
             if (responseDic.Data == null)
             {
-                return View("/Views/Error/" + responseDic.Code + ".cshtml", new ResponseBase<object?>(null, responseDic.Message, responseDic.Code));
+                return View("/Views/Error/" + responseDic.Code + ".cshtml", new ResponseBase<object?>(responseDic.Message, responseDic.Code));
             }
             return View(responseDic.Data);
         }

@@ -7,7 +7,7 @@ namespace WEB_CLIENT.Controllers
         public ActionResult Index()
         {
             HttpContext.Session.Clear();
-            Response.Cookies.Delete("UserID");
+            Response.Cookies.Delete("userId");
             return Redirect("/Home");
         }
     }

@@ -1,4 +1,5 @@
 ﻿using Common.Base;
+using Common.DTO.UserDTO;
 using Common.Entity;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -26,9 +27,9 @@ namespace WEB_CLIENT.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Index(User user)
+        public async Task<ActionResult> Index(UserCreateDTO DTO)
         {
-            ResponseBase<bool> response = await _service.Index(user);
+            ResponseBase<bool> response = await _service.Index(DTO);
             if (response.Data == false)
             {
                 if (response.Code == (int)HttpStatusCode.Conflict)

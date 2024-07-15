@@ -16,42 +16,44 @@ namespace WEB_CLIENT.Controllers
         }
 
         [Role(UserConst.ROLE_NONE, UserConst.ROLE_STUDENT)]
-        public async Task<ActionResult> Index(int? CategoryID, string? properties, string? flow, int? page)
+        public ActionResult Index(int? categoryId, string? properties, bool? asc, int? page)
         {
-            string? userId = getUserID();
-            ResponseBase<Dictionary<string, object?>?> result = await _service.Index(CategoryID, properties, flow, page, userId);
+            string? userId = getUserId();
+            ResponseBase<Dictionary<string, object?>?> result = _service.Index(categoryId, properties, asc, page, userId);
             // if get result failed
             if (result.Data == null)
             {
-                return View("/Views/Error/500.cshtml", new ResponseBase<object?>(null, result.Message, result.Code));
+                return View("/Views/Error/500.cshtml", new ResponseBase<object?>(result.Message, result.Code));
             }
             return View(result.Data);
         }
+
         [Role(UserConst.ROLE_NONE, UserConst.ROLE_STUDENT)]
-        public async Task<ActionResult> Detail(Guid? id)
+        public ActionResult Detail(Guid? id)
         {
-            string? userId = getUserID();
+            string? userId = getUserId();
             if (id == null)
             {
                 return Redirect("/Courses");
             }
-            ResponseBase<Dictionary<string, object?>?> response = await _service.Detail(id.Value, userId);
+            ResponseBase<Dictionary<string, object?>?> response = _service.Detail(id.Value, userId);
             if (response.Data == null)
             {
                 return View("/Views/Error/" + response.Code + ".cshtml", new ResponseBase<object?>(null, response.Message, response.Code));
             }
             return View(response.Data);
         }
+
         [Role(UserConst.ROLE_NONE, UserConst.ROLE_STUDENT)]
-        public async Task<ActionResult> EnrollCourse(Guid? id)
+        public ActionResult EnrollCourse(Guid? id)
         {
             string? role = getRole();
             if (role == null)
             {
                 return Redirect("/Login");
             }
-            string? StudentID = getUserID();
-            if (StudentID == null)
+            string? studentId = getUserId();
+            if (studentId == null)
             {
                 return View("/Views/Error/404.cshtml", new ResponseBase<object?>(null, "Not found ID. Please check login information"));
             }
@@ -59,7 +61,7 @@ namespace WEB_CLIENT.Controllers
             {
                 return Redirect("/Courses");
             }
-            ResponseBase<Dictionary<string, object?>?> result = await _service.EnrollCourse(id.Value, Guid.Parse(StudentID));
+            ResponseBase<Dictionary<string, object?>?> result = _service.EnrollCourse(id.Value, Guid.Parse(studentId));
             if (result.Data == null)
             {
                 return View("/Views/Error/" + result.Code + ".cshtml", new ResponseBase<object?>(null, result.Message, result.Code));
@@ -67,10 +69,11 @@ namespace WEB_CLIENT.Controllers
             ViewData["enroll"] = result.Message;
             return View("/Views/Courses/Index.cshtml", result.Data);
         }
+
         [Role(UserConst.ROLE_STUDENT)]
         [Authorize]
         [ResponseCache(NoStore = true)]
-        public async Task<ActionResult> LearnCourse(Guid? id, string? video /* file video */, string? name /*video name or pdf name*/, string? PDF /*file PDF */, Guid? LessonID, int? VideoID, int? PDFID)
+        public ActionResult LearnCourse(Guid? id, string? video /* file video */, string? name /*video name or pdf name*/, string? PDF /*file PDF */, Guid? lessonId, int? videoId, int? PDFId)
         {
             if (isLogin == false)
             {
@@ -81,21 +84,21 @@ namespace WEB_CLIENT.Controllers
             {
                 return Redirect("/Courses");
             }
-            string? StudentID = getUserID();
-            if (StudentID == null)
+            string? studentId = getUserId();
+            if (studentId == null)
             {
-                return View("/Views/Error/404.cshtml", new ResponseBase<object?>(null, "Not found ID. Please check login information", (int)HttpStatusCode.NotFound));
+                return View("/Views/Error/404.cshtml", new ResponseBase<object?>("Not found ID. Please check login information", (int)HttpStatusCode.NotFound));
             }
-            ResponseBase<Dictionary<string, object>?> result = await _service.LearnCourse(id.Value, Guid.Parse(StudentID), video, name, PDF, LessonID, VideoID, PDFID);
+            ResponseBase<Dictionary<string, object>?> result = _service.LearnCourse(id.Value, Guid.Parse(studentId), video, name, PDF, lessonId, videoId, PDFId);
             if (result.Data == null)
             {
                 if (result.Code == (int)HttpStatusCode.InternalServerError)
                 {
-                    return View("/Views/Error/500.cshtml", new ResponseBase<object?>(null, result.Message, result.Code));
+                    return View("/Views/Error/500.cshtml", new ResponseBase<object?>(result.Message, result.Code));
                 }
                 return Redirect("/Courses");
             }
-            result.Data["CourseID"] = id;
+            result.Data["courseId"] = id;
             return View(result.Data);
 
         }

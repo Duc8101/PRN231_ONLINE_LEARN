@@ -54,8 +54,8 @@
 </nav>
 <!-- Navbar End -->
 @{
-    Guid LessonID = Model["LessonID"];
-    Guid CourseID = Model["CourseID"];
+    Guid lessonId = Model["lessonId"];
+    Guid courseId = Model["courseId"];
 }
 <!-- CREATE Start -->
 <div class="container">
@@ -69,8 +69,8 @@
         </div>
         <!-- edit form column -->
         <div class="col-md-7 personal-info">
-            <form class="form-horizontal" role="form" action="/ManagerQuiz/Create?LessonID=@LessonID&CourseID=@CourseID" method="POST">
-                <input type="hidden" name="LessonId" value="@LessonID" />
+            <form class="form-horizontal" role="form" action="/ManagerQuiz/Create?lessonId=@lessonId&courseId=@courseId" method="POST">
+                <input type="hidden" name="LessonId" value="@lessonId" />
                 <div class="form-group">
                     <label class="col-lg-3 control-label"><b>Question:</b></label>
                     <div class="col-lg-8">
@@ -112,7 +112,7 @@
                     <div class="col-md-8">
                         <input type="submit" class="btn btn-primary" value="Save Changes" onclick="myFunction()">
                         <span></span>
-                        <a href="/ManagerQuiz?LessonID=@LessonID&CourseID=@CourseID">Cancel</a>
+                        <a href="/ManagerQuiz?lessonId=@lessonId&courseId=@courseId">Cancel</a>
                     </div>
                 </div>
             </form>

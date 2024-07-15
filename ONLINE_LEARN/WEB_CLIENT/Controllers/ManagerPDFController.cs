@@ -1,6 +1,6 @@
 ﻿using Common.Base;
 using Common.Const;
-using Common.Entity;
+using Common.DTO.LessonPdfDTO;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using WEB_CLIENT.Attributes;
@@ -20,19 +20,19 @@ namespace WEB_CLIENT.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(LessonPdf create, Guid CourseID)
+        public ActionResult Create(LessonPdfCreateUpdateDTO DTO, Guid CourseId)
         {
             if (isLogin == false)
             {
                 return Redirect("/Home");
             }
             ViewData["ViewLesson"] = true;
-            string? TeacherID = getUserID();
-            if (TeacherID == null)
+            string? teacherId = getUserId();
+            if (teacherId == null)
             {
-                return View("/Views/Error/404.cshtml", new ResponseBase<object?>(null, "Not found ID. Please check login information"));
+                return View("/Views/Error/404.cshtml", new ResponseBase<object?>("Not found Id. Please check login information"));
             }
-            ResponseBase<Dictionary<string, object>?> result = await _service.Create(create, CourseID, Guid.Parse(TeacherID));
+            ResponseBase<Dictionary<string, object>?> result = _service.Create(DTO, CourseId, Guid.Parse(teacherId));
             if (result.Data == null)
             {
                 return View("/Views/Error/" + result.Code + ".cshtml", new ResponseBase<object?>(null, result.Message, result.Code));
@@ -50,22 +50,22 @@ namespace WEB_CLIENT.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Update(int id, LessonPdf obj, Guid CourseID)
+        public ActionResult Update(int id, LessonPdfCreateUpdateDTO DTO, Guid CourseId)
         {
             if (isLogin == false)
             {
                 return Redirect("/Home");
             }
             ViewData["ViewLesson"] = true;
-            string? TeacherID = getUserID();
-            if (TeacherID == null)
+            string? teacherId = getUserId();
+            if (teacherId == null)
             {
-                return View("/Views/Error/404.cshtml", new ResponseBase<object?>(null, "Not found ID. Please check login information", (int)HttpStatusCode.NotFound));
+                return View("/Views/Error/404.cshtml", new ResponseBase<object?>("Not found Id. Please check login information", (int)HttpStatusCode.NotFound));
             }
-            ResponseBase<Dictionary<string, object>?> result = await _service.Update(id, obj, CourseID, Guid.Parse(TeacherID));
+            ResponseBase<Dictionary<string, object>?> result = _service.Update(id, DTO, CourseId, Guid.Parse(teacherId));
             if (result.Data == null)
             {
-                return View("/Views/Error/" + result.Code + ".cshtml", new ResponseBase<object?>(null, result.Message, result.Code));
+                return View("/Views/Error/" + result.Code + ".cshtml", new ResponseBase<object?>(result.Message, result.Code));
             }
             if (result.Code == (int)HttpStatusCode.Conflict)
             {
@@ -78,26 +78,26 @@ namespace WEB_CLIENT.Controllers
             return View("/Views/ManagerLesson/Index.cshtml", result.Data);
         }
 
-        public async Task<ActionResult> Delete(int? id, Guid? LessonID, Guid? CourseID)
+        public ActionResult Delete(int? id, Guid? lessonId, Guid? courseId)
         {
             if (isLogin == false)
             {
                 return Redirect("/Home");
             }
             ViewData["ViewLesson"] = true;
-            string? TeacherID = getUserID();
-            if (TeacherID == null)
+            string? teacherId = getUserId();
+            if (teacherId == null)
             {
-                return View("/Views/Error/404.cshtml", new ResponseBase<object?>(null, "Not found ID. Please check login information"));
+                return View("/Views/Error/404.cshtml", new ResponseBase<object?>("Not found Id. Please check login information"));
             }
-            if (id == null || LessonID == null || CourseID == null)
+            if (id == null || lessonId == null || courseId == null)
             {
                 return Redirect("/ManagerCourse");
             }
-            ResponseBase<Dictionary<string, object>?> result = await _service.Delete(id.Value, LessonID.Value, CourseID.Value, Guid.Parse(TeacherID));
+            ResponseBase<Dictionary<string, object>?> result = _service.Delete(id.Value, lessonId.Value, courseId.Value, Guid.Parse(teacherId));
             if (result.Data == null)
             {
-                return View("/Views/Error/" + result.Code + ".cshtml", new ResponseBase<object?>(null, result.Message, result.Code));
+                return View("/Views/Error/" + result.Code + ".cshtml", new ResponseBase<object?>(result.Message, result.Code));
             }
             ViewData["success"] = result.Message;
             return View("/Views/ManagerLesson/Index.cshtml", result.Data);

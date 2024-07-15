@@ -40,17 +40,17 @@
 </style>
 
 @{
-    List<Lesson> listLesson = (List<Lesson>) Model["listLesson"];
+    List<Lesson> listLessonCourse = (List<Lesson>)Model["listLessonCourse"];
     List<LessonPdf> listPDF = (List<LessonPdf>) Model["listPDF"];
-    List<Guid> listLessonQuiz = (List<Guid>) Model["listLessonQuiz"];
+    List<Lesson> listLessonQuiz = (List<Lesson>)Model["listLessonQuiz"];
     List<LessonVideo> listVideo = (List<LessonVideo>)Model["listVideo"];
     string Video = (string) Model["video"];
     string pdf = (string) Model["PDF"];
     string name = (string) Model["name"];
-    Guid LessonID = (Guid) Model["lID"];
-    int VideoID = (int) Model["vID"];
-    int PDFID = (int) Model["pID"];
-    Guid CourseID = (Guid) Model["CourseID"];
+    Guid lessonId = (Guid) Model["lId"];
+    int videoId = (int) Model["vId"];
+    int PDFId = (int) Model["pId"];
+    Guid courseId = (Guid) Model["courseId"];
 }
 
 <!--Lesson Start-->
@@ -64,7 +64,7 @@
                 int PDFNumber = 0;
             }
 
-            @foreach (Lesson lesson in listLesson)
+            @foreach (Lesson lesson in listLessonCourse)
             {
                 <div class="list-group" style="margin: 15px 0">
                     <div class="list-group-item list-group-item-info" style="background-color: #06BBCC">
@@ -78,7 +78,7 @@
                 </div>
 
                 // if find lesson
-                if (lesson.LessonId == LessonID)
+                if (lesson.LessonId == lessonId)
                 {
                     <div class="list-group collapse multi-collapse show" id="collapseExample@(lesson.LessonNo)">
                         @foreach (LessonVideo video in listVideo)
@@ -87,9 +87,9 @@
                             if (lesson.LessonId == video.LessonId)
                             {
                                 VideoNumber++;
-                                <div class="list-group-item list-group-item-@(video.VideoId == VideoID ? "primary" : "action")">
+                                <div class="list-group-item list-group-item-@(video.VideoId == videoId ? "primary" : "action")">
                                     <div class="row">
-                                        <a href="/Courses/LearnCourse/@CourseID?LessonID=@lesson.LessonId&VideoID=@video.VideoId&name=@video.VideoName&video=@video.FileVideo" style="text-decoration: none; color: black">
+                                        <a href="/Courses/LearnCourse/@courseId?lessonId=@lesson.LessonId&videoId=@video.VideoId&name=@video.VideoName&video=@video.FileVideo" style="text-decoration: none; color: black">
                                             <i class="bi bi-play-circle" style="color: red; margin-right: 2%"></i>Video @VideoNumber. @video.VideoName
                                         </a>
                                     </div>
@@ -103,9 +103,9 @@
                             if (lesson.LessonId == PDF.LessonId)
                             {
                                 PDFNumber++;
-                                <div class="list-group-item list-group-item-@(PDF.Pdfid == PDFID ? "primary" : "action")">
+                                <div class="list-group-item list-group-item-@(PDF.Pdfid == PDFId ? "primary" : "action")">
                                     <div class="row">
-                                        <a href="/Courses/LearnCourse/@CourseID?LessonID=@lesson.LessonId&PDFID=@PDF.Pdfid&name=@PDF.Pdfname&PDF=@PDF.FilePdf" style="text-decoration: none; color: black">
+                                        <a href="/Courses/LearnCourse/@courseId?lessonId=@lesson.LessonId&PDFId=@PDF.Pdfid&name=@PDF.Pdfname&PDF=@PDF.FilePdf" style="text-decoration: none; color: black">
                                             <i class="bi bi-book" style="color: green; margin-right: 2%"></i>PDF @PDFNumber. @PDF.Pdfname
                                         </a>
                                     </div>
@@ -113,10 +113,10 @@
                             }
                         }
 
-                        @foreach (Guid lessonID in listLessonQuiz)
+                        @foreach (Lesson item in listLessonQuiz)
                         {
                             // if find lesson
-                            if (lesson.LessonId == lessonID)
+                            if (lesson.LessonId == item.LessonId)
                             {
                                 <ul class="list-group">
                                     <a href="/TakeQuiz/Index/@lesson.LessonId" class="list-group-item bg-light"><i class="bi bi-patch-question" style="margin-right: 2%"></i>Take Quiz</a>
@@ -137,7 +137,7 @@
                                 VideoNumber++;
                                 <div class="list-group-item list-group-item-action">
                                     <div class="row">
-                                        <a href="/Courses/LearnCourse/@CourseID?LessonID=@lesson.LessonId&VideoID=@video.VideoId&name=@video.VideoName&video=@video.FileVideo" style="text-decoration: none; color: black">
+                                        <a href="/Courses/LearnCourse/@courseId?lessonId=@lesson.LessonId&videoId=@video.VideoId&name=@video.VideoName&video=@video.FileVideo" style="text-decoration: none; color: black">
                                             <i class="bi bi-play-circle" style="color: red; margin-right: 2%"></i>Video @VideoNumber. @video.VideoName
                                         </a>
                                     </div>
@@ -153,7 +153,7 @@
                                 PDFNumber++;
                                 <div class="list-group-item list-group-item-action">
                                     <div class="row">
-                                        <a href="/Courses/LearnCourse/@CourseID?LessonID=@lesson.LessonId&PDFID=@PDF.Pdfid&name=@PDF.Pdfname&PDF=@PDF.FilePdf" style="text-decoration: none; color: black">
+                                        <a href="/Courses/LearnCourse/@courseId?lessonId=@lesson.LessonId&PDFId=@PDF.Pdfid&name=@PDF.Pdfname&PDF=@PDF.FilePdf" style="text-decoration: none; color: black">
                                             <i class="bi bi-book" style="color: green; margin-right: 2%"></i>PDF @PDFNumber. @PDF.Pdfname
                                         </a>
                                     </div>
@@ -161,10 +161,10 @@
                             }
                         }
 
-                        @foreach (Guid lessonID in listLessonQuiz)
+                        @foreach (Lesson item in listLessonQuiz)
                         {
                             // if find lesson
-                            if (lesson.LessonId == lessonID)
+                            if (lesson.LessonId == item.LessonId)
                             {
                                 <ul class="list-group">
                                     <a href="/TakeQuiz/Index/@lesson.LessonId" class="list-group-item bg-light"><i class="bi bi-patch-question" style="margin-right: 2%"></i>Take Quiz</a>

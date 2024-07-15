@@ -2,49 +2,51 @@
 using Common.Const;
 using Common.DTO.UserDTO;
 using Common.Entity;
-using DataAccess.Model.IDAO;
-using DataAccess.Model.Util;
+using DataAccess.Model.DAO;
+using DataAccess.Model.Helper;
 using System.Net;
 
 namespace WEB_CLIENT.Services.Profile
 {
     public class ProfileService : IProfileService
     {
-        private readonly ICommonDAO<User> _daoUser;
-        public ProfileService(ICommonDAO<User> daoUser)
+        private readonly DAOUser _daoUser;
+        public ProfileService(DAOUser daoUser)
         {
             _daoUser = daoUser;
         }
-        public async Task<ResponseBase<Dictionary<string, object>?>> Index(Guid UserID)
+
+        public ResponseBase<Dictionary<string, object>?> Index(Guid userId)
         {
             try
             {
-                User? user = await _daoUser.Get(u => u.Id == UserID && u.IsDeleted == false);
+                User? user = _daoUser.getUser(userId);
                 if (user == null)
                 {
-                    return new ResponseBase<Dictionary<string, object>?>(null, "Not found user", (int)HttpStatusCode.NotFound);
+                    return new ResponseBase<Dictionary<string, object>?>("Not found user", (int)HttpStatusCode.NotFound);
                 }
-                List<string> list = UserUtil.getAllGender();
+                List<string> list = UserHelper.getAllGender();
                 Dictionary<string, object> result = new Dictionary<string, object>();
                 result["user"] = user;
                 result["list"] = list;
-                return new ResponseBase<Dictionary<string, object>?>(result, string.Empty);
+                return new ResponseBase<Dictionary<string, object>?>(result);
             }
             catch (Exception ex)
             {
-                return new ResponseBase<Dictionary<string, object>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseBase<Dictionary<string, object>?>(ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
-        public async Task<ResponseBase<Dictionary<string, object>?>> Index(Guid UserID, ProfileDTO DTO, string valueImg)
+
+        public ResponseBase<Dictionary<string, object>?> Index(Guid userId, ProfileDTO DTO, string valueImg)
         {
             try
             {
-                User? user = await _daoUser.Get(u => u.Id == UserID && u.IsDeleted == false);
+                User? user = _daoUser.getUser(userId);
                 if (user == null)
                 {
-                    return new ResponseBase<Dictionary<string, object>?>(null, "Not found user", (int)HttpStatusCode.NotFound);
+                    return new ResponseBase<Dictionary<string, object>?>("Not found user", (int)HttpStatusCode.NotFound);
                 }
-                List<string> list = UserUtil.getAllGender();
+                List<string> list = UserHelper.getAllGender();
                 Dictionary<string, object> result = new Dictionary<string, object>();
                 user.FullName = DTO.FullName == null || DTO.FullName.Trim().Length == 0 ? "" : DTO.FullName.Trim();
                 user.Phone = DTO.Phone;
@@ -66,19 +68,18 @@ namespace WEB_CLIENT.Services.Profile
                 {
                     return new ResponseBase<Dictionary<string, object>?>(result, "Address max " + UserConst.MAX_ADDRESS_LENGTH + " characters", (int)HttpStatusCode.Conflict);
                 }
-                if (await _daoUser.Any(u => u.Id == user.Id || u.Email == user.Email.Trim()))
+                if (_daoUser.isExist(userId , user.Email))
                 {
                     return new ResponseBase<Dictionary<string, object>?>(result, "Email existed", (int)HttpStatusCode.Conflict);
                 }
                 user.UpdateAt = DateTime.Now;
-                await _daoUser.Update(user);
-                await _daoUser.Save();
+                _daoUser.UpdateUser(user);
                 result["user"] = user;
                 return new ResponseBase<Dictionary<string, object>?>(result, "Update successful");
             }
             catch (Exception ex)
             {
-                return new ResponseBase<Dictionary<string, object>?>(null, ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
+                return new ResponseBase<Dictionary<string, object>?>(ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
 
         }

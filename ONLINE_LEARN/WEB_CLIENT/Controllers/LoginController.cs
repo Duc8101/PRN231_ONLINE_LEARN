@@ -17,21 +17,21 @@ namespace WEB_CLIENT.Controllers
             _service = service;
         }
 
-        public async Task<ActionResult> Index()
+        public ActionResult Index()
         {
-            string? userId = Request.Cookies["UserID"];
+            string? userId = Request.Cookies["userId"];
             if (userId == null)
             {
                 return View();
             }
-            ResponseBase<User?> response = await _service.Index(Guid.Parse(userId));
+            ResponseBase<User?> response = _service.Index(Guid.Parse(userId));
             // if get user failed
             if (response.Data == null)
             {
                 return Redirect("/Logout");
             }
             isLogin = true;
-            HttpContext.Session.SetString("UserID", userId);
+            HttpContext.Session.SetString("userId", userId);
             HttpContext.Session.SetString("username", response.Data.Username);
             HttpContext.Session.SetString("role", response.Data.RoleName);
             HttpContext.Session.SetString("image", response.Data.Image);
@@ -39,9 +39,9 @@ namespace WEB_CLIENT.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Index(LoginDTO DTO)
+        public ActionResult Index(LoginDTO DTO)
         {
-            ResponseBase<User?> response = await _service.Index(DTO);
+            ResponseBase<User?> response = _service.Index(DTO);
             // if get user failed
             if (response.Data == null)
             {
@@ -53,7 +53,7 @@ namespace WEB_CLIENT.Controllers
                 return View();
             }
             isLogin = true;
-            HttpContext.Session.SetString("UserID", response.Data.Id.ToString());
+            HttpContext.Session.SetString("userId", response.Data.Id.ToString());
             HttpContext.Session.SetString("username", response.Data.Username);
             HttpContext.Session.SetString("role", response.Data.RoleName);
             HttpContext.Session.SetString("image", response.Data.Image);
@@ -62,7 +62,7 @@ namespace WEB_CLIENT.Controllers
                 Expires = DateTime.Now.AddDays(7)
             };
             // add cookie
-            Response.Cookies.Append("UserID", response.Data.Id.ToString(), option);
+            Response.Cookies.Append("userId", response.Data.Id.ToString(), option);
             if (response.Data.RoleName == UserConst.ROLE_ADMIN)
             {
                 return Redirect("/Admin");

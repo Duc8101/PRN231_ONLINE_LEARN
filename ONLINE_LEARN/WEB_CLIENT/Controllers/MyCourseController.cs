@@ -1,7 +1,7 @@
 ﻿using Common.Base;
 using Common.Const;
 using Common.Entity;
-using Common.Pagination;
+using Common.Paginations;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using WEB_CLIENT.Attributes;
@@ -21,22 +21,22 @@ namespace WEB_CLIENT.Controllers
             _service = service;
         }
 
-        public async Task<ActionResult> Index(int? page)
+        public ActionResult Index(int? page)
         {
             if (isLogin == false)
             {
                 return Redirect("/Home");
             }
-            string? StudentID = getUserID();
-            if (StudentID == null)
+            string? studentId = getUserId();
+            if (studentId == null)
             {
-                return View("/Views/Error/404.cshtml", new ResponseBase<object?>(null, "Not found id. Please check login information", (int)HttpStatusCode.NotFound));
+                return View("/Views/Error/404.cshtml", new ResponseBase<object?>("Not found id. Please check login information", (int)HttpStatusCode.NotFound));
             }
             int pageSelected = page == null ? 1 : page.Value;
-            ResponseBase<PagedResult<Course>?> response = await _service.Index(Guid.Parse(StudentID), pageSelected);
+            ResponseBase<Pagination<Course>?> response = _service.Index(Guid.Parse(studentId), pageSelected);
             if (response.Data == null)
             {
-                return View("/Views/Error/500.cshtml", new ResponseBase<object?>(null, response.Message, response.Code));
+                return View("/Views/Error/500.cshtml", new ResponseBase<object?>(response.Message, response.Code));
             }
             return View(response.Data);
         }

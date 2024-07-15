@@ -58,8 +58,8 @@
 <!-- Navbar End -->
 @{
     Quiz quiz = (Quiz) Model["quiz"];
-    Guid CourseID = (Guid)Model["CourseID"];
-    Guid LessonID = (Guid)Model["LessonID"];
+    Guid courseId = (Guid)Model["courseId"];
+    Guid lessonId = (Guid)Model["lessonId"];
 }
 
 <!-- VIEW Start -->
@@ -113,7 +113,7 @@
                 <div class="form-group">
                     <label class="col-md-3 control-label"></label>
                     <div class="col-md-8">
-                        <a href="/ManagerQuiz?LessonID=@LessonID&CourseID=@CourseID" class="btn btn-info">Cancel</a>
+                        <a href="/ManagerQuiz?lessonId=@lessonId&courseId=@courseId" class="btn btn-info">Cancel</a>
                     </div>
                 </div>
             </form>

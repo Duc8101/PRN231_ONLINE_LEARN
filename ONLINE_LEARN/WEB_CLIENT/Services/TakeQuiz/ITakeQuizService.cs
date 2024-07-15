@@ -5,9 +5,9 @@ namespace WEB_CLIENT.Services.TakeQuiz
 {
     public interface ITakeQuizService
     {
-        Task<ResponseBase<Dictionary<string, object?>?>> Index(Guid LessonID, Guid StudentID);
-        Task<ResponseBase<List<Quiz>?>> Finish(Guid LessonID);
-        Task<ResponseBase<Result?>> Finish(Guid LessonID, Guid StudentID, float score, string status);
-        Task<ResponseBase<Dictionary<string, object?>?>> Index(Guid LessonID, Guid StudentID, string? button, int minutes, int question_no, int seconds);
+        ResponseBase<Dictionary<string, object?>?> Index(Guid lessonId, Guid studentId);
+        ResponseBase<List<Quiz>?> Finish(Guid lessonId);
+        ResponseBase<Result?> Finish(Guid lessonId, Guid studentId, float score, string status);
+        ResponseBase<Dictionary<string, object?>?> Index(Guid lessonId, Guid studentId, string? button, int minutes, int question_no, int seconds);
     }
 }

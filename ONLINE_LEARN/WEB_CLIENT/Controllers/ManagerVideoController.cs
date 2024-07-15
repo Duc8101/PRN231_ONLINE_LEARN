@@ -1,6 +1,6 @@
 ﻿using Common.Base;
 using Common.Const;
-using Common.Entity;
+using Common.DTO.LessonVideoDTO;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using WEB_CLIENT.Attributes;
@@ -18,87 +18,88 @@ namespace WEB_CLIENT.Controllers
         {
             _service = service;
         }
+
         [HttpPost]
-        public async Task<ActionResult> Create(LessonVideo create, Guid CourseID)
+        public ActionResult Create(LessonVideoCreateUpdateDTO DTO, Guid CourseId)
         {
             if (isLogin == false)
             {
                 return Redirect("/Home");
             }
             ViewData["ViewLesson"] = true;
-            string? TeacherID = getUserID();
-            if (TeacherID == null)
+            string? teacherId = getUserId();
+            if (teacherId == null)
             {
-                return View("/Views/Error/404.cshtml", new ResponseBase<object?>(null, "Not found ID. Please check login information"));
+                return View("/Views/Error/404.cshtml", new ResponseBase<object?>("Not found Id. Please check login information"));
             }
-            ResponseBase<Dictionary<string, object>?> result = await _service.Create(create, CourseID, Guid.Parse(TeacherID));
-            if (result.Data == null)
+            ResponseBase<Dictionary<string, object>?> response = _service.Create(DTO, CourseId, Guid.Parse(teacherId));
+            if (response.Data == null)
             {
-                return View("/Views/Error/" + result.Code + ".cshtml", new ResponseBase<object?>(null, result.Message, result.Code));
+                return View("/Views/Error/" + response.Code + ".cshtml", new ResponseBase<object?>(response.Message, response.Code));
             }
-            if (result.Code == (int)HttpStatusCode.Conflict)
+            if (response.Code == (int)HttpStatusCode.Conflict)
             {
-                ViewData["error"] = result.Message;
+                ViewData["error"] = response.Message;
             }
             else
             {
-                ViewData["success"] = result.Message;
+                ViewData["success"] = response.Message;
             }
-            return View("/Views/ManagerLesson/Index.cshtml", result.Data);
+            return View("/Views/ManagerLesson/Index.cshtml", response.Data);
         }
 
         [HttpPost]
-        public async Task<ActionResult> Update(int id, LessonVideo obj, Guid CourseID)
+        public ActionResult Update(int id, LessonVideoCreateUpdateDTO DTO, Guid CourseId)
         {
             if (isLogin == false)
             {
                 return Redirect("/Home");
             }
             ViewData["ViewLesson"] = true;
-            string? TeacherID = getUserID();
-            if (TeacherID == null)
+            string? teacherId = getUserId();
+            if (teacherId == null)
             {
-                return View("/Views/Error/404.cshtml", new ResponseBase<object?>(null, "Not found ID. Please check login information", (int)HttpStatusCode.NotFound));
+                return View("/Views/Error/404.cshtml", new ResponseBase<object?>("Not found Id. Please check login information"));
             }
-            ResponseBase<Dictionary<string, object>?> result = await _service.Update(id, obj, CourseID, Guid.Parse(TeacherID));
-            if (result.Data == null)
+            ResponseBase<Dictionary<string, object>?> response = _service.Update(id, DTO, CourseId, Guid.Parse(teacherId));
+            if (response.Data == null)
             {
-                return View("/Views/Error/" + result.Code + ".cshtml", new ResponseBase<object?>(null, result.Message, result.Code));
+                return View("/Views/Error/" + response.Code + ".cshtml", new ResponseBase<object?>(response.Message, response.Code));
             }
-            if (result.Code == (int)HttpStatusCode.Conflict)
+            if (response.Code == (int)HttpStatusCode.Conflict)
             {
-                ViewData["error"] = result.Message;
+                ViewData["error"] = response.Message;
             }
             else
             {
-                ViewData["success"] = result.Message;
+                ViewData["success"] = response.Message;
             }
-            return View("/Views/ManagerLesson/Index.cshtml", result.Data);
+            return View("/Views/ManagerLesson/Index.cshtml", response.Data);
         }
 
-        public async Task<ActionResult> Delete(int? id, Guid? LessonID, Guid? CourseID)
+        public ActionResult Delete(int? id, Guid? lessonId, Guid? courseId)
         {
             if (isLogin == false)
             {
                 return Redirect("/Home");
             }
             ViewData["ViewLesson"] = true;
-            string? TeacherID = getUserID();
-            if (TeacherID == null)
+            string? teacherId = getUserId();
+            if (teacherId == null)
             {
-                return View("/Views/Error/404.cshtml", new ResponseBase<object?>(null, "Not found ID. Please check login information", (int)HttpStatusCode.NotFound));
+                return View("/Views/Error/404.cshtml", new ResponseBase<object?>("Not found Id. Please check login information"));
             }
-            if (id == null || LessonID == null || CourseID == null)
+            if (id == null || lessonId == null || courseId == null)
             {
                 return Redirect("/ManagerCourse");
             }
-            ResponseBase<Dictionary<string, object>?> result = await _service.Delete(id.Value, LessonID.Value, CourseID.Value, Guid.Parse(TeacherID));
-            if (result.Data == null)
+            ResponseBase<Dictionary<string, object>?> response = _service.Delete(id.Value, lessonId.Value, courseId.Value, Guid.Parse(teacherId));
+            if (response.Data == null)
             {
-                return View("/Views/Error/" + result.Code + ".cshtml", new ResponseBase<object?>(null, result.Message, result.Code));
+                return View("/Views/Error/" + response.Code + ".cshtml", new ResponseBase<object?>(response.Message, response.Code));
             }
-            ViewData["success"] = result.Message;
-            return View("/Views/ManagerLesson/Index.cshtml", result.Data);
+            ViewData["success"] = response.Message;
+            return View("/Views/ManagerLesson/Index.cshtml", response.Data);
         }
     }
 }

@@ -1,10 +1,10 @@
 ﻿using Common.Base;
-using Common.Entity;
+using Common.DTO.UserDTO;
 
 namespace WEB_CLIENT.Services.Register
 {
     public interface IRegisterService
     {
-        Task<ResponseBase<bool>> Index(User user);
+        Task<ResponseBase<bool>> Index(UserCreateDTO DTO);
     }
 }

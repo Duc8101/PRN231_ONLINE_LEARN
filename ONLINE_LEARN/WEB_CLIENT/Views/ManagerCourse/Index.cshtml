@@ -1,7 +1,7 @@
 ﻿@using Common.Const;
 @using Common.Entity;
-@using Common.Pagination;
-@model PagedResult<Course>
+@using Common.Paginations;
+@model Pagination<Course>
 <!-- Spinner Start -->
 <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
     <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
@@ -69,7 +69,7 @@
 <div class="container-xxl py-5">
     <div class="container">
         <div class="row g-4 justify-content-center">
-            @foreach (Course course in Model.Results)
+            @foreach (Course course in Model.List)
             {
                 <div class="col-lg-4 col-md-6 wow fadeInDown" data-wow-delay="0.3s">
                     <div class="course-item bg-light fw-medium">
@@ -124,7 +124,7 @@
 
 <!--Courses End-->
 <!-- Footer Start -->
-@if (Model.Results.Count == 0)
+@if (Model.List.Count == 0)
 {
     <section style="margin-top:21.5%">
         <div class="container-fluid bg-dark text-light footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">

@@ -1,12 +1,12 @@
 ﻿using Common.Base;
-using Common.Entity;
+using Common.DTO.LessonVideoDTO;
 
 namespace WEB_CLIENT.Services.ManagerVideo
 {
     public interface IManagerVideoService
     {
-        Task<ResponseBase<Dictionary<string, object>?>> Create(LessonVideo create, Guid CourseID, Guid CreatorID);
-        Task<ResponseBase<Dictionary<string, object>?>> Update(int VideoID, LessonVideo obj, Guid CourseID, Guid CreatorID);
-        Task<ResponseBase<Dictionary<string, object>?>> Delete(int VideoID, Guid LessonID, Guid CourseID, Guid CreatorID);
+        ResponseBase<Dictionary<string, object>?> Create(LessonVideoCreateUpdateDTO DTO, Guid courseId, Guid creatorId);
+        ResponseBase<Dictionary<string, object>?> Update(int videoId, LessonVideoCreateUpdateDTO DTO, Guid courseId, Guid creatorId);
+        ResponseBase<Dictionary<string, object>?> Delete(int videoId, Guid lessonId, Guid courseId, Guid creatorId);
     }
 }
