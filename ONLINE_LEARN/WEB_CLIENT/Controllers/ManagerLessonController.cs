@@ -10,7 +10,7 @@ namespace WEB_CLIENT.Controllers
 {
     [Role(UserConst.ROLE_TEACHER)]
     [Authorize]
-    [ResponseCache(NoStore = true)]
+    //[ResponseCache(NoStore = true)]
     public class ManagerLessonController : BaseController
     {
         private readonly IManagerLessonService _service;
@@ -21,10 +21,6 @@ namespace WEB_CLIENT.Controllers
         }
         public ActionResult Index(Guid? id, string? video /* file video */, string? name /*video name or pdf name*/, string? PDF /*file PDF */, Guid? lessonId)
         {
-            if (isLogin == false)
-            {
-                return Redirect("/Home");
-            }
             ViewData["ViewLesson"] = true;
             string? teacherId = getUserId();
             if (teacherId == null)
@@ -50,10 +46,6 @@ namespace WEB_CLIENT.Controllers
         [HttpPost]
         public ActionResult Create(LessonCreateUpdateDTO DTO)
         {
-            if (isLogin == false)
-            {
-                return Redirect("/Home");
-            }
             ViewData["ViewLesson"] = true;
             string? teacherId = getUserId();
             if (teacherId == null)
@@ -79,10 +71,6 @@ namespace WEB_CLIENT.Controllers
         [HttpPost]
         public ActionResult Update(Guid id, LessonCreateUpdateDTO DTO)
         {
-            if (isLogin == false)
-            {
-                return Redirect("/Home");
-            }
             ViewData["ViewLesson"] = true;
             string? teacherId = getUserId();
             if (teacherId == null)
@@ -107,10 +95,6 @@ namespace WEB_CLIENT.Controllers
 
         public ActionResult Delete(Guid? id, Guid? courseId)
         {
-            if (isLogin == false)
-            {
-                return Redirect("/Home");
-            }
             ViewData["ViewLesson"] = true;
             string? teacherId = getUserId();
             if (teacherId == null)

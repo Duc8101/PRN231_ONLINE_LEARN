@@ -37,7 +37,7 @@ namespace WEB_CLIENT.Services.ChangePassword
                     Password = DTO.CurrentPassword
                 };
                 User? user = _daoUser.getUser(login);
-                if (user == null || login.Password == null || string.Compare(user.Password, UserHelper.HashPassword(login.Password), false) != 0)
+                if (user == null)
                 {
                     return new ResponseBase<bool>(false, "Your old password not correct", (int)HttpStatusCode.Conflict);
                 }

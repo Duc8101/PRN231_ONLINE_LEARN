@@ -26,10 +26,10 @@ namespace WEB_CLIENT.Services.Profile
                     return new ResponseBase<Dictionary<string, object>?>("Not found user", (int)HttpStatusCode.NotFound);
                 }
                 List<string> list = UserHelper.getAllGender();
-                Dictionary<string, object> result = new Dictionary<string, object>();
-                result["user"] = user;
-                result["list"] = list;
-                return new ResponseBase<Dictionary<string, object>?>(result);
+                Dictionary<string, object> data = new Dictionary<string, object>();
+                data["user"] = user;
+                data["list"] = list;
+                return new ResponseBase<Dictionary<string, object>?>(data);
             }
             catch (Exception ex)
             {
@@ -47,35 +47,35 @@ namespace WEB_CLIENT.Services.Profile
                     return new ResponseBase<Dictionary<string, object>?>("Not found user", (int)HttpStatusCode.NotFound);
                 }
                 List<string> list = UserHelper.getAllGender();
-                Dictionary<string, object> result = new Dictionary<string, object>();
+                Dictionary<string, object> data = new Dictionary<string, object>();
                 user.FullName = DTO.FullName == null || DTO.FullName.Trim().Length == 0 ? "" : DTO.FullName.Trim();
                 user.Phone = DTO.Phone;
                 user.Image = DTO.Image == null || DTO.Image.Trim().Length == 0 ? valueImg : "/img/" + DTO.Image.Trim();
                 user.Address = DTO.Address == null || DTO.Address.Trim().Length == 0 ? null : DTO.Address.Trim();
                 user.Email = DTO.Email.Trim();
                 user.Gender = DTO.Gender.Trim();
-                result["user"] = user;
-                result["list"] = list;
+                data["user"] = user;
+                data["list"] = list;
                 if (DTO.FullName == null || DTO.FullName.Trim().Length == 0)
                 {
-                    return new ResponseBase<Dictionary<string, object>?>(result, "You have to input your name", (int)HttpStatusCode.Conflict);
+                    return new ResponseBase<Dictionary<string, object>?>(data, "You have to input your name", (int)HttpStatusCode.Conflict);
                 }
                 if (DTO.Phone != null && DTO.Phone.Length != UserConst.PHONE_LENGTH)
                 {
-                    return new ResponseBase<Dictionary<string, object>?>(result, "Phone must be " + UserConst.PHONE_LENGTH + " numbers", (int)HttpStatusCode.Conflict);
+                    return new ResponseBase<Dictionary<string, object>?>(data, "Phone must be " + UserConst.PHONE_LENGTH + " numbers", (int)HttpStatusCode.Conflict);
                 }
                 if (DTO.Address != null && DTO.Address.Trim().Length > UserConst.MAX_ADDRESS_LENGTH)
                 {
-                    return new ResponseBase<Dictionary<string, object>?>(result, "Address max " + UserConst.MAX_ADDRESS_LENGTH + " characters", (int)HttpStatusCode.Conflict);
+                    return new ResponseBase<Dictionary<string, object>?>(data, "Address max " + UserConst.MAX_ADDRESS_LENGTH + " characters", (int)HttpStatusCode.Conflict);
                 }
                 if (_daoUser.isExist(userId , user.Email))
                 {
-                    return new ResponseBase<Dictionary<string, object>?>(result, "Email existed", (int)HttpStatusCode.Conflict);
+                    return new ResponseBase<Dictionary<string, object>?>(data, "Email existed", (int)HttpStatusCode.Conflict);
                 }
                 user.UpdateAt = DateTime.Now;
                 _daoUser.UpdateUser(user);
-                result["user"] = user;
-                return new ResponseBase<Dictionary<string, object>?>(result, "Update successful");
+                data["user"] = user;
+                return new ResponseBase<Dictionary<string, object>?>(data, "Update successful");
             }
             catch (Exception ex)
             {

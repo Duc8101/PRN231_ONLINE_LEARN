@@ -10,7 +10,7 @@ namespace WEB_CLIENT.Controllers
 {
     [Role(UserConst.ROLE_TEACHER)]
     [Authorize]
-    [ResponseCache(NoStore = true)]
+    //[ResponseCache(NoStore = true)]
     public class ManagerVideoController : BaseController
     {
         private readonly IManagerVideoService _service;
@@ -22,10 +22,6 @@ namespace WEB_CLIENT.Controllers
         [HttpPost]
         public ActionResult Create(LessonVideoCreateUpdateDTO DTO, Guid CourseId)
         {
-            if (isLogin == false)
-            {
-                return Redirect("/Home");
-            }
             ViewData["ViewLesson"] = true;
             string? teacherId = getUserId();
             if (teacherId == null)
@@ -51,10 +47,6 @@ namespace WEB_CLIENT.Controllers
         [HttpPost]
         public ActionResult Update(int id, LessonVideoCreateUpdateDTO DTO, Guid CourseId)
         {
-            if (isLogin == false)
-            {
-                return Redirect("/Home");
-            }
             ViewData["ViewLesson"] = true;
             string? teacherId = getUserId();
             if (teacherId == null)
@@ -79,10 +71,6 @@ namespace WEB_CLIENT.Controllers
 
         public ActionResult Delete(int? id, Guid? lessonId, Guid? courseId)
         {
-            if (isLogin == false)
-            {
-                return Redirect("/Home");
-            }
             ViewData["ViewLesson"] = true;
             string? teacherId = getUserId();
             if (teacherId == null)

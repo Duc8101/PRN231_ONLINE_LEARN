@@ -72,13 +72,9 @@ namespace WEB_CLIENT.Controllers
 
         [Role(UserConst.ROLE_STUDENT)]
         [Authorize]
-        [ResponseCache(NoStore = true)]
+        //[ResponseCache(NoStore = true)]
         public ActionResult LearnCourse(Guid? id, string? video /* file video */, string? name /*video name or pdf name*/, string? PDF /*file PDF */, Guid? lessonId, int? videoId, int? PDFId)
         {
-            if (isLogin == false)
-            {
-                return Redirect("/Home");
-            }
             ViewData["LearnCourse"] = true;
             if (id == null)
             {

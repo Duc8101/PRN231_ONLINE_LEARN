@@ -30,7 +30,6 @@ namespace WEB_CLIENT.Controllers
             {
                 return Redirect("/Logout");
             }
-            isLogin = true;
             HttpContext.Session.SetString("userId", userId);
             HttpContext.Session.SetString("username", response.Data.Username);
             HttpContext.Session.SetString("role", response.Data.RoleName);
@@ -52,7 +51,6 @@ namespace WEB_CLIENT.Controllers
                 ViewData["message"] = response.Message;
                 return View();
             }
-            isLogin = true;
             HttpContext.Session.SetString("userId", response.Data.Id.ToString());
             HttpContext.Session.SetString("username", response.Data.Username);
             HttpContext.Session.SetString("role", response.Data.RoleName);

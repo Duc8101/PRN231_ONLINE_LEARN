@@ -10,7 +10,7 @@ namespace WEB_CLIENT.Controllers
 {
     [Role(UserConst.ROLE_STUDENT, UserConst.ROLE_TEACHER)]
     [Authorize]
-    [ResponseCache(NoStore = true)]
+    //[ResponseCache(NoStore = true)]
     public class ProfileController : BaseController
     {
         private readonly IProfileService _service;
@@ -22,10 +22,6 @@ namespace WEB_CLIENT.Controllers
 
         public ActionResult Index()
         {
-            if (isLogin == false)
-            {
-                return Redirect("/Home");
-            }
             string? userId = getUserId();
             if (userId == null)
             {
@@ -43,10 +39,6 @@ namespace WEB_CLIENT.Controllers
         [HttpPost]
         public ActionResult Index(ProfileDTO DTO, string valueImg)
         {
-            if (isLogin == false)
-            {
-                return Redirect("/Home");
-            }
             string? userId = getUserId();
             if (userId == null)
             {

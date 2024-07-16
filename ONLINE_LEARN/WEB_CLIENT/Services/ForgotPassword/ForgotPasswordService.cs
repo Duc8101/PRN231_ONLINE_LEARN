@@ -23,10 +23,10 @@ namespace WEB_CLIENT.Services.ForgotPassword
                 if (user == null)
                 {
                     return new ResponseBase<bool>(false, "Not found email", (int)HttpStatusCode.NotFound);
-                }
-                string body = UserHelper.BodyEmailForForgetPassword(email);
+                }    
                 string newPw = UserHelper.RandomPassword();
                 string hashPw = UserHelper.HashPassword(newPw);
+                string body = UserHelper.BodyEmailForForgetPassword(newPw);
                 // send email
                 await UserHelper.sendEmail("Welcome to E-Learning", body, user.Email);
                 user.Password = hashPw;

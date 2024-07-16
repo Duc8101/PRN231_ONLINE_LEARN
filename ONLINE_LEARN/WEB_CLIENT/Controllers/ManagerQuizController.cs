@@ -10,7 +10,7 @@ namespace WEB_CLIENT.Controllers
 {
     [Role(UserConst.ROLE_TEACHER)]
     [Authorize]
-    [ResponseCache(NoStore = true)]
+    //[ResponseCache(NoStore = true)]
     public class ManagerQuizController : BaseController
     {
         private readonly IManagerQuizService _service;
@@ -21,10 +21,6 @@ namespace WEB_CLIENT.Controllers
 
         public ActionResult Index(Guid? lessonId, Guid? courseId)
         {
-            if (isLogin == false)
-            {
-                return Redirect("/Home");
-            }
             string? teacherId = getUserId();
             if (teacherId == null)
             {
@@ -48,10 +44,6 @@ namespace WEB_CLIENT.Controllers
 
         public ActionResult Detail(Guid? id, Guid? lessonId, Guid? courseId)
         {
-            if (isLogin == false)
-            {
-                return Redirect("/Home");
-            }
             string? teacherId = getUserId();
             if (teacherId == null)
             {
@@ -75,10 +67,6 @@ namespace WEB_CLIENT.Controllers
 
         public ActionResult Create(Guid? lessonId, Guid? courseId)
         {
-            if (isLogin == false)
-            {
-                return Redirect("/Home");
-            }
             string? teacherId = getUserId();
             if (teacherId == null)
             {
@@ -103,10 +91,6 @@ namespace WEB_CLIENT.Controllers
         [HttpPost]
         public ActionResult Create(QuizCreateUpdateDTO DTO, Guid courseId)
         {
-            if (isLogin == false)
-            {
-                return Redirect("/Home");
-            }
             string? teacherId = getUserId();
             if (teacherId == null)
             {
@@ -130,20 +114,12 @@ namespace WEB_CLIENT.Controllers
 
         public ActionResult Update(Guid? id, Guid? lessonId, Guid? courseId)
         {
-            if (isLogin == false)
-            {
-                return Redirect("/Home");
-            }
             return Detail(id, lessonId, courseId);
         }
 
         [HttpPost]
         public ActionResult Update(Guid id, QuizCreateUpdateDTO DTO, Guid courseId)
         {
-            if (isLogin == false)
-            {
-                return Redirect("/Home");
-            }
             string? teacherId = getUserId();
             if (teacherId == null)
             {
@@ -167,10 +143,6 @@ namespace WEB_CLIENT.Controllers
 
         public ActionResult Delete(Guid? id, Guid? lessonId, Guid? courseId)
         {
-            if (isLogin == false)
-            {
-                return Redirect("/Home");
-            }
             string? teacherId = getUserId();
             if (teacherId == null)
             {

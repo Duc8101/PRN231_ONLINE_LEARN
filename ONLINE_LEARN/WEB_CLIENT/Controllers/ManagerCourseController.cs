@@ -12,7 +12,7 @@ namespace WEB_CLIENT.Controllers
 {
     [Role(UserConst.ROLE_TEACHER)]
     [Authorize]
-    [ResponseCache(NoStore = true)]
+    //[ResponseCache(NoStore = true)]
     public class ManagerCourseController : BaseController
     {
         private readonly IManagerCourseService _service;
@@ -24,10 +24,6 @@ namespace WEB_CLIENT.Controllers
 
         public ActionResult Index(int? page)
         {
-            if (isLogin == false)
-            {
-                return Redirect("/Home");
-            }
             string? teacherId = getUserId();
             if (teacherId == null)
             {
@@ -43,10 +39,6 @@ namespace WEB_CLIENT.Controllers
         
         public ActionResult Create()
         {
-            if (isLogin == false)
-            {
-                return Redirect("/Home");
-            }
             ResponseBase<List<Category>?> response = _service.Create();
             if (response.Data == null)
             {
@@ -58,10 +50,6 @@ namespace WEB_CLIENT.Controllers
         [HttpPost]
         public ActionResult Create(CourseCreateUpdateDTO DTO)
         {
-            if (isLogin == false)
-            {
-                return Redirect("/Home");
-            }
             string? teacherId = getUserId();
             if (teacherId == null)
             {
@@ -85,10 +73,6 @@ namespace WEB_CLIENT.Controllers
 
         public ActionResult Update(Guid? id)
         {
-            if (isLogin == false)
-            {
-                return Redirect("/Home");
-            }
             if (id == null)
             {
                 return Redirect("/ManagerCourse");
@@ -113,10 +97,6 @@ namespace WEB_CLIENT.Controllers
         [HttpPost]
         public ActionResult Update(Guid id, CourseCreateUpdateDTO DTO)
         {
-            if (isLogin == false)
-            {
-                return Redirect("/Home");
-            }
             ResponseBase<Dictionary<string, object>?> response = _service.Update(id, DTO);
             if (response.Data == null)
             {
@@ -135,10 +115,6 @@ namespace WEB_CLIENT.Controllers
 
         public ActionResult Delete(Guid? id)
         {
-            if (isLogin == false)
-            {
-                return Redirect("/Home");
-            }
             if (id == null)
             {
                 return Redirect("/Home");
