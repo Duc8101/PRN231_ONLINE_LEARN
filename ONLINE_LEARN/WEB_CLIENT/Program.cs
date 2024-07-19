@@ -1,7 +1,6 @@
 using AutoMapper;
 using DataAccess.Model.DAO;
 using DataAccess.Model.DBContext;
-using DataAccess.Model.IDAO;
 using Microsoft.EntityFrameworkCore;
 using WEB_CLIENT.Providers;
 using WEB_CLIENT.Services.Admin;
@@ -41,7 +40,6 @@ namespace WEB_CLIENT
                 options.UseSqlServer(connection)*/
             );
             // -------------------------register service ----------------------------
-            builder.Services.AddTransient(typeof(ICommonDAO<>), typeof(CommonDAO<>));
             builder.Services.AddTransient<DAOUser>();
             builder.Services.AddTransient<DAOCourse>();
             builder.Services.AddTransient<DAOLesson>();
