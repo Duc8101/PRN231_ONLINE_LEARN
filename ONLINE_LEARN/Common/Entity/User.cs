@@ -1,4 +1,4 @@
-﻿using Common.Const;
+﻿using Common.Enums;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -18,13 +18,13 @@ namespace Common.Entity
         public Guid Id { get; set; }
         public string FullName { get; set; } = null!;
         [Column("phone")]
-        [MaxLength(UserConst.PHONE_LENGTH)]
+        [MaxLength((int)UserInfo.Phone_Length)]
         public string? Phone { get; set; }
         [Column("image")]
         public string Image { get; set; } = null!;
 
         [Column("address")]
-        [MaxLength(UserConst.MAX_ADDRESS_LENGTH)]
+        [MaxLength((int)UserInfo.Max_Address_Length)]
         public string? Address { get; set; }
         [Column("email")]
         [MaxLength(200)]
@@ -33,7 +33,7 @@ namespace Common.Entity
         [MaxLength(30)]
         public string Gender { get; set; } = null!;
         [Column("username")]
-        [MaxLength(UserConst.MAX_LENGTH_USERNAME)]
+        [MaxLength((int)UserInfo.Max_Length_Username)]
         public string Username { get; set; } = null!;
         [Column("password")]
         public string Password { get; set; } = null!;

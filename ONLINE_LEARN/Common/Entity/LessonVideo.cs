@@ -1,4 +1,4 @@
-﻿using Common.Const;
+﻿using Common.Enums;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -10,7 +10,7 @@ namespace Common.Entity
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("VideoID")]
         public int VideoId { get; set; }
-        [MaxLength((int)LessonVideoConst.Lesson_Video_Name)]
+        [MaxLength((int)LessonVideos.Lesson_Video_Name)]
         public string VideoName { get; set; } = null!;
         public string FileVideo { get; set; } = null!;
 

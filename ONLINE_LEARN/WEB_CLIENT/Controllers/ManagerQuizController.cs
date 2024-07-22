@@ -1,6 +1,6 @@
 ﻿using Common.Base;
-using Common.Const;
 using Common.DTO.QuizDTO;
+using Common.Enums;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using WEB_CLIENT.Attributes;
@@ -8,7 +8,7 @@ using WEB_CLIENT.Services.ManagerQuiz;
 
 namespace WEB_CLIENT.Controllers
 {
-    [Role(UserConst.ROLE_TEACHER)]
+    [Role(Roles.Teacher)]
     [Authorize]
     //[ResponseCache(NoStore = true)]
     public class ManagerQuizController : BaseController

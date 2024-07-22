@@ -1,5 +1,5 @@
-﻿using Common.Const;
-using Common.Entity;
+﻿using Common.Entity;
+using Common.Enums;
 using DataAccess.Model.DBContext;
 using Microsoft.EntityFrameworkCore;
 
@@ -25,15 +25,15 @@ namespace DataAccess.Model.DAO
         public List<Course> getListCourse(Guid studentId, int page)
         {
             IQueryable<EnrollCourse> query = getQuery(studentId);
-            return query.OrderByDescending(e => e.Course.UpdateAt).Skip((int)PageSizeConst.Course_Page * (page - 1))
-                .Take((int)PageSizeConst.Course_Page).Select(e => e.Course).ToList();
+            return query.OrderByDescending(e => e.Course.UpdateAt).Skip((int)PageSize.Course_Page * (page - 1))
+                .Take((int)PageSize.Course_Page).Select(e => e.Course).ToList();
         }
 
         public int getNumberPage(Guid studentId)
         {
             IQueryable<EnrollCourse> query = getQuery(studentId);
             int count = query.Count();
-            return (int)Math.Ceiling((double)count / (int)PageSizeConst.Course_Page);
+            return (int)Math.Ceiling((double)count / (int)PageSize.Course_Page);
         }
 
         public bool isExist(Guid courseId, Guid studentId)

@@ -1,5 +1,6 @@
-﻿@using Common.Const;
-@using Common.Entity;
+﻿@using Common.Entity;
+@using Common.Enums;
+@using DataAccess.Extensions
 @model Dictionary<string ,object>
 <style>
     html {
@@ -162,9 +163,9 @@
     string? username = Context.Session.GetString("username");
     string? role = Context.Session.GetString("role");
     string? image = Context.Session.GetString("image");
-    string d_none1 = role == null || role == UserConst.ROLE_STUDENT ? "d-none" : "";
-    string d_none2 = role == null || role == UserConst.ROLE_STUDENT ? "" : "d-none";
-    string d_none3 = role != null && role == UserConst.ROLE_TEACHER ? "" : "d-none";
+    string d_none1 = role == null || role == Roles.Student.ToString() ? "d-none" : "";
+    string d_none2 = role == null || role == Roles.Student.ToString() ? "" : "d-none";
+    string d_none3 = role != null && role == Roles.Teacher.ToString() ? "" : "d-none";
 }
 <nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
     <a href="/Home" class="navbar-brand d-flex align-items-center px-4 px-lg-5">
@@ -178,7 +179,7 @@
             <a href="/Home" class="nav-item nav-link">Home</a>
             <a href="/About" class="nav-item nav-link">About</a>
             <a href="/ManagerCourse/Create" class="nav-item nav-link @d_none1">Create Course</a>
-            @if (role == null || role == UserConst.ROLE_STUDENT)
+            @if (role == null || role == Roles.Student.ToString())
             {
                 <a href="/Courses" class="nav-item nav-link">Courses</a>
             }
@@ -220,7 +221,7 @@
     <br />
     <h3 style="margin-left:10%">Your latest submission : @result.Score</h3>
     <h3 style="margin-left:10%">Your latest submitted date : @result.UpdateAt.ToShortDateString()</h3>
-    <h3 style="margin-left:10%">Status: <span style="color:@(result.Status == ResultConst.NotPassed ? "red" : "green")">@result.Status</span></h3>
+    <h3 style="margin-left:10%">Status: <span style="color:@(result.Status == ResultStatus.Not_Passed.getDescription() ? "red" : "green")">@result.Status</span></h3>
 }
 <div class="section">
     <div class="section__exam">

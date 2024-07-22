@@ -1,7 +1,7 @@
 ﻿using Common.Base;
-using Common.Const;
 using Common.DTO.CourseDTO;
 using Common.Entity;
+using Common.Enums;
 using Common.Paginations;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -10,7 +10,7 @@ using WEB_CLIENT.Services.ManagerCourse;
 
 namespace WEB_CLIENT.Controllers
 {
-    [Role(UserConst.ROLE_TEACHER)]
+    [Role(Roles.Teacher)]
     [Authorize]
     //[ResponseCache(NoStore = true)]
     public class ManagerCourseController : BaseController
@@ -36,7 +36,7 @@ namespace WEB_CLIENT.Controllers
             }
             return View(response.Data);
         }
-        
+
         public ActionResult Create()
         {
             ResponseBase<List<Category>?> response = _service.Create();

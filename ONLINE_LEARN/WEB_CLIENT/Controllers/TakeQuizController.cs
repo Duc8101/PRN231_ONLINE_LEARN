@@ -1,6 +1,7 @@
 ﻿using Common.Base;
-using Common.Const;
 using Common.Entity;
+using Common.Enums;
+using DataAccess.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using WEB_CLIENT.Attributes;
@@ -8,7 +9,7 @@ using WEB_CLIENT.Services.TakeQuiz;
 
 namespace WEB_CLIENT.Controllers
 {
-    [Role(UserConst.ROLE_STUDENT)]
+    [Role(Roles.Student)]
     [Authorize]
     [ResponseCache(NoStore = true)]
     public class TakeQuizController : BaseController
@@ -70,7 +71,7 @@ namespace WEB_CLIENT.Controllers
                     HttpContext.Session.Remove(QuestionNo.ToString());
                 }
                 float FinalScore = (float)score / response.Data.Count * 10;
-                string status = FinalScore >= 5.0 ? ResultConst.Passed : ResultConst.NotPassed;
+                string status = FinalScore >= 5.0 ? ResultStatus.Passed.getDescription() : ResultStatus.Not_Passed.getDescription();
                 ResponseBase<Result?> responseDTO = _service.Finish(id, Guid.Parse(studentId), FinalScore, status);
                 if (responseDTO.Data == null)
                 {

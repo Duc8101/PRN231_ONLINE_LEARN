@@ -1,6 +1,6 @@
 ﻿using Common.Base;
-using Common.Const;
 using Common.Entity;
+using Common.Enums;
 using Common.Paginations;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -9,7 +9,7 @@ using WEB_CLIENT.Services.MyCourse;
 
 namespace WEB_CLIENT.Controllers
 {
-    [Role(UserConst.ROLE_STUDENT)]
+    [Role(Roles.Student)]
     [Authorize]
     //[ResponseCache(NoStore = true)]
     public class MyCourseController : BaseController

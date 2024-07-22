@@ -1,7 +1,7 @@
 ﻿using Common.Base;
-using Common.Const;
 using Common.DTO.UserDTO;
 using Common.Entity;
+using Common.Enums;
 using DataAccess.Model.DAO;
 using DataAccess.Model.Helper;
 using System.Net;
@@ -25,7 +25,7 @@ namespace WEB_CLIENT.Services.Profile
                 {
                     return new ResponseBase<Dictionary<string, object>?>("Not found user", (int)HttpStatusCode.NotFound);
                 }
-                List<string> list = UserHelper.getAllGender();
+                List<string> list = UserHelper.Genders;
                 Dictionary<string, object> data = new Dictionary<string, object>();
                 data["user"] = user;
                 data["list"] = list;
@@ -46,7 +46,7 @@ namespace WEB_CLIENT.Services.Profile
                 {
                     return new ResponseBase<Dictionary<string, object>?>("Not found user", (int)HttpStatusCode.NotFound);
                 }
-                List<string> list = UserHelper.getAllGender();
+                List<string> list = UserHelper.Genders;
                 Dictionary<string, object> data = new Dictionary<string, object>();
                 user.FullName = DTO.FullName == null || DTO.FullName.Trim().Length == 0 ? "" : DTO.FullName.Trim();
                 user.Phone = DTO.Phone;
@@ -60,13 +60,13 @@ namespace WEB_CLIENT.Services.Profile
                 {
                     return new ResponseBase<Dictionary<string, object>?>(data, "You have to input your name", (int)HttpStatusCode.Conflict);
                 }
-                if (DTO.Phone != null && DTO.Phone.Length != UserConst.PHONE_LENGTH)
+                if (DTO.Phone != null && DTO.Phone.Length != (int)UserInfo.Phone_Length)
                 {
-                    return new ResponseBase<Dictionary<string, object>?>(data, "Phone must be " + UserConst.PHONE_LENGTH + " numbers", (int)HttpStatusCode.Conflict);
+                    return new ResponseBase<Dictionary<string, object>?>(data, "Phone must be " + (int)UserInfo.Phone_Length + " numbers", (int)HttpStatusCode.Conflict);
                 }
-                if (DTO.Address != null && DTO.Address.Trim().Length > UserConst.MAX_ADDRESS_LENGTH)
+                if (DTO.Address != null && DTO.Address.Trim().Length > (int)UserInfo.Max_Address_Length)
                 {
-                    return new ResponseBase<Dictionary<string, object>?>(data, "Address max " + UserConst.MAX_ADDRESS_LENGTH + " characters", (int)HttpStatusCode.Conflict);
+                    return new ResponseBase<Dictionary<string, object>?>(data, "Address max " + (int)UserInfo.Max_Address_Length + " characters", (int)HttpStatusCode.Conflict);
                 }
                 if (_daoUser.isExist(userId , user.Email))
                 {

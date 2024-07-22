@@ -1,8 +1,9 @@
 ﻿using AutoMapper;
 using Common.Base;
-using Common.Const;
 using Common.DTO.UserDTO;
 using Common.Entity;
+using Common.Enums;
+using DataAccess.Extensions;
 using DataAccess.Model.DAO;
 using DataAccess.Model.Helper;
 using System.Net;
@@ -35,9 +36,9 @@ namespace WEB_CLIENT.Services.Register
                 await UserHelper.sendEmail("Welcome to E-Learning", body, DTO.Email.Trim());
                 User user = _mapper.Map<User>(DTO);
                 user.Id = Guid.NewGuid();
-                user.Image = UserConst.AVATAR;                
+                user.Image = UserInfo.Avatar.getDescription();                
                 user.Password = hashPw;
-                user.RoleName = UserConst.ROLE_STUDENT;
+                user.RoleName = Roles.Student.ToString();
                 user.CreatedAt = DateTime.Now;
                 user.UpdateAt = DateTime.Now;
                 user.IsDeleted = false;

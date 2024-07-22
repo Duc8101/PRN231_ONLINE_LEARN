@@ -1,4 +1,4 @@
-﻿@using Common.Const;
+﻿@using Common.Enums;
 @model List<string>
 <!-- Spinner Start -->
 <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
@@ -94,11 +94,11 @@
         if (FullName.value.toString().trim().length === 0) {
             document.getElementById("error").innerHTML = "You have to input your name";
             handleSubmit(event);
-        } else if (phone.value.toString().length !== 0 && phone.value.toString().length !== @UserConst.PHONE_LENGTH) {
-            document.getElementById("error").innerHTML = "Phone must be " + @UserConst.PHONE_LENGTH +" numbers";
+        } else if (phone.value.toString().length !== 0 && phone.value.toString().length !== @((int)UserInfo.Phone_Length)) {
+            document.getElementById("error").innerHTML = "Phone must be " + @((int)UserInfo.Phone_Length) +" numbers";
             handleSubmit(event);
-        } else if (!regexUsername.test(username.value.toString()) || username.value.toString().length > 50 || username.value.toString().length < 6 || regexNumber.test(username.value.toString())) {
-            document.getElementById("error").innerHTML = "The username starts with alphabet , contains only alphabet and numbers, at least 6 characters, max 50 characters";
+        } else if (!regexUsername.test(username.value.toString()) || username.value.toString().length > @((int)UserInfo.Max_Length_Username) || username.value.toString().length < @((int)UserInfo.Min_Length_Username) || regexNumber.test(username.value.toString())) {
+            document.getElementById("error").innerHTML = "The username starts with alphabet , contains only alphabet and numbers, at least " + @((int)UserInfo.Min_Length_Username) +" characters, max " + @((int)UserInfo.Max_Length_Username) +" characters";
             handleSubmit(event);
         }
     }

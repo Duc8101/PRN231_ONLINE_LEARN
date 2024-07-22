@@ -1,4 +1,5 @@
-﻿using Common.Const;
+﻿using Common.Enums;
+using DataAccess.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using WEB_CLIENT.Providers;
@@ -7,10 +8,10 @@ namespace WEB_CLIENT.Attributes
 {
     public class RoleAttribute : Attribute, IActionFilter
     {
-        private string[] Role { get; }
-        public RoleAttribute(params string[] role)
+        public string[] Roles { get; }
+        public RoleAttribute(params Roles[] roles)
         {
-            Role = role;
+            Roles = Array.ConvertAll(roles, e => e.ToString());
         }
 
         public void OnActionExecuted(ActionExecutedContext context)
@@ -22,8 +23,8 @@ namespace WEB_CLIENT.Attributes
         {
             // không thể khởi tạo service thông qua contructor như bình thường 
             // phải tạo ra 1 cái là provider, đây là 1 cách để lấy service đã được khởi tạo ra
-            var httpContext = StaticServiceProvider.Provider.GetService<IHttpContextAccessor>();
-            if (httpContext == null || httpContext.HttpContext == null)
+            var accessor = StaticServiceProvider.Provider.GetRequiredService<IHttpContextAccessor>();
+            if (accessor.HttpContext == null)
             {
                 context.Result = new ViewResult()
                 {
@@ -32,12 +33,12 @@ namespace WEB_CLIENT.Attributes
             }
             else
             {
-                string? role = httpContext.HttpContext.Session.GetString("role");
+                string? role = accessor.HttpContext.Session.GetString("role");
                 if (role == null)
                 {
-                    role = UserConst.ROLE_NONE;
+                    role = Common.Enums.Roles.None.getDescription();
                 }
-                bool check = Role.Contains(role);
+                bool check = Roles.Contains(role);
                 if (check == false)
                 {
                     context.Result = new ViewResult()

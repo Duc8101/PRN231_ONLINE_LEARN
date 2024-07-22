@@ -1,7 +1,7 @@
 ﻿using Common.Base;
-using Common.Const;
 using Common.DTO.UserDTO;
 using Common.Entity;
+using Common.Enums;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using WEB_CLIENT.Services.Login;
@@ -61,7 +61,7 @@ namespace WEB_CLIENT.Controllers
             };
             // add cookie
             Response.Cookies.Append("userId", response.Data.Id.ToString(), option);
-            if (response.Data.RoleName == UserConst.ROLE_ADMIN)
+            if (response.Data.RoleName == Roles.Admin.ToString())
             {
                 return Redirect("/Admin");
             }

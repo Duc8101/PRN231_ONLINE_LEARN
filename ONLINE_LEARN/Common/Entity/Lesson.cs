@@ -1,4 +1,4 @@
-﻿using Common.Const;
+﻿using Common.Enums;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -17,7 +17,7 @@ namespace Common.Entity
         [Key]
         [Column("LessonID")]
         public Guid LessonId { get; set; }
-        [MaxLength((int)LessonConst.Lesson_Name)]
+        [MaxLength((int)Lessons.Lesson_Name)]
         public string LessonName { get; set; } = null!;
 
         [Column("CourseID")]

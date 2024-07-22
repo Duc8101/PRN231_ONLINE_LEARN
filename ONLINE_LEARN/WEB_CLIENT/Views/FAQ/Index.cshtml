@@ -1,4 +1,4 @@
-﻿@using Common.Const;
+﻿@using Common.Enums
 <script src="https://kit.fontawesome.com/42147adfb1.js" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"></script>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -18,9 +18,9 @@
     string? username = Context.Session.GetString("username");
     string? role = Context.Session.GetString("role");
     string? image = Context.Session.GetString("image");
-    string d_none1 = role == null || role == UserConst.ROLE_STUDENT ? "d-none" : "";
-    string d_none2 = role == null || role == UserConst.ROLE_STUDENT ? "" : "d-none";
-    string d_none3 = role != null && role == UserConst.ROLE_TEACHER ? "" : "d-none";
+    string d_none1 = role == null || role == Roles.Student.ToString() ? "d-none" : "";
+    string d_none2 = role == null || role == Roles.Student.ToString() ? "" : "d-none";
+    string d_none3 = role != null && role == Roles.Teacher.ToString() ? "" : "d-none";
 }
 <nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
     <a href="/Home" class="navbar-brand d-flex align-items-center px-4 px-lg-5">
@@ -34,14 +34,14 @@
             <a href="/Home" class="nav-item nav-link">Home</a>
             <a href="/About" class="nav-item nav-link">About</a>
             <a href="/ManagerCourse/Create" class="nav-item nav-link @d_none1">Create Course</a>
-            @if (role == null || role == UserConst.ROLE_STUDENT)
+            @if (role == null || role == Roles.Student.ToString())
             {
                 <a href="/Courses" class="nav-item nav-link">Courses</a>
             }
         </div>
     </div>
 
-    @if (username == null && image == null)
+    @if (username == null)
     {
         <a href="/Login" class="btn btn-info py-4 px-lg-5 d-none d-lg-block text-white">Join Now<i class="fa fa-arrow-right ms-3"></i></a>
     }

@@ -1,4 +1,4 @@
-﻿@using Common.Const;
+﻿@using Common.Enums;
 <script src="https://kit.fontawesome.com/42147adfb1.js" crossorigin="anonymous"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"></script>
@@ -113,14 +113,14 @@
         if (FullName.value.toString().trim().length === 0) {
             document.getElementById("error").innerHTML = "You have to input your name";
             handleSubmit(event);
-        } else if (phone.value.toString().length !== 0 && phone.value.toString().length !== @UserConst.PHONE_LENGTH) {
-            document.getElementById("error").innerHTML = "Phone must be " + @UserConst.PHONE_LENGTH +" numbers";
+        } else if (phone.value.toString().length !== 0 && phone.value.toString().length !== @((int)UserInfo.Phone_Length)) {
+            document.getElementById("error").innerHTML = "Phone must be " + @((int)UserInfo.Phone_Length) +" numbers";
             handleSubmit(event);
-        } else if (address.value.toString().trim().length !== 0 && address.value.toString().trim().length > @UserConst.MAX_ADDRESS_LENGTH) {
-            document.getElementById("error").innerHTML = "Address max " + @UserConst.MAX_ADDRESS_LENGTH +" characters";
+        } else if (address.value.toString().trim().length !== 0 && address.value.toString().trim().length > @((int)UserInfo.Max_Address_Length)) {
+            document.getElementById("error").innerHTML = "Address max " + @((int)UserInfo.Max_Address_Length) +" characters";
             handleSubmit(event);
-        } else if (!regexUsername.test(username.value.toString()) || username.value.toString().length > 50 || username.value.toString().length < 6 || regexNumber.test(username.value.toString())) {
-            document.getElementById("error").innerHTML = "The username starts with alphabet , contains only alphabet and numbers, at least 6 characters, max 50 characters";
+        } else if (!regexUsername.test(username.value.toString()) || username.value.toString().length > @((int)UserInfo.Max_Length_Username) || username.value.toString().length < @((int)UserInfo.Min_Length_Username) || regexNumber.test(username.value.toString())) {
+            document.getElementById("error").innerHTML = "The username starts with alphabet , contains only alphabet and numbers, at least " + @((int)UserInfo.Min_Length_Username) +" characters, max " + @((int)UserInfo.Max_Length_Username) +" characters";
             handleSubmit(event);
         }
     }

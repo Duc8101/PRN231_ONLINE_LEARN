@@ -1,5 +1,5 @@
 ﻿using Common.Base;
-using Common.Const;
+using Common.Enums;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using WEB_CLIENT.Attributes;
@@ -15,7 +15,7 @@ namespace WEB_CLIENT.Controllers
             _service = service;
         }
 
-        [Role(UserConst.ROLE_NONE, UserConst.ROLE_STUDENT)]
+        [Role(Roles.None, Roles.Student)]
         public ActionResult Index(int? categoryId, string? properties, bool? asc, int? page)
         {
             string? userId = getUserId();
@@ -28,7 +28,7 @@ namespace WEB_CLIENT.Controllers
             return View(result.Data);
         }
 
-        [Role(UserConst.ROLE_NONE, UserConst.ROLE_STUDENT)]
+        [Role(Roles.None, Roles.Student)]
         public ActionResult Detail(Guid? id)
         {
             string? userId = getUserId();
@@ -44,7 +44,7 @@ namespace WEB_CLIENT.Controllers
             return View(response.Data);
         }
 
-        [Role(UserConst.ROLE_NONE, UserConst.ROLE_STUDENT)]
+        [Role(Roles.None, Roles.Student)]
         public ActionResult EnrollCourse(Guid? id)
         {
             string? role = getRole();
@@ -70,7 +70,7 @@ namespace WEB_CLIENT.Controllers
             return View("/Views/Courses/Index.cshtml", result.Data);
         }
 
-        [Role(UserConst.ROLE_STUDENT)]
+        [Role(Roles.Student)]
         [Authorize]
         //[ResponseCache(NoStore = true)]
         public ActionResult LearnCourse(Guid? id, string? video /* file video */, string? name /*video name or pdf name*/, string? PDF /*file PDF */, Guid? lessonId, int? videoId, int? PDFId)

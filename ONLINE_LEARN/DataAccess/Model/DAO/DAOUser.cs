@@ -1,6 +1,6 @@
-﻿using Common.Const;
-using Common.DTO.UserDTO;
+﻿using Common.DTO.UserDTO;
 using Common.Entity;
+using Common.Enums;
 using DataAccess.Model.DBContext;
 using DataAccess.Model.Helper;
 
@@ -15,7 +15,7 @@ namespace DataAccess.Model.DAO
 
         public List<User> getTop4Teacher()
         {
-            return _context.Users.Where(u => u.RoleName == UserConst.ROLE_TEACHER && u.IsDeleted == false).Take(4)
+            return _context.Users.Where(u => u.RoleName == Roles.Teacher.ToString() && u.IsDeleted == false).Take(4)
                 .ToList();
         }
 
@@ -58,7 +58,7 @@ namespace DataAccess.Model.DAO
 
         public List<User> getListUser(string? name)
         {
-            IQueryable<User> query = _context.Users.Where(u => u.IsDeleted == false && u.RoleName != UserConst.ROLE_ADMIN);
+            IQueryable<User> query = _context.Users.Where(u => u.IsDeleted == false && u.RoleName != Roles.Admin.ToString());
             if (name != null && name.Trim().Length > 0)
             {
                 query = query.Where(u => u.Username.ToLower().Contains(name.ToLower().Trim()));

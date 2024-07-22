@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel;
 
-namespace Common.Const
+namespace Common.Enums
 {
-    public enum LessonConst
+    public enum Lessons
     {
         [Description("Lesson name max 200 characters")]
         Lesson_Name = 200

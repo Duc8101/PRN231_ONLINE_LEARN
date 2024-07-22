@@ -1,8 +1,9 @@
 ﻿using AutoMapper;
 using Common.Base;
-using Common.Const;
 using Common.DTO.LessonDTO;
 using Common.Entity;
+using Common.Enums;
+using DataAccess.Extensions;
 using DataAccess.Model.DAO;
 using System.Net;
 using WEB_CLIENT.Services.Base;
@@ -78,9 +79,9 @@ namespace WEB_CLIENT.Services.ManagerLesson
                 {
                     return new ResponseBase<Dictionary<string, object>?>(response.Data, "You have to input lesson name", (int)HttpStatusCode.Conflict);
                 }
-                if (DTO.LessonName.Trim().Length > (int)LessonConst.Lesson_Name)
+                if (DTO.LessonName.Trim().Length > (int)Lessons.Lesson_Name)
                 {
-                    return new ResponseBase<Dictionary<string, object>?>(response.Data, LessonConst.Lesson_Name.ToString(), (int)HttpStatusCode.Conflict);
+                    return new ResponseBase<Dictionary<string, object>?>(response.Data, Lessons.Lesson_Name.getDescription(), (int)HttpStatusCode.Conflict);
                 }
                 if (_daoLesson.isExist(DTO))
                 {
@@ -117,9 +118,9 @@ namespace WEB_CLIENT.Services.ManagerLesson
                 {
                     return new ResponseBase<Dictionary<string, object>?>(response.Data, "You have to input lesson name", (int)HttpStatusCode.Conflict);
                 }
-                if (DTO.LessonName.Trim().Length > (int)LessonConst.Lesson_Name)
+                if (DTO.LessonName.Trim().Length > (int)Lessons.Lesson_Name)
                 {
-                    return new ResponseBase<Dictionary<string, object>?>(response.Data, LessonConst.Lesson_Name.ToString(), (int)HttpStatusCode.Conflict);
+                    return new ResponseBase<Dictionary<string, object>?>(response.Data, Lessons.Lesson_Name.getDescription(), (int)HttpStatusCode.Conflict);
                 }
                 Lesson? lesson = _daoLesson.getLesson(lessonId, DTO.CourseId);
                 if (lesson == null)

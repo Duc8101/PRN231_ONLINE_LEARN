@@ -1,4 +1,5 @@
-﻿using Common.Const;
+﻿using Common.Enums;
+using DataAccess.Extensions;
 using MailKit.Net.Smtp;
 using Microsoft.Extensions.Configuration;
 using MimeKit;
@@ -10,6 +11,14 @@ namespace DataAccess.Model.Helper
     public class UserHelper
     {
         private const int MAX_SIZE = 8; // randow password 8 characters
+
+        public static List<string> Genders { get; } = new List<string>()
+        {
+            UserInfo.Gender_Male.getDescription(),
+            UserInfo.Gender_Female.getDescription(),
+            UserInfo.Gender_Other.getDescription()
+        };
+
         public static string HashPassword(string password)
         {
             // using SHA256 for hash password
@@ -75,15 +84,6 @@ namespace DataAccess.Model.Helper
                             "<p>Mật khẩu mới là: " + password + "</p>\n" +
                             "<p>Không nên chia sẻ mật khẩu của bạn với người khác.</p>";
             return body;
-        }
-
-        public static List<string> getAllGender()
-        {
-            List<string> list = new List<string>();
-            list.Add(UserConst.GENDER_MALE);
-            list.Add(UserConst.GENDER_FEMALE);
-            list.Add(UserConst.GENDER_OTHER);
-            return list;
         }
     }
 }

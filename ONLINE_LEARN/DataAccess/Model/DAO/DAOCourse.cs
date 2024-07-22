@@ -1,5 +1,5 @@
-﻿using Common.Const;
-using Common.Entity;
+﻿using Common.Entity;
+using Common.Enums;
 using DataAccess.Model.DBContext;
 using Microsoft.EntityFrameworkCore;
 
@@ -43,7 +43,7 @@ namespace DataAccess.Model.DAO
         public List<Course> getListCourse(int? categoryId, string? properties, bool? asc, Guid? creatorId, int page)
         {
             IQueryable<Course> query = getQuery(categoryId, properties, asc, creatorId);
-            return query.Skip((int)PageSizeConst.Course_Page * (page - 1)).Take((int)PageSizeConst.Course_Page)
+            return query.Skip((int)PageSize.Course_Page * (page - 1)).Take((int)PageSize.Course_Page)
                 .ToList();
         }
 
@@ -51,7 +51,7 @@ namespace DataAccess.Model.DAO
         {
             IQueryable<Course> query = getQuery(categoryId, properties, asc, creatorId);
             int count = query.Count();
-            return (int)Math.Ceiling((double)count / (int)PageSizeConst.Course_Page);
+            return (int)Math.Ceiling((double)count / (int)PageSize.Course_Page);
         }
 
         public Course? getCourse(Guid courseId)

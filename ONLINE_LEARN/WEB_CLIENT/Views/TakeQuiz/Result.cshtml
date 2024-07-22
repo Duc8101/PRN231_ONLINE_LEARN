@@ -1,5 +1,6 @@
-﻿@using Common.Const;
-@using Common.Entity;
+﻿@using Common.Entity;
+@using Common.Enums;
+@using DataAccess.Extensions
 @model Result
 <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" />
 <link href="~/css/table.css" rel="stylesheet">
@@ -82,9 +83,9 @@
     string? username = Context.Session.GetString("username");
     string? role = Context.Session.GetString("role");
     string? image = Context.Session.GetString("image");
-    string d_none1 = role == null || role == UserConst.ROLE_STUDENT ? "d-none" : "";
-    string d_none2 = role == null || role == UserConst.ROLE_STUDENT ? "" : "d-none";
-    string d_none3 = role != null && role == UserConst.ROLE_TEACHER ? "" : "d-none";
+    string d_none1 = role == null || role == Roles.Student.ToString() ? "d-none" : "";
+    string d_none2 = role == null || role == Roles.Student.ToString() ? "" : "d-none";
+    string d_none3 = role != null && role == Roles.Teacher.ToString() ? "" : "d-none";
 }
 <nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
     <a href="/Home" class="navbar-brand d-flex align-items-center px-4 px-lg-5">
@@ -98,7 +99,7 @@
             <a href="/Home" class="nav-item nav-link">Home</a>
             <a href="/About" class="nav-item nav-link">About</a>
             <a href="/ManagerCourse/Create" class="nav-item nav-link @d_none1">Create Course</a>
-            @if (role == null || role == UserConst.ROLE_STUDENT)
+            @if (role == null || role == Roles.Student.ToString())
             {
                 <a href="/Courses" class="nav-item nav-link">Courses</a>
             }
@@ -138,7 +139,7 @@
             </div>
         </div>
         <div class="result_status">
-            <span>You <span style="color: @(Model.Status == ResultConst.Passed ? "green" : "red")">@Model.Status</span> this exam</span>
+            <span>You <span style="color: @(Model.Status == ResultStatus.Passed.getDescription() ? "green" : "red")">@Model.Status</span> this exam</span>
         </div>
         <div class="btn btn-info">
             <a href="/Courses" style="text-decoration: none; color: black;">Cancel</a>

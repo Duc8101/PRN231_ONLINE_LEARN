@@ -1,6 +1,6 @@
 ﻿using Common.Base;
-using Common.Const;
 using Common.Entity;
+using Common.Enums;
 using Microsoft.AspNetCore.Mvc;
 using WEB_CLIENT.Services.Home;
 
@@ -17,7 +17,7 @@ namespace WEB_CLIENT.Controllers
         public ActionResult Index()
         {
             string? role = getRole();
-            if (role == UserConst.ROLE_ADMIN)
+            if (role == Roles.Admin.ToString())
             {
                 return Redirect("/Admin");
             }

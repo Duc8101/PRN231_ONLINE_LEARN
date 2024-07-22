@@ -1,6 +1,6 @@
 ﻿using Common.Base;
-using Common.Const;
 using Common.DTO.UserDTO;
+using Common.Enums;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using WEB_CLIENT.Attributes;
@@ -9,7 +9,7 @@ using WEB_CLIENT.Services.Admin;
 namespace WEB_CLIENT.Controllers
 {
     [Authorize]
-    [Role(UserConst.ROLE_ADMIN)]
+    [Role(Roles.Admin)]
     [ResponseCache(NoStore = true)]
     public class AdminController : BaseController
     {
