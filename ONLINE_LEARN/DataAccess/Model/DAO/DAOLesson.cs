@@ -18,7 +18,7 @@ namespace DataAccess.Model.DAO
 
         public List<Lesson> getListLesson()
         {
-            return _context.Lessons.Where(l => l.IsDeleted == false && l.Quizzes.Where(q => q.IsDeleted == false).ToList().Count > 0)
+            return _context.Lessons.Where(l => l.IsDeleted == false && l.Quizzes.Any(q => q.IsDeleted == false))
                 .ToList();
         }
 

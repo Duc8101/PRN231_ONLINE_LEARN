@@ -64,9 +64,7 @@ namespace WEB_CLIENT
             builder.Services.AddScoped<IProfileService, ProfileService>();
             builder.Services.AddScoped<IRegisterService, RegisterService>();
             builder.Services.AddScoped<ITakeQuizService, TakeQuizService>();
-            builder.Services.AddHttpContextAccessor();
             var app = builder.Build();
-            StaticServiceProvider.Provider = app.Services;
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
