@@ -26,9 +26,11 @@ namespace WEB_CLIENT.Services.Profile
                     return new ResponseBase<Dictionary<string, object>?>("Not found user", (int)HttpStatusCode.NotFound);
                 }
                 List<string> list = UserHelper.Genders;
-                Dictionary<string, object> data = new Dictionary<string, object>();
-                data["user"] = user;
-                data["list"] = list;
+                Dictionary<string, object> data = new Dictionary<string, object>()
+                {
+                    {"user", user },
+                    {"list", list },
+                };
                 return new ResponseBase<Dictionary<string, object>?>(data);
             }
             catch (Exception ex)
@@ -47,15 +49,17 @@ namespace WEB_CLIENT.Services.Profile
                     return new ResponseBase<Dictionary<string, object>?>("Not found user", (int)HttpStatusCode.NotFound);
                 }
                 List<string> list = UserHelper.Genders;
-                Dictionary<string, object> data = new Dictionary<string, object>();
                 user.FullName = DTO.FullName == null || DTO.FullName.Trim().Length == 0 ? "" : DTO.FullName.Trim();
                 user.Phone = DTO.Phone;
                 user.Image = DTO.Image == null || DTO.Image.Trim().Length == 0 ? valueImg : "/img/" + DTO.Image.Trim();
                 user.Address = DTO.Address == null || DTO.Address.Trim().Length == 0 ? null : DTO.Address.Trim();
                 user.Email = DTO.Email.Trim();
                 user.Gender = DTO.Gender.Trim();
-                data["user"] = user;
-                data["list"] = list;
+                Dictionary<string, object> data = new Dictionary<string, object>()
+                {
+                    {"user", user },
+                    {"list", list },
+                };
                 if (DTO.FullName == null || DTO.FullName.Trim().Length == 0)
                 {
                     return new ResponseBase<Dictionary<string, object>?>(data, "You have to input your name", (int)HttpStatusCode.Conflict);

@@ -45,15 +45,17 @@ namespace WEB_CLIENT.Services.ManagerVideo
                     name = lessonVideo.VideoName;
                     lessonId = lessonVideo.LessonId;
                 }
-                Dictionary<string, object> data = new Dictionary<string, object>();
-                data["listLesson"] = listLesson;
-                data["listPDF"] = listPDF;
-                data["listVideo"] = listVideo;
-                data["video"] = video;
-                data["PDF"] = string.Empty;
-                data["name"] = name;
-                data["lId"] = lessonId;
-                data["courseId"] = courseId;
+                Dictionary<string, object> data = new Dictionary<string, object>()
+                {
+                    {"listLesson", listLesson},
+                    {"listPDF", listPDF},
+                    {"listVideo", listVideo },
+                    {"video",  video},
+                    {"PDF", string.Empty},
+                    {"name",  name},
+                    {"lId",  lessonId},
+                    {"courseId",  courseId},
+                };
                 return new ResponseBase<Dictionary<string, object>?>(data);
             }
             catch (Exception ex)

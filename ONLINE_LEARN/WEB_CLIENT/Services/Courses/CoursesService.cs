@@ -81,13 +81,15 @@ namespace WEB_CLIENT.Services.Courses
                     List<Lesson> listLesson = _daoLesson.getListLesson(course.CourseId);
                     listListLesson.Add(listLesson);
                 }
-                Dictionary<string, object?> data = new Dictionary<string, object?>();
-                data["result"] = result;
-                data["properties"] = properties == null ? "" : properties;
-                data["asc"] = asc;
-                data["categoryId"] = categoryId == null ? 0 : categoryId;
-                data["listCategory"] = listCategory;
-                data["listListLesson"] = listListLesson;
+                Dictionary<string, object?> data = new Dictionary<string, object?>()
+                {
+                    {"result", result },
+                    {"properties", properties == null ? "" : properties },
+                    {"asc", asc },
+                    {"categoryId", categoryId == null ? 0 : categoryId },
+                    {"listCategory", listCategory },
+                    {"listListLesson", listListLesson },
+                };
                 if (userId == null)
                 {
                     data["listEnroll"] = null;
@@ -104,6 +106,7 @@ namespace WEB_CLIENT.Services.Courses
                 return new ResponseBase<Dictionary<string, object?>?>(ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
+
         public ResponseBase<Dictionary<string, object?>?> Detail(Guid courseId, string? userId)
         {
             try
@@ -114,24 +117,20 @@ namespace WEB_CLIENT.Services.Courses
                     return new ResponseBase<Dictionary<string, object?>?>("Not found course", (int)HttpStatusCode.NotFound);
                 }
                 List<Lesson> list = _daoLesson.getListLesson(courseId);
-                Dictionary<string, object?> dic = new Dictionary<string, object?>();
-                dic["course"] = course;
-                dic["list"] = list;
-                if (userId == null)
+                Dictionary<string, object?> data = new Dictionary<string, object?>()
                 {
-                    dic["listEnroll"] = null;
-                }
-                else
-                {
-                    dic["listEnroll"] = _daoEnroll.getListEnrollCourse(Guid.Parse(userId));
-                }
-                return new ResponseBase<Dictionary<string, object?>?>(dic);
+                    {"course", course },
+                    {"list", list },
+                    {"listEnroll" , userId == null ? null : _daoEnroll.getListEnrollCourse(Guid.Parse(userId))}
+                };
+                return new ResponseBase<Dictionary<string, object?>?>(data);
             }
             catch (Exception ex)
             {
                 return new ResponseBase<Dictionary<string, object?>?>(ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
+        
         public ResponseBase<Dictionary<string, object?>?> EnrollCourse(Guid courseId, Guid userId)
         {
             try
@@ -168,6 +167,7 @@ namespace WEB_CLIENT.Services.Courses
                 return new ResponseBase<Dictionary<string, object?>?>(ex.Message + " " + ex, (int)HttpStatusCode.InternalServerError);
             }
         }
+        
         public ResponseBase<Dictionary<string, object>?> LearnCourse(Guid courseId, Guid userId, string? video /* file video */, string? name /*video name or pdf name*/, string? PDF /*file PDF */, Guid? lessonId, int? videoId, int? PDFId)
         {
             try
@@ -196,18 +196,20 @@ namespace WEB_CLIENT.Services.Courses
                             lessonId = lessonVideo.LessonId;
                         }
                     }
-                    Dictionary<string, object> result = new Dictionary<string, object>();
-                    result["listLessonCourse"] = listLessonCourse;
-                    result["listPDF"] = listPDF;
-                    result["listLessonQuiz"] = listLessonQuiz;
-                    result["listVideo"] = listVideo;
-                    result["video"] = video == null ? "" : video;
-                    result["PDF"] = PDF == null ? "" : PDF;
-                    result["name"] = name == null ? "" : name;
-                    result["vId"] = videoId == null ? 0 : videoId;
-                    result["lId"] = lessonId == null ? Guid.NewGuid() : lessonId;
-                    result["pId"] = PDFId == null ? 0 : PDFId;
-                    return new ResponseBase<Dictionary<string, object>?>(result);
+                    Dictionary<string, object> data = new Dictionary<string, object>()
+                    {
+                        {"listLessonCourse", listLessonCourse },
+                        {"listPDF", listPDF },
+                        {"listLessonQuiz", listLessonQuiz },
+                        {"listVideo", listVideo },
+                        {"video", video == null ? "" : video },
+                        {"PDF", PDF == null ? "" : PDF },
+                        {"name", name == null ? "" : name },
+                        {"vId", videoId == null ? 0 : videoId },
+                        {"lId", lessonId == null ? Guid.NewGuid() : lessonId },
+                        {"pId", PDFId == null ? 0 : PDFId },
+                    };
+                    return new ResponseBase<Dictionary<string, object>?>(data);
                 }
                 return new ResponseBase<Dictionary<string, object>?>(string.Empty, (int)HttpStatusCode.Conflict);
             }

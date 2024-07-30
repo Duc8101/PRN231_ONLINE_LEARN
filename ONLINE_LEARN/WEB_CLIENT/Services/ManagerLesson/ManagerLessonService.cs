@@ -49,15 +49,17 @@ namespace WEB_CLIENT.Services.ManagerLesson
                         lessonId = lessonVideo.LessonId;
                     }
                 }
-                Dictionary<string, object> data = new Dictionary<string, object>();
-                data["listLesson"] = listLesson;
-                data["listPDF"] = listPDF;
-                data["listVideo"] = listVideo;
-                data["video"] = video == null ? "" : video;
-                data["PDF"] = PDF == null ? "" : PDF;
-                data["name"] = name == null ? "" : name;
-                data["lId"] = lessonId == null ? Guid.NewGuid() : lessonId;
-                data["courseId"] = courseId;
+                Dictionary<string, object> data = new Dictionary<string, object>()
+                {
+                    {"listLesson", listLesson },
+                    {"listPDF", listPDF },
+                    {"listVideo", listVideo },
+                    {"video", video == null ? "" : video },
+                    {"PDF", PDF == null ? "" : PDF },
+                    {"name", name == null ? "" : name },
+                    {"lId", lessonId == null ? Guid.NewGuid() : lessonId },
+                    {"courseId", courseId },
+                };
                 return new ResponseBase<Dictionary<string, object>?>(data);
             }
             catch (Exception ex)

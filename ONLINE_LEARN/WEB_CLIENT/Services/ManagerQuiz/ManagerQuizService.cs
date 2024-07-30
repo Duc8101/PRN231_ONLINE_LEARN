@@ -20,6 +20,7 @@ namespace WEB_CLIENT.Services.ManagerQuiz
             _daoLesson = daoLesson;
             _daoQuiz = daoQuiz;
         }
+
         public ResponseBase<Dictionary<string, object>?> Index(Guid lessonId, Guid courseId, Guid creatorId)
         {
             try
@@ -34,11 +35,13 @@ namespace WEB_CLIENT.Services.ManagerQuiz
                 {
                     return new ResponseBase<Dictionary<string, object>?>("Not found lesson", (int)HttpStatusCode.NotFound);
                 }
-                Dictionary<string, object> data = new Dictionary<string, object>();
                 List<Quiz> list = _daoQuiz.getListQuiz(lessonId);
-                data["lessonId"] = lessonId;
-                data["courseId"] = courseId;
-                data["list"] = list;
+                Dictionary<string, object> data = new Dictionary<string, object>()
+                {
+                    {"lessonId", lessonId },
+                    {"courseId", courseId },
+                    {"list", list },
+                };
                 return new ResponseBase<Dictionary<string, object>?>(data);
             }
             catch (Exception ex)
@@ -66,10 +69,12 @@ namespace WEB_CLIENT.Services.ManagerQuiz
                 {
                     return new ResponseBase<Dictionary<string, object>?>("Not found quiz", (int)HttpStatusCode.NotFound);
                 }
-                Dictionary<string, object> data = new Dictionary<string, object>();
-                data["lessonId"] = lessonId;
-                data["courseId"] = courseId;
-                data["quiz"] = quiz;
+                Dictionary<string, object> data = new Dictionary<string, object>()
+                {
+                    {"lessonId", lessonId },
+                    {"courseId", courseId },
+                    {"quiz", quiz },
+                };
                 return new ResponseBase<Dictionary<string, object>?>(data);
             }
             catch (Exception ex)
@@ -92,9 +97,11 @@ namespace WEB_CLIENT.Services.ManagerQuiz
                 {
                     return new ResponseBase<Dictionary<string, Guid>?>("Not found lesson", (int)HttpStatusCode.NotFound);
                 }
-                Dictionary<string, Guid> data = new Dictionary<string, Guid>();
-                data["lessonId"] = lessonId;
-                data["courseId"] = courseId;
+                Dictionary<string, Guid> data = new Dictionary<string, Guid>()
+                {
+                    {"lessonId", lessonId },
+                    {"courseId", courseId },
+                };
                 return new ResponseBase<Dictionary<string, Guid>?>(data);
             }
             catch (Exception ex)
@@ -117,9 +124,11 @@ namespace WEB_CLIENT.Services.ManagerQuiz
                 {
                     return new ResponseBase<Dictionary<string, Guid>?>("Not found lesson", (int)HttpStatusCode.NotFound);
                 }
-                Dictionary<string, Guid> data = new Dictionary<string, Guid>();
-                data["lessonId"] = DTO.LessonId;
-                data["courseId"] = courseId;
+                Dictionary<string, Guid> data = new Dictionary<string, Guid>()
+                {
+                    {"lessonId", DTO.LessonId },
+                    {"courseId", courseId },
+                };
                 if (DTO.Answer3 == null && DTO.Answer4 == null && DTO.AnswerCorrect > 2)
                 {
                     return new ResponseBase<Dictionary<string, Guid>?>(data, "The question has 2 answers. The correct answer must be 1 or 2", (int)HttpStatusCode.Conflict);
@@ -161,9 +170,11 @@ namespace WEB_CLIENT.Services.ManagerQuiz
                 {
                     return new ResponseBase<Dictionary<string, object>?>("Not found quiz", (int)HttpStatusCode.NotFound);
                 }
-                Dictionary<string, object> data = new Dictionary<string, object>();
-                data["lessonId"] = DTO.LessonId;
-                data["courseId"] = courseId;
+                Dictionary<string, object> data = new Dictionary<string, object>()
+                {
+                    {"lessonId", DTO.LessonId },
+                    {"courseId", courseId },
+                };
                 quiz.Question = DTO.Question.Trim();
                 quiz.Answer1 = DTO.Answer1.Trim();
                 quiz.Answer2 = DTO.Answer2.Trim();
@@ -210,11 +221,13 @@ namespace WEB_CLIENT.Services.ManagerQuiz
                     return new ResponseBase<Dictionary<string, object>?>("Not found quiz", (int)HttpStatusCode.NotFound);
                 }
                 _daoQuiz.DeleteQuiz(quiz);
-                Dictionary<string, object> data = new Dictionary<string, object>();
                 List<Quiz> list = _daoQuiz.getListQuiz(lessonId);
-                data["lessonId"] = lessonId;
-                data["courseId"] = courseId;
-                data["list"] = list;
+                Dictionary<string, object> data = new Dictionary<string, object>()
+                {
+                    {"lessonId", lessonId },
+                    {"courseId", courseId },
+                    {"list", list },
+                };
                 return new ResponseBase<Dictionary<string, object>?>(data, "Delete successful");
             }
             catch (Exception ex)

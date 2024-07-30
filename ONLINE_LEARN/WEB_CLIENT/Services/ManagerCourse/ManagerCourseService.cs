@@ -94,9 +94,11 @@ namespace WEB_CLIENT.Services.ManagerCourse
                     return new ResponseBase<Dictionary<string, object>?>(string.Empty, (int)HttpStatusCode.NotFound);
                 }
                 List<Category> list = _daoCategory.getListCategory();
-                Dictionary<string, object> data = new Dictionary<string, object>();
-                data["course"] = course;
-                data["list"] = list;
+                Dictionary<string, object> data = new Dictionary<string, object>()
+                {
+                    {"course", course },
+                    {"list", list},
+                };
                 return new ResponseBase<Dictionary<string, object>?>(data);
             }
             catch (Exception ex)
@@ -119,9 +121,11 @@ namespace WEB_CLIENT.Services.ManagerCourse
                 course.Image = DTO.Image.Trim();
                 course.Description = DTO.Description == null || DTO.Description.Trim().Length == 0 ? null : DTO.Description.Trim();
                 List<Category> list = _daoCategory.getListCategory();
-                Dictionary<string, object> data = new Dictionary<string, object>();
-                data["course"] = course;
-                data["list"] = list;
+                Dictionary<string, object> data = new Dictionary<string, object>()
+                {
+                    {"course", course },
+                    {"list", list},
+                };
                 if (_daoCourse.isExist(DTO.CourseName, DTO.CategoryId, courseId))
                 {
                     return new ResponseBase<Dictionary<string, object>?>(data, "Course existed", (int)HttpStatusCode.Conflict);

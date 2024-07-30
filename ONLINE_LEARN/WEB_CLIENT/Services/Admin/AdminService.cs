@@ -26,9 +26,11 @@ namespace WEB_CLIENT.Services.Admin
             try
             {
                 List<User> list = _daoUser.getListUser(name);
-                Dictionary<string, object> data = new Dictionary<string, object>();
-                data["list"] = list;
-                data["name"] = name == null ? "" : name.Trim();
+                Dictionary<string, object> data = new Dictionary<string, object>()
+                {
+                    {"list", list},
+                    {"name", name == null ? "" : name.Trim()},
+                };
                 return new ResponseBase<Dictionary<string, object>?>(data);
             }
             catch (Exception ex)
@@ -46,9 +48,11 @@ namespace WEB_CLIENT.Services.Admin
                 {
                     return new ResponseBase<Dictionary<string, object>?>("Not found user", (int)HttpStatusCode.NotFound);
                 }
-                Dictionary<string, object> data = new Dictionary<string, object>();
-                data["list"] = UserHelper.Genders;
-                data["user"] = user;
+                Dictionary<string, object> data = new Dictionary<string, object>()
+                {
+                    {"list", UserHelper.Genders },
+                    {"user", user}, 
+                };
                 return new ResponseBase<Dictionary<string, object>?>(data);
             }
             catch (Exception ex)
@@ -72,7 +76,7 @@ namespace WEB_CLIENT.Services.Admin
             {
                 return new ResponseBase<List<string>?>(list, "You have to input your name", (int)HttpStatusCode.Conflict);
             }
-            if (DTO.Phone != null && (!regexPhone.IsMatch(DTO.Phone) || DTO.Phone.Length != (int) UserInfo.Phone_Length))
+            if (DTO.Phone != null && (!regexPhone.IsMatch(DTO.Phone) || DTO.Phone.Length != (int)UserInfo.Phone_Length))
             {
                 return new ResponseBase<List<string>?>(list, "Phone only number and length is " + (int)UserInfo.Phone_Length, (int)HttpStatusCode.Conflict);
             }
