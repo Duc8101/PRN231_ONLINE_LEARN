@@ -57,7 +57,10 @@ namespace WEB_CLIENT.Controllers
             HttpContext.Session.SetString("image", response.Data.Image);
             CookieOptions option = new CookieOptions()
             {
-                Expires = DateTime.Now.AddDays(7)
+                HttpOnly = true,
+                Expires = DateTime.Now.AddDays(7),
+                Secure = true, // Chỉ sử dụng trên kết nối HTTPS
+                SameSite = SameSiteMode.Strict, // Bảo vệ chống lại CSRF
             };
             // add cookie
             Response.Cookies.Append("userId", response.Data.Id.ToString(), option);
