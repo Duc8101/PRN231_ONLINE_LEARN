@@ -40,15 +40,15 @@ namespace WEB_CLIENT
                 options.UseSqlServer(connection)*/
             );
             // -------------------------register service ----------------------------
-            builder.Services.AddSingleton<DAOUser>();
-            builder.Services.AddSingleton<DAOCourse>();
-            builder.Services.AddSingleton<DAOLesson>();
-            builder.Services.AddSingleton<DAOEnrollCourse>();
-            builder.Services.AddSingleton<DAOCategory>();
-            builder.Services.AddSingleton<DAOLessonPDF>();
-            builder.Services.AddSingleton<DAOLessonVideo>();
-            builder.Services.AddSingleton<DAOQuiz>();
-            builder.Services.AddSingleton<DAOResult>();
+            builder.Services.AddTransient<DAOUser>();
+            builder.Services.AddTransient<DAOCourse>();
+            builder.Services.AddTransient<DAOLesson>();
+            builder.Services.AddTransient<DAOEnrollCourse>();
+            builder.Services.AddTransient<DAOCategory>();
+            builder.Services.AddTransient<DAOLessonPDF>();
+            builder.Services.AddTransient<DAOLessonVideo>();
+            builder.Services.AddTransient<DAOQuiz>();
+            builder.Services.AddTransient<DAOResult>();
             builder.Services.AddScoped<IAdminService, AdminService>();
             builder.Services.AddScoped<IChangePasswordService, ChangePasswordService>();
             builder.Services.AddScoped<ICoursesService, CoursesService>();
