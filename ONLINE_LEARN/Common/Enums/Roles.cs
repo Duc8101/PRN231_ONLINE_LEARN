@@ -6,8 +6,11 @@ namespace Common.Enums
     {
         [Description("")]
         None,
+        [Description("Student")]
         Student,
+        [Description("Teacher")]
         Teacher,
+        [Description("Admin")]
         Admin
     }
 }

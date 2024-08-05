@@ -10,7 +10,7 @@ namespace WEB_CLIENT.Attributes
         public string[] Roles { get; }
         public RoleAttribute(params Roles[] roles)
         {
-            Roles = Array.ConvertAll(roles, e => e.ToString());
+            Roles = Array.ConvertAll(roles, e => e.getDescription());
         }
 
         public void OnActionExecuted(ActionExecutedContext context)
